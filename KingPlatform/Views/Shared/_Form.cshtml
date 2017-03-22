@@ -1,0 +1,28 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.title</title>
+    <link href="~/Content/css/framework-font.css" rel="stylesheet" />
+    <link href="~/Content/css/framework-theme.css" rel="stylesheet" />
+    <script src="~/Content/Scripts/jquery/jquery-1.12.0.min.js"></script>
+    <script src="~/Content/Scripts/BootStrap/bootstrap.min.js"></script>
+    <link href="~/Content/Scripts/BootStrap/bootstrap.min.css" rel="stylesheet" />
+    <script src="~/Content/Scripts/wdtree/tree.js"></script>
+    <link href="~/Content/Scripts/wdtree/tree.css" rel="stylesheet" />
+    <link href="~/Content/Scripts/select2/select2.min.css" rel="stylesheet" />
+    <script src="~/Content/Scripts/select2/select2.min.js"></script>
+    <link href="~/Content/Scripts/wizard/wizard.css" rel="stylesheet" />
+    <script src="~/Content/Scripts/wizard/wizard.js"></script>
+    <script src="~/Content/Scripts/jqValidate/jquery.validate.min.js"></script>
+    <script src="~/Content/Scripts/datepicker/WdatePicker.js"></script>
+    <link href="~/Content/css/framework-ui.css" rel="stylesheet" />
+    <script src="~/Content/Scripts/framework-ui.js"></script>
+</head>
+<body>
+    @RenderBody()
+    @Html.AntiForgeryToken()
+</body>
+</html>

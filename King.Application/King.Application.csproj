@@ -1,0 +1,91 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{30D45434-2012-44CC-8C73-C0DFA3C0381B}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>King.Application</RootNamespace>
+    <AssemblyName>King.Application</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Infrastructure\DbLogType.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SystemManage\AreaApp.cs" />
+    <Compile Include="SystemManage\DutyApp.cs" />
+    <Compile Include="SystemManage\ItemsApp.cs" />
+    <Compile Include="SystemManage\ItemsDetailApp.cs" />
+    <Compile Include="SystemManage\ModuleApp.cs" />
+    <Compile Include="SystemManage\ModuleButtonApp.cs" />
+    <Compile Include="SystemManage\OrganizeApp.cs" />
+    <Compile Include="SystemManage\RoleApp.cs" />
+    <Compile Include="SystemManage\RoleAuthorizeApp.cs" />
+    <Compile Include="SystemManage\UserApp.cs" />
+    <Compile Include="SystemManage\UserLogOnApp.cs" />
+    <Compile Include="SystemSecurity\DbBackupApp.cs" />
+    <Compile Include="SystemSecurity\FilterIPApp.cs" />
+    <Compile Include="SystemSecurity\LogApp.cs" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\King.Domain\King.Domain.csproj">
+      <Project>{c1d9edb6-2936-4731-9fd8-018afd0ce089}</Project>
+      <Name>King.Domain</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Basic.Code\Basic.Code.csproj">
+      <Project>{b7b9290f-0741-4fae-b2c9-afe902a5b86a}</Project>
+      <Name>Basic.Code</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Basic.Data\Basic.Data.csproj">
+      <Project>{c3d7bf70-9509-4d26-99c4-ed4a4d7c2c52}</Project>
+      <Name>Basic.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\King.Repository\King.Repository.csproj">
+      <Project>{6822c95f-5edd-4d5a-bd1e-101b99020544}</Project>
+      <Name>King.Repository</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

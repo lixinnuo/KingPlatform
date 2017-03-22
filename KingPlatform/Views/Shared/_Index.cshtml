@@ -1,0 +1,22 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>@ViewBag.title</title>
+    <link href="~/Content/css/framework-font.css" rel="stylesheet" />
+    <link href="~/Content/css/framework-theme.css" rel="stylesheet" />
+    <script type="text/javascript" src="~/Content/Scripts/jquery/jquery-1.12.0.min.js"></script>
+    <script type="text/javascript" src="~/Content/Scripts/BootStrap/bootstrap.min.js"></script>
+    <link href="~/Content/Scripts/BootStrap/bootstrap.min.css" rel="stylesheet" />
+    <script type="text/javascript" src="~/Content/Scripts/jqgrid/jqGrid.min.js" charset="gb2312"></script>
+    <link href="~/Content/Scripts/jqgrid/ui.jqgrid.css" rel="stylesheet" />
+    <script type="text/javascript" src="~/Content/Scripts/jqgrid/grid.locale-cn.js"></script>
+    <link href="~/Content/css/framework-ui.css" rel="stylesheet" />
+    <script type="text/javascript" src="~/Content/Scripts/framework-ui.js"></script>
+</head>
+<body>
+    @RenderBody()
+    @Html.AntiForgeryToken()
+</body>
+</html>
