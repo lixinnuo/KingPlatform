@@ -6,7 +6,6 @@ using King.Repository.SystemManage;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace King.Application.SystemManage
 {

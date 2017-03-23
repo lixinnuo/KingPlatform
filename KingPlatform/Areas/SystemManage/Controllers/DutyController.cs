@@ -21,6 +21,9 @@ namespace KingPlatform.Areas.SystemManage.Controllers
         public ActionResult GetFormJson(string keyValue)
         {
             var data = dutyApp.GetForm(keyValue);
+            UserApp userApp = new UserApp();
+            data.F_CreateUserId = userApp.GetForm(data.F_CreateUserId).F_Account;
+            data.F_LastModifyUserId = userApp.GetForm(data.F_LastModifyUserId).F_Account;
             return Content(data.ToJson());
         }
         [HttpPost]
