@@ -37,7 +37,7 @@ namespace KingPlatform
         {
             var operatorProvider = OperatorProvider.Provider.GetCurrent();
             var roleId = operatorProvider.RoleId;
-            var moduleId = WebHelper.GetCookie("King_currentmouleid");
+            var moduleId = WebHelper.GetCookie("King_currentmoduleid");
             var action = HttpContext.Current.Request.ServerVariables["SCRIPT_NAME"].ToString();
             return new RoleAuthorizeApp().ActionValidate(roleId, moduleId, action);
         }
