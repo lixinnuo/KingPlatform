@@ -22,8 +22,14 @@ namespace KingPlatform.Areas.SystemManage.Controllers
         {
             var data = dutyApp.GetForm(keyValue);
             UserApp userApp = new UserApp();
-            data.F_CreateUserId = userApp.GetForm(data.F_CreateUserId).F_Account;
-            data.F_LastModifyUserId = userApp.GetForm(data.F_LastModifyUserId).F_Account;
+            if (data.F_CreateUserId != null)
+            {
+                data.F_CreateUserId = userApp.GetForm(data.F_CreateUserId).F_Account;
+            }
+            if (data.F_LastModifyUserId != null)
+            {
+                data.F_LastModifyUserId = userApp.GetForm(data.F_LastModifyUserId).F_Account;
+            }
             return Content(data.ToJson());
         }
         [HttpPost]
