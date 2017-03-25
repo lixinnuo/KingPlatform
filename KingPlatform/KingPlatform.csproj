@@ -269,6 +269,10 @@
     <Content Include="Content\js\dialog\img\loading-1.gif" />
     <Content Include="Content\js\dialog\img\loading-2.gif" />
     <Content Include="Content\js\dialog\img\loading-3.gif" />
+    <Content Include="Content\js\echarts\echarts-all.js" />
+    <Content Include="Content\js\echarts\echarts.js" />
+    <Content Include="Content\js\echarts\echarts.min.js" />
+    <Content Include="Content\js\echarts\infographic.js" />
     <Content Include="Content\js\framework-clientdata.js" />
     <Content Include="Content\js\index.js" />
     <Content Include="Content\js\indextab.js" />

@@ -151,7 +151,6 @@ $.modalMsg = function (content, type) {
         if (type == 'warning') {
             icon = "fa-exclamation-circle";
         }
-        //alert(icon);
         top.layer.msg(content, { icon: icon, time: 4000, shift: 5 });
         top.$(".layui-layer-msg").find('i.' + icon).parents('.layui-layer-msg').addClass('layui-layer-msg-' + type);
     } else {
@@ -191,7 +190,6 @@ $.submitForm = function (options) {
             type: "post",
             dataType: "json",
             success: function (data) {
-                //alert( JSON.stringify(options.param));
                 if (data.state == "success") {
                     options.success(data);
                     $.modalMsg(data.message, data.state);
@@ -203,7 +201,6 @@ $.submitForm = function (options) {
                 }
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
-                //alert(options.url + "||" + JSON.stringify(options.param));
                 $.loading(false);
                 $.modalMsg(errorThrown, "error");
             },

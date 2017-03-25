@@ -64,7 +64,7 @@ namespace KingPlatform.Areas.SystemManage.Controllers
         [HandlerAjaxOnly]
         [HandlerAuthorize]
         [ValidateAntiForgeryToken]
-        public ActionResult SubmitRevisePassword(string userPassword, string keyValue)
+        public ActionResult RevisePassword(string userPassword, string keyValue)
         {
             userLogOnApp.RevisePassword(userPassword, keyValue);
             return Success("重置密码成功。");
