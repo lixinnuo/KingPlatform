@@ -13,6 +13,7 @@ namespace King.Application.SystemManage
     public class ModuleApp
     {
         private IModuleRepository service = new ModuleRepository();
+        private IRoleAuthorizeRepository iRoleAuthorize = new RoleAuthorizeRepository();
 
         public List<ModuleEntity> GetList()
         {
@@ -31,6 +32,7 @@ namespace King.Application.SystemManage
             else
             {
                 service.Delete(t => t.F_Id == keyValue);
+                iRoleAuthorize.Delete(t => t.F_ItemId == keyValue);
             }
         }
         public void SubmitForm(ModuleEntity moduleEntity, string keyValue)
