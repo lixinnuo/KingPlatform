@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -9,6 +10,8 @@ using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
+using System.Xml;
 
 namespace Basic.Code
 {
@@ -21,7 +24,7 @@ namespace Basic.Code
         /// <param name="url">URL</param>
         /// <param name="param">POST的数据</param>
         /// <returns></returns>
-        public static string HttpPost(string url, string param = null)
+        public static string HttpPost(string url, string param = null, bool isAuthorization = false, string accessToken = null)
         {
             HttpWebRequest request;
             //如果是发送HTTPS请求
@@ -29,7 +32,6 @@ namespace Basic.Code
             {
                 ServicePointManager.ServerCertificateValidationCallback = new RemoteCertificateValidationCallback(CheckValidationResult);
                 request = WebRequest.Create(url) as HttpWebRequest;
-                request.ProtocolVersion = HttpVersion.Version10;
             }
             else
             {
@@ -37,40 +39,108 @@ namespace Basic.Code
             }
 
             request.Method = "POST";
-            request.ContentType = "application/x-www-form-urlencoded";
-            request.Accept = "*/*";
-            request.Timeout = 15000;
-            request.AllowAutoRedirect = false;
+            request.ContentType = "application/json";
+            if (isAuthorization)
+            {
+                request.Headers.Add("Authorization", "Bearer " + accessToken.Trim());
+            }
 
-            StreamWriter requestStream = null;
-            WebResponse response = null;
-            string responseStr = null;
+            byte[] data = Encoding.Default.GetBytes(param);
+            using (Stream stream = request.GetRequestStream())
+            {
+                stream.Write(data, 0, data.Length);
+            }
 
+            string result = "";   //strValue为http响应所返回的字符流
+            HttpWebResponse response = null;
             try
             {
-                requestStream = new StreamWriter(request.GetRequestStream());
-                requestStream.Write(param);
-                requestStream.Close();
+                //获得响应流
+                response = (HttpWebResponse)request.GetResponse();
+            }
+            catch (WebException ex)
+            {
+                response = ex.Response as HttpWebResponse;
+            }
 
-                response = request.GetResponse();
-                if (response != null)
-                {
-                    StreamReader reader = new StreamReader(response.GetResponseStream(), Encoding.UTF8);
-                    responseStr = reader.ReadToEnd();
-                    reader.Close();
-                }
-            }
-            catch (Exception)
+            if (response != null)
             {
-                throw;
+                StreamReader reader = new StreamReader(response.GetResponseStream(), Encoding.UTF8);
+                result = reader.ReadToEnd();
+                reader.Close();
             }
-            finally
+            return result;    //返回json数据
+        }
+
+        /// <summary>
+        /// 华为Rest调用获取返回参数
+        /// </summary>
+        /// <param name="url"></param>
+        /// <param name="key"></param>
+        /// <param name="secury"></param>
+        /// <returns></returns>
+        public static string HttpPost(string url, string key, string secury)
+        {
+            HttpWebRequest request = null;
+            //如果是发送HTTPS请求
+            if (url.StartsWith("https", StringComparison.OrdinalIgnoreCase))
             {
-                request = null;
-                requestStream = null;
-                response = null;
+                ServicePointManager.ServerCertificateValidationCallback = new RemoteCertificateValidationCallback(CheckValidationResult);
+                request = WebRequest.Create(url) as HttpWebRequest;
             }
-            return responseStr;
+            else
+            {
+                request = WebRequest.Create(url) as HttpWebRequest;
+            }
+            request.Method = "POST";
+            request.ContentType = "application/x-www-form-urlencoded";
+            request.Headers.Add("Authorization", "Basic " + Convert.ToBase64String(Encoding.Default.GetBytes(key + ":" + secury)).Trim());
+
+            byte[] data = Encoding.Default.GetBytes("grant_type=client_credentials");
+            using (Stream stream = request.GetRequestStream())
+            {
+                stream.Write(data, 0, data.Length);
+            }
+
+            string result = "";   //strValue为http响应所返回的字符流
+            HttpWebResponse response = null;
+            try
+            {
+                //获得响应流
+                response = (HttpWebResponse)request.GetResponse();
+            }
+            catch (WebException ex)
+            {
+                response = ex.Response as HttpWebResponse;
+            }
+
+            if (response != null)
+            {
+                StreamReader reader = new StreamReader(response.GetResponseStream(), Encoding.UTF8);
+                result = reader.ReadToEnd();
+                reader.Close();
+            }
+            return result;    //返回数据
+        }
+
+        /// <summary>
+        /// 返回华为access_toekn
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        public static string GetAccessToken(string data)
+        {
+            JavaScriptSerializer jss = new JavaScriptSerializer();
+            AccessToken result = jss.Deserialize<AccessToken>(data);
+            return result.access_token;
+        }
+
+        public class AccessToken
+        {
+            public string scope { get; set; }
+            public string token_type { get; set; }
+            public string expires_in { get; set; }
+            public string access_token { get; set; }
         }
 
         private static bool CheckValidationResult(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors errors)

@@ -1,0 +1,84 @@
+﻿@{
+    ViewBag.Title = "Cancel";
+    Layout = "~/Views/Shared/_Index.cshtml";
+}
+<script>
+    $(function () {
+        getPoList();
+    });
+
+    function getPoList() {
+        var $gridList = $("#gridList");
+        $gridList.dataGrid({
+            url: "/HuaweiOrderManage/FindPOList/CancelPOList",
+            height: $(window).height() - 128,
+            colModel: [
+                { label: '订单号', name: 'poNumber', width: 100, align: 'left' },
+                { label: '订单行号', name: 'poLineNum', hidden: true },
+                { label: '编码', name: 'itemCode', width: 80, align: 'left' },
+                { label: '描述', name: 'itemDescription', width: 350, align: 'left' },
+                { label: '数量', name: 'needQuantity', width: 80, align: 'left' },
+                { label: '下发日期', name: 'publishDate', width: 80, align: 'left' },
+                { label: '收货地点', name: 'shipToLocation', width: 350, align: 'left' },
+                { label: '有效日期', name: 'expireDate', width: 80, align: 'left' },
+                { label: '采购员', name: 'agentName', width: 80, align: 'left' },
+                { label: '备注', name: 'remark', width: 200, align: 'left' }
+            ],
+            pager: "#gridPager",
+            multiselect: true,
+            rowNum: 100,
+            autoScroll: true,
+            viewrecords: true,
+            gridComplete: function () {
+                $("input[type='checkbox']").removeClass('checkbox');
+            }
+        });
+    }
+
+    function btn_signBackPOList(flag) {
+        var operateType;
+        var message;
+        if (flag) {
+            operateType = "accept";
+            message = "注： 您确定要【接受】这些订单吗？";
+        } else {
+            operateType = "reject";
+            message = "注： 您确定要【驳回】这些订单吗？";
+        }
+        var ids = $("#gridList").jqGrid("getGridParam", "selarrrow");
+        ids = ids.join("#");
+        $.modalConfirm(message, function (r) {
+            if (r) {
+                $.submitForm({
+                    url: "/HuaweiOrderManage/FindPOList/SignBackPOList",
+                    param: { ids: ids, operateType: operateType, types: "CancelPOList" },
+                    success: function () {
+                        $.currentWindow().$("#gridList").trigger("reloadGrid");
+                    }
+                })
+            }
+        });
+
+    }
+
+</script>
+<div class="topPanel">
+    <div class="search">
+        <span>华为待取消PO列表</span>
+    </div>
+    <div class="toolbar">
+        <div class="operate">
+            <ul class="nav nav-pills">
+                <li class="first">华为待取消PO列表</li>
+                <li class="first">已选中<span>1</span>项</li>
+                <li><a id="NF-signBackPOList" authorize="yes" onclick="btn_signBackPOList(true)"><i class="fa fa-pencil-square-o"></i>PO签返（接受）</a></li>
+                <li><a id="NF-signBackPOList" authorize="yes" onclick="btn_signBackPOList(false)"><i class="fa fa-pencil-square-o"></i>PO签返（驳回）</a></li>
+            </ul>
+            <a href="javascript:;" class="close"></a>
+        </div>
+    </div>
+</div>
+<div class="gridPanel">
+    <table id="gridList"></table>
+    <div id="gridPager"></div>
+</div>

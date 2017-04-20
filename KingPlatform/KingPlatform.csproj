@@ -119,6 +119,8 @@
     <Compile Include="App_Start\Handler\HandlerErrorAttribute.cs" />
     <Compile Include="App_Start\Handler\HandlerLoginAttribute.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Areas\HuaweiOrderManage\Controllers\FindPOListController.cs" />
+    <Compile Include="Areas\HuaweiOrderManage\HuaweiOrderManageAreaRegistration.cs" />
     <Compile Include="Areas\SystemManage\Controllers\AreaController.cs" />
     <Compile Include="Areas\SystemManage\Controllers\DutyController.cs" />
     <Compile Include="Areas\SystemManage\Controllers\ItemsDataController.cs" />
@@ -375,6 +377,10 @@
     <Content Include="Configs\database.config" />
     <Content Include="Configs\system.config" />
     <Content Include="Configs\log4net.config" />
+    <Content Include="Areas\HuaweiOrderManage\Views\web.config" />
+    <Content Include="Areas\HuaweiOrderManage\Views\FindPOList\Index.cshtml" />
+    <Content Include="Areas\HuaweiOrderManage\Views\FindPOList\Cancel.cshtml" />
+    <Content Include="Areas\HuaweiOrderManage\Views\FindPOList\Change.cshtml" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -389,7 +395,6 @@
     <Content Include="Views\Shared\_LayoutIndex.cshtml" />
     <Content Include="Views\Shared\_Form.cshtml" />
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\Basic.Code\Basic.Code.csproj">
       <Project>{b7b9290f-0741-4fae-b2c9-afe902a5b86a}</Project>
@@ -408,6 +413,7 @@
       <Name>King.Mapping</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
