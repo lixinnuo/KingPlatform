@@ -14,7 +14,7 @@
             height: $(window).height() - 128,
             colModel: [
                 { label: '订单号', name: 'poNumber', width: 100, align: 'left' },
-                { label: '订单行号', name: 'poLineNum', hidden: true },
+                { label: '订单行号', name: 'poLineNum', width: 50, align: 'left' },
                 { label: '编码', name: 'itemCode', width: 80, align: 'left' },
                 { label: '描述', name: 'itemDescription', width: 350, align: 'left' },
                 { label: '数量', name: 'needQuantity', width: 80, align: 'left' },
@@ -30,6 +30,7 @@
             autoScroll: true,
             viewrecords: true,
             gridComplete: function () {
+                $('#ajax-loader').fadeOut();
                 $("input[type='checkbox']").removeClass('checkbox');
             }
         });
@@ -53,20 +54,25 @@
                     url: "/HuaweiOrderManage/FindPOList/SignBackPOList",
                     param: { ids: ids, operateType: operateType, types: "NewPOList" },
                     success: function () {
-                        $.currentWindow().$("#gridList").trigger("reloadGrid");
+                        window.location.reload();
+                        //$.currentWindow().$("#gridList").trigger("reloadGrid");
                     }
                 })
             }
         });
-
     }
-
 </script>
+<div id="ajax-loader">
+    <img src="~/Content/img/ajax-loader.gif" />
+</div>
 <div class="topPanel">
     <div class="search">
         <span>华为新PO列表</span>
     </div>
     <div class="toolbar">
+        <div class="btn-group">
+            <a class="btn btn-primary" onclick="$.reload()"><span class="glyphicon glyphicon-refresh"></span></a>
+        </div>
         <div class="operate">
             <ul class="nav nav-pills">
                 <li class="first">华为新PO列表</li>

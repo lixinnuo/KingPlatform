@@ -45,7 +45,8 @@ namespace Basic.Code
                 request.Headers.Add("Authorization", "Bearer " + accessToken.Trim());
             }
 
-            byte[] data = Encoding.Default.GetBytes(param);
+            byte[] data = Encoding.UTF8.GetBytes(param);
+            request.ContentLength = data.Length;
             using (Stream stream = request.GetRequestStream())
             {
                 stream.Write(data, 0, data.Length);

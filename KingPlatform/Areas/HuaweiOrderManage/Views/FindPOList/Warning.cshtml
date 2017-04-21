@@ -1,16 +1,17 @@
 ﻿@{
-    ViewBag.Title = "Cancel";
+    ViewBag.Title = "Warning";
     Layout = "~/Views/Shared/_Index.cshtml";
 }
 <script>
     $(function () {
-        getPoList();
+        getPoList("");
+        $('#ajax-loader').fadeOut();
     });
 
-    function getPoList() {
+    function getPoList(POurl) {
         var $gridList = $("#gridList");
         $gridList.dataGrid({
-            url: "/HuaweiOrderManage/FindPOList/CancelPOList",
+            url: POurl,
             height: $(window).height() - 128,
             colModel: [
                 { label: '订单号', name: 'poNumber', width: 100, align: 'left' },
@@ -36,53 +37,35 @@
         });
     }
 
-    function btn_signBackPOList(flag) {
-        var operateType;
-        var message;
-        if (flag) {
-            operateType = "accept";
-            message = "注： 您确定要【接受】这些待取消订单吗？";
-        } else {
-            operateType = "reject";
-            message = "注： 您确定要【驳回】这些待取消订单吗？";
-        }
-        var ids = $("#gridList").jqGrid("getGridParam", "selarrrow");
-        ids = ids.join("#");
-        $.modalConfirm(message, function (r) {
-            if (r) {
-                $.submitForm({
-                    url: "/HuaweiOrderManage/FindPOList/SignBackPOList",
-                    param: { ids: ids, operateType: operateType, types: "CancelPOList" },
-                    success: function () {
-                        window.location.reload();
-                        //$.currentWindow().$("#gridList").trigger("reloadGrid");
-                    }
-                })
-            }
-        });
-
-    }
-
 </script>
 <div id="ajax-loader">
     <img src="~/Content/img/ajax-loader.gif" />
 </div>
 <div class="topPanel">
     <div class="search">
-        <span>华为待取消PO列表</span>
+        <table>
+            <tr>
+                <td>
+                    <div class="input-group">
+                        <input id="txt_keyword" type="text" class="form-control" placeholder="请输入要查询关键字" style="width: 200px;">
+                        <span class="input-group-btn">
+                            <button id="btn_search" type="button" class="btn  btn-primary"><i class="fa fa-search"></i></button>
+                        </span>
+                    </div>
+                </td>
+                <td style="padding-left: 10px;">
+                    <div id="time_horizon" class="btn-group">
+                        <a class="btn btn-default active" data-value="过期PO">过期PO</a>
+                        <a class="btn btn-default" data-value="订单超三天未处理">订单超三天未处理</a>
+                        <a class="btn btn-default" data-value="下单六个月未交货">下单六个月未交货</a>
+                    </div>
+                </td>
+            </tr>
+        </table>
     </div>
     <div class="toolbar">
         <div class="btn-group">
             <a class="btn btn-primary" onclick="$.reload()"><span class="glyphicon glyphicon-refresh"></span></a>
-        </div>
-        <div class="operate">
-            <ul class="nav nav-pills">
-                <li class="first">华为待取消PO列表</li>
-                <li class="first">已选中<span>1</span>项</li>
-                <li><a id="NF-signBackPOList" authorize="yes" onclick="btn_signBackPOList(true)"><i class="fa fa-pencil-square-o"></i>PO签返（接受）</a></li>
-                <li><a id="NF-signBackPOList" authorize="yes" onclick="btn_signBackPOList(false)"><i class="fa fa-pencil-square-o"></i>PO签返（驳回）</a></li>
-            </ul>
-            <a href="javascript:;" class="close"></a>
         </div>
     </div>
 </div>

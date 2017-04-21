@@ -18,18 +18,6 @@ namespace KingPlatform
         }
         [HttpGet]
         [HandlerAuthorize]
-        public virtual ActionResult Cancel()
-        {
-            return View();
-        }
-        [HttpGet]
-        [HandlerAuthorize]
-        public virtual ActionResult Change()
-        {
-            return View();
-        }
-        [HttpGet]
-        [HandlerAuthorize]
         public virtual ActionResult Form()
         {
             return View();
