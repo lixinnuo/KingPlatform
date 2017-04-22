@@ -1,107 +1,56 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using Basic.Code;
 using System.Web.Script.Serialization;
-using System.IO;
-using System.Text;
 
 namespace KingPlatform.Areas.HuaweiOrderManage.Controllers
 {
     public class FindPOListController : ControllerBase
     {
-        string findPOListurl = "https://api-beta.huawei.com:443/service/esupplier/findPoLineList/1.0.0/1";
+        string findPOListurl = "https://api-beta.huawei.com:443/service/esupplier/findPoLineList/1.0.0/";
         string url_token = "https://api-beta.huawei.com:443/oauth2/token";
         string key = "GHprAo4oNpiqPrre993DpW2KGy8a";
         string secury = "O4gunWWZ6pIfwAO94qcF0tcPFBwa";
         GetPOListParamBack getPOListParamBack = new GetPOListParamBack();
 
         /// <summary>
-        /// 获取新POList
+        /// 获取POList  新POList 取消POList 变更POList 过期PO  新订单超三天未处理  下单六个月未交货
         /// </summary>
         /// <returns></returns>
-        
-        public ActionResult GetPOList()
+        [HttpGet]
+        [HandlerAjaxOnly]
+        public ActionResult PostPOList(string keyValue, string page)
         {
-            //获取华为access_token
-            string accessToken = HttpMethods.GetAccessToken(HttpMethods.HttpPost(url_token, key, secury));
+            findPOListurl += page;      //添加页码
+            string accessToken = HttpMethods.GetAccessToken(HttpMethods.HttpPost(url_token, key, secury));      //获取华为access_token
             JavaScriptSerializer js = new JavaScriptSerializer();
             //定义接口json数据 获取新POList传入参数
-            GetPOListParam param = new GetPOListParam("all", "all", "P", "all", "COL_TASK_STATUS", "huaweiPublishOrder", "P");
+            GetPOListParam param = new GetPOListParam("all", "all", "P", "all", "COL_TASK_STATUS", keyValue, "P");
             string json = js.Serialize(param);
             string result = HttpMethods.HttpPost(findPOListurl, json, true, accessToken);
             result = result.Replace(":null", ":''");
 
             getPOListParamBack = js.Deserialize<GetPOListParamBack>(result);
-            this.TempData["NewPOList"] = getPOListParamBack;
+            if (keyValue == "huaweiPublishOrder")               //保存华为新PO列表
+            {
+                this.TempData["NewPOList"] = getPOListParamBack;
+            }
+            else if (keyValue == "huaweiNotifyOrderChange")     //保存华为变更PO列表
+            {
+                this.TempData["ChangePOList"] = getPOListParamBack;
+            }
+            else if (keyValue == "huaweiNotifyCancelOrder")     //保存华为取消PO列表
+            {
+                this.TempData["CancelPOList"] = getPOListParamBack;
+            }
             var data = new
             {
-                rows = getPOListParamBack.body.result,
-                total = getPOListParamBack.body.pageVO.totalPages,
-                page = getPOListParamBack.body.pageVO.curPage,
-                records = getPOListParamBack.body.pageVO.totalRows
+                rows = getPOListParamBack.result,
+                total = getPOListParamBack.pageVO.totalPages,
+                page = getPOListParamBack.pageVO.curPage,
+                records = getPOListParamBack.pageVO.totalRows
             };
-
-            return Content(data.ToJson());
-        }
-
-        /// <summary>
-        /// 获取取消POList
-        /// </summary>
-        /// <returns></returns>
-        
-        public ActionResult CancelPOList()
-        {
-            //获取华为access_token
-            string accessToken = HttpMethods.GetAccessToken(HttpMethods.HttpPost(url_token, key, secury));
-            JavaScriptSerializer js = new JavaScriptSerializer();
-            //定义接口json数据 获取取消POList传入参数
-            GetPOListParam param = new GetPOListParam("all", "all", "P", "all", "COL_TASK_STATUS", "huaweiNotifyCancelOrder", "P");
-            string json = js.Serialize(param);
-            string result = HttpMethods.HttpPost(findPOListurl, json, true, accessToken);
-            result = result.Replace(":null", ":''");
-
-            getPOListParamBack = js.Deserialize<GetPOListParamBack>(result);
-            this.TempData["CancelPOList"] = getPOListParamBack;
-            var data = new
-            {
-                rows = getPOListParamBack.body.result,
-                total = getPOListParamBack.body.pageVO.totalPages,
-                page = getPOListParamBack.body.pageVO.curPage,
-                records = getPOListParamBack.body.pageVO.totalRows
-            };
-
-            return Content(data.ToJson());
-        }
-
-        /// <summary>
-        /// 获取变更POList
-        /// </summary>
-        /// <returns></returns>
-        
-        public ActionResult ChangePOList()
-        {
-            //获取华为access_token
-            string accessToken = HttpMethods.GetAccessToken(HttpMethods.HttpPost(url_token, key, secury));
-            JavaScriptSerializer js = new JavaScriptSerializer();
-            //定义接口json数据 获取取消POList传入参数
-            GetPOListParam param = new GetPOListParam("all", "all", "P", "all", "COL_TASK_STATUS", "huaweiNotifyOrderChange", "P");
-            string json = js.Serialize(param);
-            string result = HttpMethods.HttpPost(findPOListurl, json, true, accessToken);
-            result = result.Replace(":null", ":''");
-
-            getPOListParamBack = js.Deserialize<GetPOListParamBack>(result);
-            this.TempData["ChangePOList"] = getPOListParamBack;
-            var data = new
-            {
-                rows = getPOListParamBack.body.result,
-                total = getPOListParamBack.body.pageVO.totalPages,
-                page = getPOListParamBack.body.pageVO.curPage,
-                records = getPOListParamBack.body.pageVO.totalRows
-            };
-
             return Content(data.ToJson());
         }
 
@@ -110,6 +59,8 @@ namespace KingPlatform.Areas.HuaweiOrderManage.Controllers
         /// </summary>
         /// <param name="keyValue"></param>
         /// <returns></returns>
+        [HttpGet]
+        [HandlerAjaxOnly]
         public ActionResult FindColTask(string keyValue)
         {
             string getPODetailsurl = "https://api-beta.huawei.com:443/service/esupplier/findColTaskList/1.0.0/1";
@@ -119,15 +70,15 @@ namespace KingPlatform.Areas.HuaweiOrderManage.Controllers
             getPOListParamBack = new GetPOListParamBack();
             getPOListParamBack = this.TempData["ChangePOList"] as GetPOListParamBack;
             GetPODetails getPODetails = new GetPODetails();
-            getPODetails.poNumber = getPOListParamBack.body.result[Int32.Parse(keyValue) - 1].poNumber;
-            getPODetails.poLineNum = getPOListParamBack.body.result[Int32.Parse(keyValue) - 1].poLineNum;
-            getPODetails.agentName = getPOListParamBack.body.result[Int32.Parse(keyValue) - 1].agentName;
-            getPODetails.agentEmployeeNumber = getPOListParamBack.body.result[Int32.Parse(keyValue) - 1].agentEmployeeNumber;
-            getPODetails.lineLocationId = getPOListParamBack.body.result[Int32.Parse(keyValue) - 1].lineLocationId;
-            getPODetails.instanceId = getPOListParamBack.body.result[Int32.Parse(keyValue) - 1].instanceId;
-            getPODetails.shipmentNum = getPOListParamBack.body.result[Int32.Parse(keyValue) - 1].shipmentNum;
-            getPODetails.poReleaseId = getPOListParamBack.body.result[Int32.Parse(keyValue) - 1].poReleaseId;
-            getPODetails.poHeaderId = getPOListParamBack.body.result[Int32.Parse(keyValue) - 1].poHeaderId;
+            getPODetails.poNumber = getPOListParamBack.result[Int32.Parse(keyValue) - 1].poNumber;
+            getPODetails.poLineNum = getPOListParamBack.result[Int32.Parse(keyValue) - 1].poLineNum;
+            getPODetails.agentName = getPOListParamBack.result[Int32.Parse(keyValue) - 1].agentName;
+            getPODetails.agentEmployeeNumber = getPOListParamBack.result[Int32.Parse(keyValue) - 1].agentEmployeeNumber;
+            getPODetails.lineLocationId = getPOListParamBack.result[Int32.Parse(keyValue) - 1].lineLocationId;
+            getPODetails.instanceId = getPOListParamBack.result[Int32.Parse(keyValue) - 1].instanceId;
+            getPODetails.shipmentNum = getPOListParamBack.result[Int32.Parse(keyValue) - 1].shipmentNum;
+            getPODetails.poReleaseId = getPOListParamBack.result[Int32.Parse(keyValue) - 1].poReleaseId;
+            getPODetails.poHeaderId = getPOListParamBack.result[Int32.Parse(keyValue) - 1].poHeaderId;
             getPODetails.selectType = "0";
             string json = js.Serialize(getPODetails);
             string result = HttpMethods.HttpPost(getPODetailsurl, json, true, accessToken);
@@ -135,8 +86,7 @@ namespace KingPlatform.Areas.HuaweiOrderManage.Controllers
             this.TempData["ChangePOList"] = getPOListParamBack;
             GetPODetailsBack getPODetailsBack = js.Deserialize<GetPODetailsBack>(result);
 
-            return Content(getPODetailsBack.body.result[0].ToJson());
-
+            return Content(getPODetailsBack.result[0].ToJson());
         }
 
         /// <summary>
@@ -145,7 +95,6 @@ namespace KingPlatform.Areas.HuaweiOrderManage.Controllers
         /// <param name="ids">id值，以#号隔开</param>
         /// <param name="operateType">接受还是驳回</param>
         /// <returns></returns>
-        [HttpPost]
         [HandlerAjaxOnly]
         public ActionResult SignBackPOList(string ids, string operateType, string types)
         {
@@ -170,14 +119,14 @@ namespace KingPlatform.Areas.HuaweiOrderManage.Controllers
             for (int i = 0; i < idsplit.Length; i++)
             {
                 ColTaskQueries colTaskQueries = new ColTaskQueries();
-                colTaskQueries.poNum = getPOListParamBack.body.result[Int32.Parse(idsplit[i]) - 1].poNumber;
-                colTaskQueries.poLineNum = getPOListParamBack.body.result[Int32.Parse(idsplit[i]) - 1].poLineNum;
-                colTaskQueries.agentName = getPOListParamBack.body.result[Int32.Parse(idsplit[i]) - 1].agentName;
+                colTaskQueries.poNum = getPOListParamBack.result[Int32.Parse(idsplit[i]) - 1].poNumber;
+                colTaskQueries.poLineNum = getPOListParamBack.result[Int32.Parse(idsplit[i]) - 1].poLineNum;
+                colTaskQueries.agentName = getPOListParamBack.result[Int32.Parse(idsplit[i]) - 1].agentName;
                 colTaskQueries.businessType = "all";
-                colTaskQueries.instanceId = getPOListParamBack.body.result[Int32.Parse(idsplit[i]) - 1].instanceId;
-                colTaskQueries.poHeaderId = getPOListParamBack.body.result[Int32.Parse(idsplit[i]) - 1].poHeaderId;
-                colTaskQueries.poReleaseId = getPOListParamBack.body.result[Int32.Parse(idsplit[i]) - 1].poReleaseId;
-                colTaskQueries.lineLocationId = getPOListParamBack.body.result[Int32.Parse(idsplit[i]) - 1].lineLocationId;
+                colTaskQueries.instanceId = getPOListParamBack.result[Int32.Parse(idsplit[i]) - 1].instanceId;
+                colTaskQueries.poHeaderId = getPOListParamBack.result[Int32.Parse(idsplit[i]) - 1].poHeaderId;
+                colTaskQueries.poReleaseId = getPOListParamBack.result[Int32.Parse(idsplit[i]) - 1].poReleaseId;
+                colTaskQueries.lineLocationId = getPOListParamBack.result[Int32.Parse(idsplit[i]) - 1].lineLocationId;
                 confirmPO.colTaskQueries.Add(colTaskQueries);
             }
             //获取华为access_token
@@ -192,13 +141,13 @@ namespace KingPlatform.Areas.HuaweiOrderManage.Controllers
             string returnStr = "", passPOStr = "", nopassPOStr = "";
             for (int i = 0; i < idsplit.Length; i++)
             {
-                if (confirmPOBack.body.data[i].code == "00000")
+                if (confirmPOBack.data[i].code == "00000")
                 {
-                    passPOStr += confirmPOBack.body.data[i].poNum + "/";
+                    passPOStr += confirmPOBack.data[i].poNum + "/";
                 }
                 else
                 {
-                    nopassPOStr += confirmPOBack.body.data[i].poNum + "/";
+                    nopassPOStr += confirmPOBack.data[i].poNum + "/";
                 }
             }
             if (passPOStr != "")
@@ -210,6 +159,27 @@ namespace KingPlatform.Areas.HuaweiOrderManage.Controllers
                 returnStr += "/n订单 " + nopassPOStr + " 处理失败！";
             }
             return Success(returnStr);
+        }
+
+        /// <summary>
+        /// 华为子公司列表
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [HandlerAjaxOnly]
+        public ActionResult HWCorList()
+        {
+            string getPODetailsurl = "https://api-beta.huawei.com:443/service/esupplier/findOrganList/1.0.0";
+            //获取华为access_token
+            string accessToken = HttpMethods.GetAccessToken(HttpMethods.HttpPost(url_token, key, secury));
+            JavaScriptSerializer js = new JavaScriptSerializer();
+            //定义接口json数据 查询华为子公司列表入参
+            GetHWCor getHWCor = new GetHWCor("zh_CN");
+            string json = js.Serialize(getHWCor);
+            string result = HttpMethods.HttpPost(getPODetailsurl, json, true, accessToken);
+            result = result.Replace(":null", ":''");
+            GetHWCorBack getHWCorBack = js.Deserialize<GetHWCorBack>(result);
+            return Content(getPOListParamBack.ToJson());
         }
 
         [HttpGet]
@@ -226,11 +196,55 @@ namespace KingPlatform.Areas.HuaweiOrderManage.Controllers
         }
         [HttpGet]
         [HandlerAuthorize]
+        public virtual ActionResult ChangeDetails()
+        {
+            return View();
+        }
+        [HttpGet]
+        [HandlerAuthorize]
         public virtual ActionResult Warning()
         {
             return View();
         }
 
+        #region GetHWCor 查询华为子公司列表入参
+        public class GetHWCor
+        {
+            public GetHWCor()
+            { }
+            public GetHWCor(string lang)
+            {
+                this.lang = lang;
+            }
+            public string lang { get; set; }
+        }
+        #endregion
+
+        #region GetHWCorBack 查询华为子公司列表出参
+        public class GetHWCorBack
+        {
+            public List<HWCorBack> result { get; set; }
+            public GetHWCorBack()
+            {
+                result = new List<HWCorBack>();
+            }
+            public string pageVO { get; set; }
+        }
+
+        public class HWCorBack
+        {
+            public long organizationId { get; set; }        //子公司Id
+            public string companyCode { get; set; }         //子公司编号
+            public string i18 { get; set; }                 //i18未知
+            public string instanceId { get; set; }          //未知
+            public string orgName { get; set; }             //子公司名字
+            public string orgCode { get; set; }             //未知
+            public string name { get; set; }                //未知
+            public string orgNameZh { get; set; }           //子公司中文名字
+            public string orgId { get; set; }               //子公司id
+            public string orgNameEn { get; set; }           //子公司英文名字
+        }
+        #endregion
 
         #region GetPODetails 查询PO行变更明细入参
         /// <summary>
@@ -257,12 +271,8 @@ namespace KingPlatform.Areas.HuaweiOrderManage.Controllers
         /// </summary>
         public class GetPODetailsBack
         {
-            public PODetailsBody body { get; set; }
-        }
-        public class PODetailsBody
-        {
             public List<PODetailsResult> result { get; set; }
-            public PODetailsBody()
+            public GetPODetailsBack()
             {
                 result = new List<PODetailsResult>();
             }
@@ -287,7 +297,7 @@ namespace KingPlatform.Areas.HuaweiOrderManage.Controllers
         }
         #endregion
 
-        #region ConfirmPO 新PO签返确认的入参
+        #region ConfirmPO PO签返确认的入参
         public class ConfirmPO
         {
             public string operateType { get; set; }                     //接受还是驳回 "accept"是接受；"reject"是驳回
@@ -311,23 +321,18 @@ namespace KingPlatform.Areas.HuaweiOrderManage.Controllers
         }
         #endregion
 
-        #region ConfirmPOBack 新PO签返确认的出参
+        #region ConfirmPOBack PO签返确认的出参
         /// <summary>
         /// 新PO签返确认参数
         /// </summary>
         public class ConfirmPOBack
-        {
-            public POBackBody body { get; set; }
-        }
-
-        public class POBackBody
         {
             public string result { get; set; }
             public string code { get; set; }
             public bool success { get; set; }
             public bool failed { get; set; }
             public List<POBackData> data { get; set; }
-            public POBackBody()
+            public ConfirmPOBack()
             {
                 data = new List<POBackData>();
             }
@@ -343,7 +348,7 @@ namespace KingPlatform.Areas.HuaweiOrderManage.Controllers
         }
         #endregion
 
-        #region GetPOListParam 查询新PO列表的入参
+        #region GetPOListParam 查询PO列表的入参
         /// <summary>
         /// 定义接口json数据
         /// </summary>
@@ -371,22 +376,14 @@ namespace KingPlatform.Areas.HuaweiOrderManage.Controllers
         }
         #endregion
 
-        #region GetPOListParamBack 查询新PO列表的出参
+        #region GetPOListParamBack 查询PO列表的出参
         /// <summary>
         /// POList
         /// </summary>
         public class GetPOListParamBack
         {
-            public POListbody body { get; set; }
-        }
-
-        /// <summary>
-        /// body
-        /// </summary>
-        public class POListbody
-        {
             public List<POListResult> result { get; set; }
-            public POListbody()
+            public GetPOListParamBack()
             {
                 result = new List<POListResult>();
             }

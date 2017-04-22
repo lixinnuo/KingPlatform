@@ -4,14 +4,14 @@
 }
 <script>
     $(function () {
-        getPoList("");
-        $('#ajax-loader').fadeOut();
+        getPoList();
     });
 
     function getPoList(POurl) {
         var $gridList = $("#gridList");
         $gridList.dataGrid({
-            url: POurl,
+            url: "/HuaweiOrderManage/FindPOList/PostPOList",
+            postData: { keyValue: "po_warning_overdue" },
             height: $(window).height() - 128,
             colModel: [
                 { label: '订单号', name: 'poNumber', width: 100, align: 'left' },
@@ -19,9 +19,19 @@
                 { label: '编码', name: 'itemCode', width: 80, align: 'left' },
                 { label: '描述', name: 'itemDescription', width: 350, align: 'left' },
                 { label: '数量', name: 'needQuantity', width: 80, align: 'left' },
-                { label: '下发日期', name: 'publishDate', width: 80, align: 'left' },
+                {
+                    label: '下发日期', name: 'publishDate', width: 120, align: 'left',
+                    formatter: "date", formatoptions: { srcformat: 'Y-m-d H:i:s', newformat: 'Y-m-d H:i:s' }
+                },
+                {
+                    label: '承诺日期', name: 'promiseDate', width: 120, align: 'left',
+                    formatter: "date", formatoptions: { srcformat: 'Y-m-d H:i:s', newformat: 'Y-m-d H:i:s' }
+                },
+                {
+                    label: '有效日期', name: 'expireDate', width: 120, align: 'left',
+                    formatter: "date", formatoptions: { srcformat: 'Y-m-d H:i:s', newformat: 'Y-m-d H:i:s' }
+                },
                 { label: '收货地点', name: 'shipToLocation', width: 350, align: 'left' },
-                { label: '有效日期', name: 'expireDate', width: 80, align: 'left' },
                 { label: '采购员', name: 'agentName', width: 80, align: 'left' },
                 { label: '备注', name: 'remark', width: 200, align: 'left' }
             ],
@@ -35,6 +45,25 @@
                 $("input[type='checkbox']").removeClass('checkbox');
             }
         });
+        $("#time_horizon a.btn-default").click(function () {
+            $("#time_horizon a.btn-default").removeClass("active");
+            $(this).addClass("active");
+            $('#btn_search').trigger("click");
+        });
+        $("#btn_search").click(function () {
+            var timeType = $("#time_horizon a.active").attr('data-value');
+            var queryJson = {
+                keyword: $("#txt_keyword").val(),
+                keyValue: $("#time_horizon a.active").attr('data-value'),
+            }
+            //alert(JSON.stringify(queryJson));
+            $('#ajax-loader').fadeIn();
+            $gridList.jqGrid('setGridParam', {
+                url: "/HuaweiOrderManage/FindPOList/PostPOList",
+                postData: queryJson,
+            }).trigger('reloadGrid');
+        });
+
     }
 
 </script>
@@ -55,9 +84,9 @@
                 </td>
                 <td style="padding-left: 10px;">
                     <div id="time_horizon" class="btn-group">
-                        <a class="btn btn-default active" data-value="过期PO">过期PO</a>
-                        <a class="btn btn-default" data-value="订单超三天未处理">订单超三天未处理</a>
-                        <a class="btn btn-default" data-value="下单六个月未交货">下单六个月未交货</a>
+                        <a class="btn btn-default active" data-value="po_warning_overdue">过期PO</a>
+                        <a class="btn btn-default" data-value="new_po_undeal_more_than_3_days">订单超三天未处理</a>
+                        <a class="btn btn-default" data-value="po_no_arrive_more_than_6_monthes">下单六个月未交货</a>
                     </div>
                 </td>
             </tr>

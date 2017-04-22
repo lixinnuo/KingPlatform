@@ -153,6 +153,7 @@
     <Content Include="Content\img\ajax-loader.gif" />
     <Content Include="Content\img\button_pm_close.png" />
     <Content Include="Content\img\loading.gif" />
+    <Content Include="Content\img\logo.png" />
     <Content Include="Content\img\radio1.jpg" />
     <Content Include="Content\img\radio2.jpg" />
     <Content Include="Content\img\samples\angelina-300.jpg" />
@@ -418,6 +419,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\HuaweiOrderManage\Views\FindPOList\Warning.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\PublishProfiles\KingPlatformConfig.pubxml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
