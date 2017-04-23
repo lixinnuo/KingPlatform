@@ -43,6 +43,21 @@
             gridComplete: function () {
                 $('#ajax-loader').fadeOut();
                 $("input[type='checkbox']").removeClass('checkbox');
+            }, onCellSelect: function (rowid, iCol, cellcontent, e) {
+                var ids = $("#gridList").jqGrid("getGridParam", "selarrrow");
+                if ($.inArray(rowid, ids) >= 0) {
+                    $("#choseNum").html(ids.length - 1);
+                }
+                else {
+                    $("#choseNum").html(ids.length + 1);
+                }
+            },
+            onSelectAll: function (aRowids, status) {
+                var ids = $("#gridList").jqGrid("getGridParam", "selarrrow");
+                $("#choseNum").html(ids.length);
+            },
+            onPaging: function (pgButton) {
+                $('#ajax-loader').fadeIn();
             }
         });
     }
@@ -87,7 +102,7 @@
         <div class="operate">
             <ul class="nav nav-pills">
                 <li class="first">华为新PO列表</li>
-                <li class="first">已选中<span>1</span>项</li>
+                <li class="first">已选中<span id="choseNum">0</span>项</li>
                 <li><a id="NF-signBackPOList" authorize="yes" onclick="btn_signBackPOList(true)"><i class="fa fa-pencil-square-o"></i>PO签返（接受）</a></li>
                 <li><a id="NF-signBackPOList" authorize="yes" onclick="btn_signBackPOList(false)"><i class="fa fa-pencil-square-o"></i>PO签返（驳回）</a></li>
             </ul>
