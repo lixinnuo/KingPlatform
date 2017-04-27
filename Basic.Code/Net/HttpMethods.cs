@@ -133,7 +133,15 @@ namespace Basic.Code
         {
             JavaScriptSerializer jss = new JavaScriptSerializer();
             AccessToken result = jss.Deserialize<AccessToken>(data);
-            return result.access_token;
+            if (result != null)
+            {
+                return result.access_token;
+            }
+            else
+            {
+                return "0";
+            }
+            
         }
 
         public class AccessToken

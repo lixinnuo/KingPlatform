@@ -152,6 +152,15 @@
     </div>
     <script type="text/javascript" src="~/Content/js/index.js"></script>
     <script type="text/javascript" src="~/Content/js/indextab.js"></script>
+    <script>
+        function newIframe(strHref) {
+            $('.menuItem').each(function () {
+                if ($(this).attr("href") == strHref) {
+                    $(this).click();
+                }
+            });
+        }
+    </script>
     @*<script type="text/javascript" src="~/Content/js/loading/pace.min.js"></script>*@
 </body>
 </html>

@@ -1,5 +1,5 @@
 ﻿@{
-    ViewBag.Title = "Cancel";
+    ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_Index.cshtml";
 }
 <script>
@@ -11,7 +11,7 @@
         var $gridList = $("#gridList");
         $gridList.dataGrid({
             url: "/HuaweiOrderManage/FindPOList/PostPOList",
-            postData: { poStatusValue: "huaweiNotifyCancelOrder" },
+            postData: { poStatusValue: "huaweiPublishOrder" },
             height: $(window).height() - 128,
             colModel: [
                 { label: '订单号', name: 'poNumber', width: 100, align: 'left' },
@@ -38,9 +38,7 @@
             pager: "#gridPager",
             multiselect: true,
             rowNum: 100,
-            rowList : {},
             autoScroll: true,
-            autowidth: true,
             viewrecords: true,
             gridComplete: function () {
                 $('#ajax-loader').fadeOut();
@@ -70,10 +68,10 @@
         var message;
         if (flag) {
             operateType = "accept";
-            message = "注： 您确定要【接受】这些待取消订单吗？";
+            message = "注： 您确定要【接受】这些订单吗？";
         } else {
             operateType = "reject";
-            message = "注： 您确定要【驳回】这些待取消订单吗？";
+            message = "注： 您确定要【驳回】这些订单吗？";
         }
         var ids = $("#gridList").jqGrid("getGridParam", "selarrrow");
         ids = ids.join("#");
@@ -81,23 +79,23 @@
             if (r) {
                 $.submitForm({
                     url: "/HuaweiOrderManage/FindPOList/SignBackPOList",
-                    param: { ids: ids, operateType: operateType, types: "CancelPOList" },
+                    param: { ids: ids, operateType: operateType, types: "NewPOList" },
                     success: function () {
                         $('#ajax-loader').fadeIn();
-                        $.currentWindow().$("#gridList").trigger("reloadGrid");
+                        window.location.reload();
+                        //$.currentWindow().$("#gridList").trigger("reloadGrid");
                     }
                 })
             }
         });
     }
-
 </script>
 <div id="ajax-loader">
     <img src="~/Content/img/ajax-loader.gif" />
 </div>
 <div class="topPanel">
     <div class="search">
-        <span>华为待取消PO列表</span>
+        <span>华为新PO列表</span>
     </div>
     <div class="toolbar">
         <div class="btn-group">
@@ -105,7 +103,7 @@
         </div>
         <div class="operate">
             <ul class="nav nav-pills">
-                <li class="first">华为待取消PO列表</li>
+                <li class="first">华为新PO列表</li>
                 <li class="first">已选中<span id="choseNum">0</span>项</li>
                 <li><a id="NF-signBackPOList" authorize="yes" onclick="btn_signBackPOList(true)"><i class="fa fa-pencil-square-o"></i>PO签返（接受）</a></li>
                 <li><a id="NF-signBackPOList" authorize="yes" onclick="btn_signBackPOList(false)"><i class="fa fa-pencil-square-o"></i>PO签返（驳回）</a></li>

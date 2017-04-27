@@ -379,7 +379,7 @@
     <Content Include="Configs\system.config" />
     <Content Include="Configs\log4net.config" />
     <Content Include="Areas\HuaweiOrderManage\Views\web.config" />
-    <Content Include="Areas\HuaweiOrderManage\Views\FindPOList\Index.cshtml" />
+    <Content Include="Areas\HuaweiOrderManage\Views\FindPOList\ChangeDetails.cshtml" />
     <Content Include="Areas\HuaweiOrderManage\Views\FindPOList\Cancel.cshtml" />
     <Content Include="Areas\HuaweiOrderManage\Views\FindPOList\Change.cshtml" />
     <Content Include="Web.config" />
@@ -415,12 +415,14 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Areas\HuaweiOrderManage\Views\FindPOList\ChangeDetails.cshtml" />
+    <Content Include="Areas\HuaweiOrderManage\Views\FindPOList\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\HuaweiOrderManage\Views\FindPOList\Warning.cshtml" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Areas\HuaweiOrderManage\Views\FindPOList\News.cshtml" />
+    <Content Include="Areas\HuaweiOrderManage\Views\FindPOList\Onway.cshtml" />
     <None Include="Properties\PublishProfiles\KingPlatformConfig.pubxml" />
   </ItemGroup>
   <PropertyGroup>

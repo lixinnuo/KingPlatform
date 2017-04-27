@@ -34,6 +34,7 @@
             if (!$(this).hasClass('active')) {
                 $('.mainContent .King_iframe').each(function () {
                     if ($(this).data('id') == currentId) {
+                        top.$.cookie('King_currentmoduleid', currentId, { path: "/" });
                         $(this).show().siblings('.King_iframe').hide();
                         return false;
                     }
@@ -119,12 +120,12 @@
                 return false;
             }
             $('.menuTab').each(function () {
-                if ($(this).data('id') == dataUrl) {
+                if ($(this).data('id') == dataId) {
                     if (!$(this).hasClass('active')) {
                         $(this).addClass('active').siblings('.menuTab').removeClass('active');
                         $.Kingtab.scrollToTab(this);
                         $('.mainContent .King_iframe').each(function () {
-                            if ($(this).data('id') == dataUrl) {
+                            if ($(this).data('id') == dataId) {
                                 $(this).show().siblings('.King_iframe').hide();
                                 return false;
                             }
@@ -135,9 +136,9 @@
                 }
             });
             if (flag) {
-                var str = '<a href="javascript:;" class="active menuTab" data-id="' + dataUrl + '">' + menuName + ' <i class="fa fa-remove"></i></a>';
+                var str = '<a href="javascript:;" class="active menuTab" data-id="' + dataId + '">' + menuName + ' <i class="fa fa-remove"></i></a>';
                 $('.menuTab').removeClass('active');
-                var str1 = '<iframe class="King_iframe" id="iframe' + dataId + '" name="iframe' + dataId + '"  width="100%" height="100%" src="' + dataUrl + '" frameborder="0" data-id="' + dataUrl + '" seamless></iframe>';
+                var str1 = '<iframe class="King_iframe" id="iframe' + dataId + '" name="iframe' + dataId + '"  width="100%" height="100%" src="' + dataUrl + '" frameborder="0" data-id="' + dataId + '" seamless></iframe>';
                 $('.mainContent').find('iframe.King_iframe').hide();
                 $('.mainContent').append(str1);
                 $.loading(true);

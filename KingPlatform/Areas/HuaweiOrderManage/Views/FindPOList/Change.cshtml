@@ -11,7 +11,7 @@
         var $gridList = $("#gridList");
         $gridList.dataGrid({
             url: "/HuaweiOrderManage/FindPOList/PostPOList",
-            postData: { keyValue: "huaweiNotifyOrderChange" },
+            postData: { poStatusValue: "huaweiNotifyOrderChange" },
             height: $(window).height() - 128,
             colModel: [
                 { label: '订单号', name: 'poNumber', width: 100, align: 'left' },
@@ -24,12 +24,12 @@
                     formatter: "date", formatoptions: { srcformat: 'Y-m-d H:i:s', newformat: 'Y-m-d H:i:s' }
                 },
                 {
-                    label: '承诺日期', name: 'promiseDate', width: 120, align: 'left', editable:true,
-                    formatter: "date", formatoptions: { srcformat: 'Y-m-d H:i:s', newformat: 'Y-m-d H:i:s' }
+                    label: '承诺日期', name: 'promiseDate', width: 80, align: 'left',
+                    formatter: "date", formatoptions: { srcformat: 'Y-m-d', newformat: 'Y-m-d' }
                 },
                 {
-                    label: '有效日期', name: 'expireDate', width: 120, align: 'left',
-                    formatter: "date", formatoptions: { srcformat: 'Y-m-d H:i:s', newformat: 'Y-m-d H:i:s' }
+                    label: '有效日期', name: 'expireDate', width: 80, align: 'left',
+                    formatter: "date", formatoptions: { srcformat: 'Y-m-d', newformat: 'Y-m-d' }
                 },
                 { label: '收货地点', name: 'shipToLocation', width: 350, align: 'left' },
                 { label: '采购员', name: 'agentName', width: 80, align: 'left' },
@@ -61,8 +61,6 @@
                 $('#ajax-loader').fadeIn();
             }
         });
-        $gridList.jqGrid('navGrid', '#gridPager', { edit: false, add: false, del: false });
-        $gridList.jqGrid('inlineNav', "#gridPager");
     }
 
     function btn_signBackPOList(flag) {
@@ -83,6 +81,7 @@
                     url: "/HuaweiOrderManage/FindPOList/SignBackPOList",
                     param: { ids: ids, operateType: operateType, types: "ChangePOList" },
                     success: function () {
+                        $('#ajax-loader').fadeIn();
                         window.location.reload();
                         //$.currentWindow().$("#gridList").trigger("reloadGrid");
                     }

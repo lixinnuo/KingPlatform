@@ -1,116 +1,100 @@
 ﻿@{
-    ViewBag.Title = "Index";
-    Layout = "~/Views/Shared/_Index.cshtml";
+    ViewBag.Title = "POBoard";
+    Layout = "~/Views/Shared/_Form.cshtml";
 }
 <script>
     $(function () {
-        getPoList();
-    });
-
-    function getPoList() {
-        var $gridList = $("#gridList");
-        $gridList.dataGrid({
-            url: "/HuaweiOrderManage/FindPOList/PostPOList",
-            postData: { keyValue: "huaweiPublishOrder" },
-            height: $(window).height() - 128,
-            colModel: [
-                { label: '订单号', name: 'poNumber', width: 100, align: 'left' },
-                { label: '订单行号', name: 'poLineNum', width: 50, align: 'left' },
-                { label: '编码', name: 'itemCode', width: 80, align: 'left' },
-                { label: '描述', name: 'itemDescription', width: 350, align: 'left' },
-                { label: '数量', name: 'needQuantity', width: 80, align: 'left' },
-                {
-                    label: '下发日期', name: 'publishDate', width: 120, align: 'left',
-                    formatter: "date", formatoptions: { srcformat: 'Y-m-d H:i:s', newformat: 'Y-m-d H:i:s' }
-                },
-                {
-                    label: '承诺日期', name: 'promiseDate', width: 120, align: 'left',
-                    formatter: "date", formatoptions: { srcformat: 'Y-m-d H:i:s', newformat: 'Y-m-d H:i:s' }
-                },
-                {
-                    label: '有效日期', name: 'expireDate', width: 120, align: 'left',
-                    formatter: "date", formatoptions: { srcformat: 'Y-m-d H:i:s', newformat: 'Y-m-d H:i:s' }
-                },
-                { label: '收货地点', name: 'shipToLocation', width: 350, align: 'left' },
-                { label: '采购员', name: 'agentName', width: 80, align: 'left' },
-                { label: '备注', name: 'remark', width: 200, align: 'left' }
-            ],
-            pager: "#gridPager",
-            multiselect: true,
-            rowNum: 100,
-            autoScroll: true,
-            viewrecords: true,
-            gridComplete: function () {
+        $.ajax({
+            url: "/HuaweiOrderManage/FindPOList/FindPOBoard",
+            data: { },
+            dataType: "json",
+            async: false,
+            success: function (data) {
                 $('#ajax-loader').fadeOut();
-                $("input[type='checkbox']").removeClass('checkbox');
-            }, onCellSelect: function (rowid, iCol, cellcontent, e) {
-                var ids = $("#gridList").jqGrid("getGridParam", "selarrrow");
-                if ($.inArray(rowid, ids) >= 0) {
-                    $("#choseNum").html(ids.length - 1);
-                }
-                else {
-                    $("#choseNum").html(ids.length + 1);
-                }
-            },
-            onSelectAll: function (aRowids, status) {
-                var ids = $("#gridList").jqGrid("getGridParam", "selarrrow");
-                $("#choseNum").html(ids.length);
-            },
-            onPaging: function (pgButton) {
-                $('#ajax-loader').fadeIn();
+                $("#form1").formSerialize(data);
+                $("#form1").find('.form-control,input').attr('readonly', 'readonly');
             }
         });
-    }
-
-    function btn_signBackPOList(flag) {
-        var operateType;
-        var message;
-        if (flag) {
-            operateType = "accept";
-            message = "注： 您确定要【接受】这些订单吗？";
-        } else {
-            operateType = "reject";
-            message = "注： 您确定要【驳回】这些订单吗？";
-        }
-        var ids = $("#gridList").jqGrid("getGridParam", "selarrrow");
-        ids = ids.join("#");
-        $.modalConfirm(message, function (r) {
-            if (r) {
-                $.submitForm({
-                    url: "/HuaweiOrderManage/FindPOList/SignBackPOList",
-                    param: { ids: ids, operateType: operateType, types: "NewPOList" },
-                    success: function () {
-                        window.location.reload();
-                        //$.currentWindow().$("#gridList").trigger("reloadGrid");
-                    }
-                })
-            }
+        $("a").click(function () {
+            dataid = $(this).data("href");
+            parent.window.newIframe(dataid);
         });
-    }
+    });
 </script>
 <div id="ajax-loader">
     <img src="~/Content/img/ajax-loader.gif" />
 </div>
-<div class="topPanel">
-    <div class="search">
-        <span>华为新PO列表</span>
+<form id="form1">
+    <div style="margin-top: 10px; margin-left: 10px; margin-right: 10px;">
+        <table class="table">
+            <tr>
+                <th class="col-md-4">状态</th>
+                <th class="col-md-4">数量</th>
+                <th class="col-md-4 text-center">处理</th>
+            </tr>
+            <tr>
+                <th class="col-md-4">新订单</th>
+                <td class="col-md-4">
+                    <input id="newOrderQuantity" name="newOrderQuantity" type="text" class="form-control" />
+                </td>
+                <td class="col-md-4 text-center">
+                    <a href="javascript:void()" data-href="/HuaweiOrderManage/FindPOList/News">查看</a>
+                </td>
+            </tr>
+            <tr>
+                <th class="col-md-4">华为订单取消</th>
+                <td class="col-md-4">
+                    <input id="cancelOrderQuantity" name="cancelOrderQuantity" type="text" class="form-control" />
+                </td>
+                <td class="col-md-4 text-center">
+                    <a href="javascript:void()" data-href="/HuaweiOrderManage/FindPOList/Cancel">查看</a>
+                </td>
+            </tr>
+            <tr>
+                <th class="col-md-4">华为订单变更</th>
+                <td class="col-md-4">
+                    <input id="changedOrderQuantity" name="changedOrderQuantity" type="text" class="form-control" />
+                </td>
+                <td class="col-md-4 text-center">
+                    <a href="javascript:void()" data-href="/HuaweiOrderManage/FindPOList/Change">查看</a>
+                </td>
+            </tr>
+            <tr>
+                <th class="col-md-4">在途订单</th>
+                <td class="col-md-4">
+                    <input id="intransitOrderQuantity" name="intransitOrderQuantity" type="text" class="form-control" />
+                </td>
+                <td class="col-md-4 text-center">
+                    <a href="javascript:void()" data-href="/HuaweiOrderManage/FindPOList/Onway">查看</a>
+                </td>
+            </tr>
+            <tr>
+                <th class="col-md-4">过期订单</th>
+                <td class="col-md-4">
+                    <input id="overdueOrderQuantity" name="overdueOrderQuantity" type="text" class="form-control" />
+                </td>
+                <td class="col-md-4 text-center">
+                    <a href="javascript:void()" data-href="/HuaweiOrderManage/FindPOList/Warning">查看</a>
+                </td>
+            </tr>
+            <tr>
+                <th class="col-md-4">新订单超三天未处理</th>
+                <td class="col-md-4">
+                    <input id="expiredOrderQuantity" name="expiredOrderQuantity" type="text" class="form-control" />
+                </td>
+                <td class="col-md-4 text-center">
+                    <a href="javascript:void()" data-href="/HuaweiOrderManage/FindPOList/Warning">查看</a>
+                </td>
+            </tr>
+            <tr>
+                <th class="col-md-4">下单六个月未交货</th>
+                <td class="col-md-4">
+                    <input id="nonDeliveryOrderQuantity" name="nonDeliveryOrderQuantity" type="text" class="form-control" />
+                </td>
+                <td class="col-md-4 text-center">
+                    <a href="javascript:void()" data-href="/HuaweiOrderManage/FindPOList/Warning">查看</a>
+                </td>
+            </tr>
+        </table>
     </div>
-    <div class="toolbar">
-        <div class="btn-group">
-            <a class="btn btn-primary" onclick="$.reload()"><span class="glyphicon glyphicon-refresh"></span></a>
-        </div>
-        <div class="operate">
-            <ul class="nav nav-pills">
-                <li class="first">华为新PO列表</li>
-                <li class="first">已选中<span id="choseNum">0</span>项</li>
-                <li><a id="NF-signBackPOList" authorize="yes" onclick="btn_signBackPOList(true)"><i class="fa fa-pencil-square-o"></i>PO签返（接受）</a></li>
-                <li><a id="NF-signBackPOList" authorize="yes" onclick="btn_signBackPOList(false)"><i class="fa fa-pencil-square-o"></i>PO签返（驳回）</a></li>
-            </ul>
-            <a href="javascript:;" class="close"></a>
-        </div>
-    </div>
-</div>
-<div class="gridPanel">
-    <table id="gridList"></table>
-    <div id="gridPager"></div>
-</div>
+</form>

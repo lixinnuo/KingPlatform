@@ -15,34 +15,55 @@ namespace KingPlatform.Areas.HuaweiOrderManage.Controllers
         GetPOListParamBack getPOListParamBack = new GetPOListParamBack();
 
         /// <summary>
+        /// 查询PO看板
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [HandlerAjaxOnly]
+        public ActionResult FindPOBoard()
+        {
+            string findPOBoardUrl = "https://api-beta.huawei.com:443/service/esupplier/findProductionPOBoardData/1.0.0";
+            string accessToken = HttpMethods.GetAccessToken(HttpMethods.HttpPost(url_token, key, secury));      //获取华为access_token
+            JavaScriptSerializer js = new JavaScriptSerializer();
+            string result = HttpMethods.HttpPost(findPOBoardUrl, "{}", true, accessToken);
+            result = result.Replace(":null", ":''");
+            GetPOBoard getPOBoard = js.Deserialize<GetPOBoard>(result);
+            return Content(getPOBoard.ToJson());
+        }
+
+        /// <summary>
         /// 获取POList  新POList 取消POList 变更POList 过期PO  新订单超三天未处理  下单六个月未交货
         /// </summary>
         /// <returns></returns>
         [HttpGet]
         [HandlerAjaxOnly]
-        public ActionResult PostPOList(string keyValue, string page)
+        public ActionResult PostPOList(string poStatusValue, string shipmentValue = "all", string page = "1")
         {
             findPOListurl += page;      //添加页码
             string accessToken = HttpMethods.GetAccessToken(HttpMethods.HttpPost(url_token, key, secury));      //获取华为access_token
             JavaScriptSerializer js = new JavaScriptSerializer();
             //定义接口json数据 获取新POList传入参数
-            GetPOListParam param = new GetPOListParam("all", "all", "P", "all", "COL_TASK_STATUS", keyValue, "P");
+            GetPOListParam param = new GetPOListParam("all", "all", "P", shipmentValue, "COL_TASK_STATUS", poStatusValue, "P");
             string json = js.Serialize(param);
             string result = HttpMethods.HttpPost(findPOListurl, json, true, accessToken);
             result = result.Replace(":null", ":''");
 
             getPOListParamBack = js.Deserialize<GetPOListParamBack>(result);
-            if (keyValue == "huaweiPublishOrder")               //保存华为新PO列表
+            if (poStatusValue == "huaweiPublishOrder")               //保存华为新PO列表
             {
                 this.TempData["NewPOList"] = getPOListParamBack;
             }
-            else if (keyValue == "huaweiNotifyOrderChange")     //保存华为变更PO列表
+            else if (poStatusValue == "huaweiNotifyOrderChange")     //保存华为变更PO列表
             {
                 this.TempData["ChangePOList"] = getPOListParamBack;
             }
-            else if (keyValue == "huaweiNotifyCancelOrder")     //保存华为取消PO列表
+            else if (poStatusValue == "huaweiNotifyCancelOrder")     //保存华为取消PO列表
             {
                 this.TempData["CancelPOList"] = getPOListParamBack;
+            }
+            else if (poStatusValue == "all" && shipmentValue == "OPEN") //保存华为在途PO列表
+            {
+                this.TempData["OnwayList"] = getPOListParamBack;
             }
             var data = new
             {
@@ -162,6 +183,67 @@ namespace KingPlatform.Areas.HuaweiOrderManage.Controllers
         }
 
         /// <summary>
+        /// 供应商PO变更
+        /// </summary>
+        /// <param name="ids">id值，以#号隔开</param>
+        /// <param name="promiseDate">修改的日期，以#号隔开</param>
+        /// <param name="types">类型</param>
+        /// <returns></returns>
+        [HandlerAjaxOnly]
+        public ActionResult OnwayPOList(string ids, string promiseDate, string types)
+        {
+            string onwayPOListUrl = "https://api-beta.huawei.com:443/service/esupplier/applyPromiseDateChange/1.0.0";
+            getPOListParamBack = new GetPOListParamBack();
+            getPOListParamBack = this.TempData[types] as GetPOListParamBack;
+            List<PoLinesAllVO> postOnwayPO = new List<PoLinesAllVO>();
+            string[] idSplit = ids.Split('#');
+            string[] dateSplit = promiseDate.Split('#');
+
+            for (int i = 0; i < idSplit.Length; i++)
+            {
+                PoLinesAllVO poLinesAllVO = new PoLinesAllVO();
+                poLinesAllVO.instanceId = getPOListParamBack.result[Int32.Parse(idSplit[i]) - 1].instanceId;
+                poLinesAllVO.poNumber = getPOListParamBack.result[Int32.Parse(idSplit[i]) - 1].poNumber;
+                poLinesAllVO.lineLocationId = getPOListParamBack.result[Int32.Parse(idSplit[i]) - 1].lineLocationId;
+                poLinesAllVO.promiseDateChangeReason = "XX";
+                poLinesAllVO.typeLookupCode = "2";
+                poLinesAllVO.promiseDateStr = dateSplit[i];
+                //poLinesAllVO.needQuantity = getPOListParamBack.result[Int32.Parse(idSplit[i]) - 1].needQuantity;
+                postOnwayPO.Add(poLinesAllVO);
+            }
+            //获取华为access_token
+            string accessToken = HttpMethods.GetAccessToken(HttpMethods.HttpPost(url_token, key, secury));
+            JavaScriptSerializer js = new JavaScriptSerializer();
+            //定义接口json数据
+            string json = js.Serialize(postOnwayPO);
+
+            string result = HttpMethods.HttpPost(onwayPOListUrl, json, true, accessToken);
+            result = result.Replace(":null", ":''");
+            List<POBackData> pOBackData = js.Deserialize<List<POBackData>>(result);
+            string returnStr = "", passPOStr = "", nopassPOStr = "";
+            for (int i = 0; i < idSplit.Length; i++)
+            {
+                if (pOBackData[i].code == "00000")
+                {
+                    passPOStr += pOBackData[i].poNum + "/";
+                }
+                else
+                {
+                    nopassPOStr += pOBackData[i].poNum + "/";
+                }
+            }
+            if (passPOStr != "")
+            {
+                returnStr += "订单 " + passPOStr + " 提交成功！";
+            }
+            if (nopassPOStr != "")
+            {
+                returnStr += "/n订单 " + nopassPOStr + " 提交失败！";
+            }
+            return Success(returnStr);
+        }
+
+        /// <summary>
         /// 华为子公司列表
         /// </summary>
         /// <returns></returns>
@@ -183,26 +265,32 @@ namespace KingPlatform.Areas.HuaweiOrderManage.Controllers
         }
 
         [HttpGet]
-        [HandlerAuthorize]
+        public virtual ActionResult News()
+        {
+            return View();
+        }
+        [HttpGet]
         public virtual ActionResult Cancel()
         {
             return View();
         }
         [HttpGet]
-        [HandlerAuthorize]
         public virtual ActionResult Change()
         {
             return View();
         }
         [HttpGet]
-        [HandlerAuthorize]
         public virtual ActionResult ChangeDetails()
         {
             return View();
         }
         [HttpGet]
-        [HandlerAuthorize]
         public virtual ActionResult Warning()
+        {
+            return View();
+        }
+        [HttpGet]
+        public virtual ActionResult Onway()
         {
             return View();
         }
@@ -345,6 +433,8 @@ namespace KingPlatform.Areas.HuaweiOrderManage.Controllers
             public string code { get; set; }                //返回码 “00000”是成功，其他都是失败
             public string msg { get; set; }                 //返回信息描述
             public string taskIndex { get; set; }           //
+            public bool success { get; set; }
+            public string data { get; set; }
         }
         #endregion
 
@@ -450,5 +540,38 @@ namespace KingPlatform.Areas.HuaweiOrderManage.Controllers
             public string filterStr { get; set; }
         }
         #endregion
+
+        #region GetPOBoard 查询PO看板出参
+        public class GetPOBoard
+        {
+            public int expiredOrderQuantity { get; set; }               //新订单超三天未处理
+            public int arrivalOnWeekOrderQuantity { get; set; }         //预计两周内到货
+            public int vendorApplyCancelOrderQuantity { get; set; }     //待华为确认取消
+            public int closedOrderQuantity { get; set; }                //订单已关闭
+            public int vendorApplyQtyChangeOrderQuantity { get; set; }  //待华为确认数量变更
+            public int intransitOrderQuantity { get; set; }             //在途订单
+            public int cancelledOrderQuantity { get; set; }             //订单已取消
+            public int changedOrderQuantity { get; set; }               //内容变更通知
+            public int cancelledToConfirmedOrderQuantity { get; set; }  //订单取消确认
+            public int newOrderQuantity { get; set; }                   //新订单
+            public int deliveryTimeChangedOrderQuantity { get; set; }   //订单交期更改
+            public int nonDeliveryOrderQuantity { get; set; }           //下单六个月未交货
+            public int cancelOrderQuantity { get; set; }                //订单取消通知
+            public int overdueOrderQuantity { get; set; }               //过期PO
+            public int rmaBarterOrderQuantity { get; set; }             //RMA换货订单
+            public int deliveryTimeChangedPendingOrderQuantity { get; set; }        //待华为确认交期更改
+        }
+        #endregion
+
+        public class PoLinesAllVO
+        {
+            public int instanceId { get; set; }                     //帐套标识
+            public string poNumber { get; set; }                    //PO号
+            public long lineLocationId { get; set; }                //PO行ID
+            public string promiseDateChangeReason { get; set; }     //修改原因
+            public string typeLookupCode { get; set; }              //修改类型  “2”是修改交期 “1”是修改数量 “3”是既修改交期也修改数量
+            public string promiseDateStr { get; set; }              //新的交期时间
+            public string needQuantity { get; set; }               //新的修改数量
+        }
     }
 }
