@@ -37,7 +37,7 @@
             ],
             pager: "#gridPager",
             multiselect: true,
-            rowNum: 100,
+            rowNum: 20,
             rowList : {},
             autoScroll: true,
             autowidth: true,
@@ -60,6 +60,7 @@
                 $("#choseNum").html(ids.length);
             },
             onPaging: function (pgButton) {
+                $("#choseNum").html(0);
                 $('#ajax-loader').fadeIn();
             }
         });

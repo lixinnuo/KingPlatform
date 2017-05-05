@@ -37,7 +37,8 @@
             ],
             pager: "#gridPager",
             multiselect: true,
-            rowNum: 100,
+            rowNum: 20,
+            rowList: {},
             autoScroll: true,
             viewrecords: true,
             gridComplete: function () {
@@ -45,6 +46,7 @@
                 $("input[type='checkbox']").removeClass('checkbox');
             },
             onPaging: function (pgButton) {
+                $("#choseNum").html(0);
                 $('#ajax-loader').fadeIn();
             }
         });

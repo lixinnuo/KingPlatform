@@ -3,17 +3,34 @@ using System.Collections.Generic;
 using System.Web.Mvc;
 using Basic.Code;
 using System.Web.Script.Serialization;
+using Newtonsoft.Json;
 
 namespace KingPlatform.Areas.HuaweiOrderManage.Controllers
 {
     public class FindPOListController : ControllerBase
     {
-        string findPOListurl = "https://api-beta.huawei.com:443/service/esupplier/findPoLineList/1.0.0/";
-        string url_token = "https://api-beta.huawei.com:443/oauth2/token";
-        string key = "GHprAo4oNpiqPrre993DpW2KGy8a";
-        string secury = "O4gunWWZ6pIfwAO94qcF0tcPFBwa";
+        /*string findPOListurl = "https://api-beta.huawei.com:443/service/esupplier/findPoLineList/1.0.0/";               //查询PO列表
+        string findPOBoardUrl = "https://api-beta.huawei.com:443/service/esupplier/findProductionPOBoardData/1.0.0";    //查询PO看板
+        string url_token = "https://api-beta.huawei.com:443/oauth2/token";                                              //查询华为access_token
+        string getPODetailsurl = "https://api-beta.huawei.com:443/service/esupplier/findColTaskList/1.0.0/1";           //查询PO行变更明细
+        string signBackPOListUrl = "https://api-beta.huawei.com:443/service/esupplier/signBackPOList/1.0.0";            //PO签返确认
+        string onwayPOListUrl = "https://api-beta.huawei.com:443/service/esupplier/applyPromiseDateChange/1.0.0";       //供应商PO变更
+        string getHWCorurl = "https://api-beta.huawei.com:443/service/esupplier/findOrganList/1.0.0";                   //华为子公司列表
+        //string key = "GHprAo4oNpiqPrre993DpW2KGy8a";                                                                    //系统键 测试平台
+        //string secury = "O4gunWWZ6pIfwAO94qcF0tcPFBwa";  */                                                               //系统值
+        
+        string findPOListurl = "https://openapi.huawei.com:443/service/esupplier/findPoLineList/1.0.0/";               //查询PO列表
+        string findPOBoardUrl = "https://openapi.huawei.com:443/service/esupplier/findProductionPOBoardData/1.0.0";    //查询PO看板
+        string url_token = "https://openapi.huawei.com:443/oauth2/token";                                              //查询华为access_token
+        string getPODetailsurl = "https://openapi.huawei.com:443/service/esupplier/findColTaskList/1.0.0/1";           //查询PO行变更明细
+        string signBackPOListUrl = "https://openapi.huawei.com:443/service/esupplier/signBackPOList/1.0.0";            //PO签返确认
+        string onwayPOListUrl = "https://openapi.huawei.com:443/service/esupplier/applyPromiseDateChange/1.0.0";       //供应商PO变更
+        string getHWCorurl = "https://openapi.huawei.com:443/service/esupplier/findOrganList/1.0.0";                   //华为子公司列表
+        string key = "1W6F7vxypwbPu8ElV6csX6JeBm0a";                                                                    //系统键 测试平台
+        string secury = "CbGf_TyvV_iCUUwntP0hQw1n_9sa";                                                                 //系统值
+        
         GetPOListParamBack getPOListParamBack = new GetPOListParamBack();
-
+        
         /// <summary>
         /// 查询PO看板
         /// </summary>
@@ -22,7 +39,6 @@ namespace KingPlatform.Areas.HuaweiOrderManage.Controllers
         [HandlerAjaxOnly]
         public ActionResult FindPOBoard()
         {
-            string findPOBoardUrl = "https://api-beta.huawei.com:443/service/esupplier/findProductionPOBoardData/1.0.0";
             string accessToken = HttpMethods.GetAccessToken(HttpMethods.HttpPost(url_token, key, secury));      //获取华为access_token
             JavaScriptSerializer js = new JavaScriptSerializer();
             string result = HttpMethods.HttpPost(findPOBoardUrl, "{}", true, accessToken);
@@ -39,16 +55,37 @@ namespace KingPlatform.Areas.HuaweiOrderManage.Controllers
         [HandlerAjaxOnly]
         public ActionResult PostPOList(string poStatusValue, string shipmentValue = "all", string page = "1")
         {
-            findPOListurl += page;      //添加页码
-            string accessToken = HttpMethods.GetAccessToken(HttpMethods.HttpPost(url_token, key, secury));      //获取华为access_token
-            JavaScriptSerializer js = new JavaScriptSerializer();
-            //定义接口json数据 获取新POList传入参数
-            GetPOListParam param = new GetPOListParam("all", "all", "P", shipmentValue, "COL_TASK_STATUS", poStatusValue, "P");
-            string json = js.Serialize(param);
-            string result = HttpMethods.HttpPost(findPOListurl, json, true, accessToken);
-            result = result.Replace(":null", ":''");
-
-            getPOListParamBack = js.Deserialize<GetPOListParamBack>(result);
+            if (((Convert.ToInt32(page) - 1) * 20 % 100) == 0)
+            {
+                findPOListurl += ((Convert.ToInt32(page) - 1) * 20 / 100 + 1);      //添加页码
+                string accessToken = HttpMethods.GetAccessToken(HttpMethods.HttpPost(url_token, key, secury));      //获取华为access_token
+                JavaScriptSerializer js = new JavaScriptSerializer();
+                //定义接口json数据 获取新POList传入参数
+                GetPOListParam param = new GetPOListParam("all", "all", "P", shipmentValue, "COL_TASK_STATUS", poStatusValue, "P");
+                string json = js.Serialize(param);
+                string result = HttpMethods.HttpPost(findPOListurl, json, true, accessToken);
+                result = result.Replace(":null", ":''");
+                getPOListParamBack = js.Deserialize<GetPOListParamBack>(result);
+            }
+            else
+            {
+                if (poStatusValue == "huaweiPublishOrder")               //保存华为新PO列表
+                {
+                     getPOListParamBack = this.TempData["NewPOList"] as GetPOListParamBack;
+                }
+                else if (poStatusValue == "huaweiNotifyOrderChange")     //保存华为变更PO列表
+                {
+                    getPOListParamBack = this.TempData["ChangePOList"] as GetPOListParamBack;
+                }
+                else if (poStatusValue == "huaweiNotifyCancelOrder")     //保存华为取消PO列表
+                {
+                    getPOListParamBack = this.TempData["CancelPOList"] as GetPOListParamBack;
+                }
+                else if (poStatusValue == "all" && shipmentValue == "OPEN") //保存华为在途PO列表
+                {
+                    getPOListParamBack = this.TempData["OnwayList"] as GetPOListParamBack;
+                }
+            }
             if (poStatusValue == "huaweiPublishOrder")               //保存华为新PO列表
             {
                 this.TempData["NewPOList"] = getPOListParamBack;
@@ -65,14 +102,22 @@ namespace KingPlatform.Areas.HuaweiOrderManage.Controllers
             {
                 this.TempData["OnwayList"] = getPOListParamBack;
             }
-            var data = new
+
+            if (getPOListParamBack.pageVO == null)
             {
-                rows = getPOListParamBack.result,
-                total = getPOListParamBack.pageVO.totalPages,
-                page = getPOListParamBack.pageVO.curPage,
-                records = getPOListParamBack.pageVO.totalRows
-            };
-            return Content(data.ToJson());
+                return Error("获取信息失败。");
+            }
+            else
+            {
+                var data = new
+                {
+                    rows = getPOListParamBack.result,
+                    total = Math.Ceiling(Convert.ToDouble(getPOListParamBack.pageVO.totalRows / 20.0)),
+                    page = page,
+                    records = getPOListParamBack.pageVO.totalRows
+                };
+                return Content(data.ToJson());
+            }
         }
 
         /// <summary>
@@ -84,7 +129,6 @@ namespace KingPlatform.Areas.HuaweiOrderManage.Controllers
         [HandlerAjaxOnly]
         public ActionResult FindColTask(string keyValue)
         {
-            string getPODetailsurl = "https://api-beta.huawei.com:443/service/esupplier/findColTaskList/1.0.0/1";
             //获取华为access_token
             string accessToken = HttpMethods.GetAccessToken(HttpMethods.HttpPost(url_token, key, secury));
             JavaScriptSerializer js = new JavaScriptSerializer();
@@ -119,7 +163,6 @@ namespace KingPlatform.Areas.HuaweiOrderManage.Controllers
         [HandlerAjaxOnly]
         public ActionResult SignBackPOList(string ids, string operateType, string types)
         {
-            string signBackPOListUrl = "https://api-beta.huawei.com:443/service/esupplier/signBackPOList/1.0.0";
             ConfirmPO confirmPO = new ConfirmPO();
             confirmPO.operateType = operateType;
             string[] idsplit = ids.Split('#');
@@ -192,7 +235,6 @@ namespace KingPlatform.Areas.HuaweiOrderManage.Controllers
         [HandlerAjaxOnly]
         public ActionResult OnwayPOList(string ids, string promiseDate, string types)
         {
-            string onwayPOListUrl = "https://api-beta.huawei.com:443/service/esupplier/applyPromiseDateChange/1.0.0";
             getPOListParamBack = new GetPOListParamBack();
             getPOListParamBack = this.TempData[types] as GetPOListParamBack;
             List<PoLinesAllVO> postOnwayPO = new List<PoLinesAllVO>();
@@ -251,14 +293,13 @@ namespace KingPlatform.Areas.HuaweiOrderManage.Controllers
         [HandlerAjaxOnly]
         public ActionResult HWCorList()
         {
-            string getPODetailsurl = "https://api-beta.huawei.com:443/service/esupplier/findOrganList/1.0.0";
             //获取华为access_token
             string accessToken = HttpMethods.GetAccessToken(HttpMethods.HttpPost(url_token, key, secury));
             JavaScriptSerializer js = new JavaScriptSerializer();
             //定义接口json数据 查询华为子公司列表入参
             GetHWCor getHWCor = new GetHWCor("zh_CN");
             string json = js.Serialize(getHWCor);
-            string result = HttpMethods.HttpPost(getPODetailsurl, json, true, accessToken);
+            string result = HttpMethods.HttpPost(getHWCorurl, json, true, accessToken);
             result = result.Replace(":null", ":''");
             GetHWCorBack getHWCorBack = js.Deserialize<GetHWCorBack>(result);
             return Content(getPOListParamBack.ToJson());
@@ -346,7 +387,7 @@ namespace KingPlatform.Areas.HuaweiOrderManage.Controllers
             public string agentEmployeeNumber { get; set; }         //采购员工号
             public long lineLocationId { get; set; }                //PO发运行ID
             public int instanceId { get; set; }                     //帐套标识
-            public long shipmentNum { get; set; }                   //发运行号
+            public string shipmentNum { get; set; }                   //发运行号
             public long poReleaseId { get; set; }                   //PO释放ID
             public long poHeaderId { get; set; }                    //PO头ID
             public string selectType { get; set; }                  //选择类型  固定值：0
@@ -512,7 +553,7 @@ namespace KingPlatform.Areas.HuaweiOrderManage.Controllers
             public string agentName { get; set; }               //采购员
             public string agentEmployeeNumber { get; set; }     //采购员
             public string carrierName { get; set; }             //发运方式
-            public long shipmentNum { get; set; }             //发运行号
+            public string shipmentNum { get; set; }             //发运行号
             public string unSendQuantity { get; set; }          //未交付数量
             public string paymentTerms { get; set; }            //支付条款
             public int instanceId { get; set; }              //华为系统内部标识用
@@ -563,6 +604,7 @@ namespace KingPlatform.Areas.HuaweiOrderManage.Controllers
         }
         #endregion
 
+        #region PoLinesAllVO 供应商变更PO入参
         public class PoLinesAllVO
         {
             public int instanceId { get; set; }                     //帐套标识
@@ -573,5 +615,6 @@ namespace KingPlatform.Areas.HuaweiOrderManage.Controllers
             public string promiseDateStr { get; set; }              //新的交期时间
             public string needQuantity { get; set; }               //新的修改数量
         }
+        #endregion
     }
 }

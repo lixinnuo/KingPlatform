@@ -11,6 +11,7 @@
             dataType: "json",
             async: false,
             success: function (data) {
+                $('#ajax-loader').fadeOut();
                 $("#form1").formSerialize(data);
                 $("#form1").find('.form-control,input').attr('readonly', 'readonly');
             }
