@@ -16,8 +16,10 @@
             }
         });
         $("a").click(function () {
-            dataid = $(this).data("href");
-            parent.window.newIframe(dataid);
+            var dataHref = $(this).data("href");
+            var dataId = $(this).data("id");
+            var dataName = $(this).data("name");
+            parent.window.newIframe(dataId, dataHref, dataName);
         });
     });
 </script>
@@ -38,7 +40,7 @@
                     <input id="newOrderQuantity" name="newOrderQuantity" type="text" class="form-control" />
                 </td>
                 <td class="col-md-4 text-center">
-                    <a href="javascript:void()" data-href="/HuaweiOrderManage/FindPOList/News">查看</a>
+                    <a href="javascript:void()" data-name="新PO列表" data-id="2bcb1fef-78f4-4a44-a0b8-4a0355d78a7a" data-href="/HuaweiOrderManage/FindPOList/News">查看</a>
                 </td>
             </tr>
             <tr>
@@ -47,7 +49,7 @@
                     <input id="cancelOrderQuantity" name="cancelOrderQuantity" type="text" class="form-control" />
                 </td>
                 <td class="col-md-4 text-center">
-                    <a href="javascript:void()" data-href="/HuaweiOrderManage/FindPOList/Cancel">查看</a>
+                    <a href="javascript:void()" data-name="取消PO列表" data-id="b7eb5f85-4890-41d0-a59a-1570f7f6cfb9" data-href="/HuaweiOrderManage/FindPOList/Cancel">查看</a>
                 </td>
             </tr>
             <tr>
@@ -56,7 +58,7 @@
                     <input id="changedOrderQuantity" name="changedOrderQuantity" type="text" class="form-control" />
                 </td>
                 <td class="col-md-4 text-center">
-                    <a href="javascript:void()" data-href="/HuaweiOrderManage/FindPOList/Change">查看</a>
+                    <a href="javascript:void()" data-name="变更PO列表" data-id="d26d8152-3441-42fe-ac9e-d2c08201685d" data-href="/HuaweiOrderManage/FindPOList/Change">查看</a>
                 </td>
             </tr>
             <tr>
@@ -65,7 +67,7 @@
                     <input id="intransitOrderQuantity" name="intransitOrderQuantity" type="text" class="form-control" />
                 </td>
                 <td class="col-md-4 text-center">
-                    <a href="javascript:void()" data-href="/HuaweiOrderManage/FindPOList/Onway">查看</a>
+                    <a href="javascript:void()" data-name="在途PO列表" data-id="cbbf8982-92f5-472b-ab2c-ac151d203860" data-href="/HuaweiOrderManage/FindPOList/Onway">查看</a>
                 </td>
             </tr>
             <tr>
@@ -74,7 +76,7 @@
                     <input id="overdueOrderQuantity" name="overdueOrderQuantity" type="text" class="form-control" />
                 </td>
                 <td class="col-md-4 text-center">
-                    <a href="javascript:void()" data-href="/HuaweiOrderManage/FindPOList/Warning">查看</a>
+                    <a href="javascript:void()" data-name="预警PO列表" data-id="0daf345b-8519-4a1d-acb5-a17406ed235c" data-href="/HuaweiOrderManage/FindPOList/Warning">查看</a>
                 </td>
             </tr>
             <tr>
@@ -83,7 +85,7 @@
                     <input id="expiredOrderQuantity" name="expiredOrderQuantity" type="text" class="form-control" />
                 </td>
                 <td class="col-md-4 text-center">
-                    <a href="javascript:void()" data-href="/HuaweiOrderManage/FindPOList/Warning">查看</a>
+                    <a href="javascript:void()" data-name="预警PO列表" data-id="0daf345b-8519-4a1d-acb5-a17406ed235c" data-href="/HuaweiOrderManage/FindPOList/Warning">查看</a>
                 </td>
             </tr>
             <tr>
@@ -92,7 +94,7 @@
                     <input id="nonDeliveryOrderQuantity" name="nonDeliveryOrderQuantity" type="text" class="form-control" />
                 </td>
                 <td class="col-md-4 text-center">
-                    <a href="javascript:void()" data-href="/HuaweiOrderManage/FindPOList/Warning">查看</a>
+                    <a href="javascript:void()" data-name="预警PO列表" data-id="0daf345b-8519-4a1d-acb5-a17406ed235c" data-href="/HuaweiOrderManage/FindPOList/Warning">查看</a>
                 </td>
             </tr>
         </table>

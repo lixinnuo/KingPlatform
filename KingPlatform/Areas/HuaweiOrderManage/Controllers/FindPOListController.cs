@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Web.Mvc;
 using Basic.Code;
 using System.Web.Script.Serialization;
-using Newtonsoft.Json;
 
 namespace KingPlatform.Areas.HuaweiOrderManage.Controllers
 {
@@ -55,9 +54,10 @@ namespace KingPlatform.Areas.HuaweiOrderManage.Controllers
         [HandlerAjaxOnly]
         public ActionResult PostPOList(string poStatusValue, string shipmentValue = "all", string page = "1")
         {
-            if (((Convert.ToInt32(page) - 1) * 20 % 100) == 0)
+            int showPO = Convert.ToInt32(page) - 1;
+            if ((showPO * 20 % 100) == 0)
             {
-                findPOListurl += ((Convert.ToInt32(page) - 1) * 20 / 100 + 1);      //添加页码
+                findPOListurl += (showPO * 20 / 100 + 1);      //添加页码
                 string accessToken = HttpMethods.GetAccessToken(HttpMethods.HttpPost(url_token, key, secury));      //获取华为access_token
                 JavaScriptSerializer js = new JavaScriptSerializer();
                 //定义接口json数据 获取新POList传入参数
@@ -109,9 +109,19 @@ namespace KingPlatform.Areas.HuaweiOrderManage.Controllers
             }
             else
             {
+                GetPOListParamBack getPOListParamBack1 = new GetPOListParamBack();
+                int num = getPOListParamBack.result.Count;
+                for (int i = 0; i < num; i++)
+                {
+                    if (i >= (showPO * 20 - (showPO * 20 / 100) * 100) && i < ((showPO + 1) * 20 - (showPO * 20 / 100) * 100))
+                    {
+                        getPOListParamBack1.result.Add(getPOListParamBack.result[i]);
+                    }
+                }
+                
                 var data = new
                 {
-                    rows = getPOListParamBack.result,
+                    rows = getPOListParamBack1.result,
                     total = Math.Ceiling(Convert.ToDouble(getPOListParamBack.pageVO.totalRows / 20.0)),
                     page = page,
                     records = getPOListParamBack.pageVO.totalRows
