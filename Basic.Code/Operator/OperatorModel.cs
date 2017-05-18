@@ -8,6 +8,7 @@ namespace Basic.Code
         public string UserCode { get; set; }
         public string UserName { get; set; }
         public string UserPwd { get; set; }
+        public bool? UserGender { get; set; }
         public string CompanyId { get; set; }
         public string DepartmentId { get; set; }
         public string RoleId { get; set; }

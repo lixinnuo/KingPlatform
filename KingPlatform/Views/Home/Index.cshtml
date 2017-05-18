@@ -20,7 +20,7 @@
     <div id="theme-wrapper">
         <header class="navbar" id="header-navbar">
             <div class="container" style="padding-right: 0px;">
-                <a href="#" id="logo" class="navbar-brand">金信诺协同平台</a>
+                <a href="#" id="logo" class="navbar-brand">金信诺KS协同平台</a>
                 <div class="clearfix">
                     <div class="nav-no-collapse navbar-left pull-left hidden-sm hidden-xs">
                         <ul class="nav navbar-nav pull-left">
@@ -56,7 +56,14 @@
                             </li>
                             <li class="dropdown profile-dropdown">
                                 <a href="#" class="dropdown" data-toggle="dropdown">
-                                    <img src="~/Content/img/samples/robert-300.jpg" alt="" />
+                                    @if ((bool)Basic.Code.OperatorProvider.Provider.GetCurrent().UserGender)
+                                    {
+                                        <img alt="" src="~/Content/img/samples/robert-300.jpg" />
+                                    }
+                                    else
+                                    {
+                                        <img alt="" src="~/Content/img/samples/emma-300.jpg" />
+                                    }
                                     <span class="hidden-xs">@Basic.Code.OperatorProvider.Provider.GetCurrent().UserCode</span>
                                 </a>
                                 <ul class="dropdown-menu pull-right">
@@ -79,12 +86,17 @@
                     <section id="col-left" class="col-left-nano">
                         <div id="col-left-inner" class="col-left-nano-content">
                             <div id="user-left-box" class="clearfix hidden-sm hidden-xs dropdown profile2-dropdown">
-                                <img alt="" src="~/Content/img/samples/robert-300.jpg" />
+                                @if ((bool)Basic.Code.OperatorProvider.Provider.GetCurrent().UserGender)
+                                {
+                                    <img alt="" src="~/Content/img/samples/robert-300.jpg" />
+                                }
+                                else
+                                {
+                                    <img alt="" src="~/Content/img/samples/emma-300.jpg" />
+                                }
                                 <div class="user-box">
                                     <span class="name">
                                         @Basic.Code.OperatorProvider.Provider.GetCurrent().UserName
-                                    </span>
-                                    <span class="status">
                                         <i class="fa fa-circle"></i>在线
                                     </span>
                                 </div>

@@ -61,6 +61,7 @@ namespace KingPlatform.Controllers
                     operatorModel.UserId = userEntity.F_Id;
                     operatorModel.UserCode = userEntity.F_Account;
                     operatorModel.UserName = userEntity.F_RealName;
+                    operatorModel.UserGender = userEntity.F_Gender;
                     operatorModel.CompanyId = userEntity.F_OrganizeId;
                     operatorModel.DepartmentId = userEntity.F_DepartmentId;
                     operatorModel.RoleId = userEntity.F_RoleId;

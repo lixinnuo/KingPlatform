@@ -83,3 +83,7 @@
 .wrapper .pop-list li h5{font-size: 12px;font-weight: bold;line-height: 24px;}
 .wrapper .pop-list label{line-height: 30px;display: block;float: left;min-width: 100px;height: 30px;padding: 5px 0;padding-right:15px;}
 .wrapper .pop-list li .form-control{float: left;width: 300px;margin-right: 5px;line-height: 30px;height: 30px;padding:0px;padding-left:5px;margin-top:3px;border-radius: 3px;box-shadow:none;resize: none;}
+.POboardnum {color:#00a5ff; font-size:14px;}
+.POboardTotalnum {color:#00a5ff;}
+
+

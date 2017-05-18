@@ -110,8 +110,7 @@ a:hover,a:focus{color:#475059;}
 #user-left-box .user-box>.name{display:block;font-size:1em;font-weight:600;line-height:1.2;}
 #user-left-box .user-box>.name>a{color:#fff}
 #user-left-box .user-box>.name>a:hover,#user-left-box .user-box>.name>a:focus{color:#E1E1E1;text-decoration:none;}
-#user-left-box .user-box>.status{display:block;font-size:0.75em;padding-top:8px;}
-#user-left-box .user-box>.status>i{color:#7FC8BA;margin-right:4px;}
+#user-left-box .user-box>.name>i{padding-left:25px;font-size:0.75em;color:#7FC8BA;margin-right:4px;}
 #user-left-box.dropdown .dropdown-menu{top:55px;left:30px;}
 #user-left-box.dropdown .dropdown-menu a{color:#707070;}
 #user-left-box.dropdown .dropdown-menu a:hover{background-color:#f6f6f6;color:#707070;}

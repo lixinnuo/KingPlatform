@@ -9,6 +9,7 @@
 
     function getPoList() {
         var $gridList = $("#gridList");
+        var lastSel;
         $gridList.dataGrid({
             url: "/HuaweiOrderManage/FindPOList/PostPOList",
             postData: { poStatusValue: "all", shipmentValue: "OPEN" },
@@ -49,10 +50,12 @@
                 var ids = $("#gridList").jqGrid("getGridParam", "selarrrow");
                 if ($.inArray(rowid, ids) >= 0) {
                     $("#choseNum").html(ids.length - 1);
+                    //$("#" + rowid + "_promiseDate").remove();
+                    //$("#" + rowid).find("td").eq(8).html($("#" + rowid).find("td").eq(8).attr("title"));
                 }
                 else {
                     $("#gridList").editRow(rowid, true);
-                    //$(".form-control").attr('style', $(".form-control").attr('style').replace('height: 34px;', ''));
+                    $("#" + rowid + "_promiseDate").removeClass("form-control");
                     $("#choseNum").html(ids.length + 1);
                 }
             },

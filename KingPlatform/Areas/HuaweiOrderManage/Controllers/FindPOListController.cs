@@ -52,36 +52,54 @@ namespace KingPlatform.Areas.HuaweiOrderManage.Controllers
         /// <returns></returns>
         [HttpGet]
         [HandlerAjaxOnly]
-        public ActionResult PostPOList(string poStatusValue, string shipmentValue = "all", string page = "1")
+        public ActionResult PostPOList(string poStatusValue, string shipmentValue = "all", int page = 1)
         {
-            int showPO = Convert.ToInt32(page) - 1;
-            if ((showPO * 20 % 100) == 0)
+            string findPOListurlTrue = "";
+            int getpage = page;
+            if (getpage == 1)
             {
-                findPOListurl += (showPO * 20 / 100 + 1);      //添加页码
                 string accessToken = HttpMethods.GetAccessToken(HttpMethods.HttpPost(url_token, key, secury));      //获取华为access_token
                 JavaScriptSerializer js = new JavaScriptSerializer();
                 //定义接口json数据 获取新POList传入参数
                 GetPOListParam param = new GetPOListParam("all", "all", "P", shipmentValue, "COL_TASK_STATUS", poStatusValue, "P");
                 string json = js.Serialize(param);
-                string result = HttpMethods.HttpPost(findPOListurl, json, true, accessToken);
-                result = result.Replace(":null", ":''");
-                getPOListParamBack = js.Deserialize<GetPOListParamBack>(result);
+                for (int i = 0; ; i++)
+                {
+                    getpage = page + i;
+                    findPOListurlTrue = findPOListurl + getpage.ToString(); //添加页码
+                    string result = HttpMethods.HttpPost(findPOListurlTrue, json, true, accessToken);
+                    result = result.Replace(":null", ":''");
+                    GetPOListParamBack getPOListParamBack1 = new GetPOListParamBack();
+                    getPOListParamBack1 = js.Deserialize<GetPOListParamBack>(result);
+                    if (i == 0)
+                    {
+                        getPOListParamBack = getPOListParamBack1;
+                    }
+                    else
+                    {
+                        for (int j = 0; j < getPOListParamBack1.result.Count; j++)
+                        {
+                            getPOListParamBack.result.Add(getPOListParamBack1.result[j]);
+                        }
+                    }
+                    if (getPOListParamBack1.result.Count < 100) break;
+                }
             }
             else
             {
-                if (poStatusValue == "huaweiPublishOrder")               //保存华为新PO列表
+                if (poStatusValue == "huaweiPublishOrder")               //获取储存的华为新PO列表
                 {
                      getPOListParamBack = this.TempData["NewPOList"] as GetPOListParamBack;
                 }
-                else if (poStatusValue == "huaweiNotifyOrderChange")     //保存华为变更PO列表
+                else if (poStatusValue == "huaweiNotifyOrderChange")     //获取储存的华为变更PO列表
                 {
                     getPOListParamBack = this.TempData["ChangePOList"] as GetPOListParamBack;
                 }
-                else if (poStatusValue == "huaweiNotifyCancelOrder")     //保存华为取消PO列表
+                else if (poStatusValue == "huaweiNotifyCancelOrder")     //获取储存的华为取消PO列表
                 {
                     getPOListParamBack = this.TempData["CancelPOList"] as GetPOListParamBack;
                 }
-                else if (poStatusValue == "all" && shipmentValue == "OPEN") //保存华为在途PO列表
+                else if (poStatusValue == "all" && shipmentValue == "OPEN") //获取储存的华为在途PO列表
                 {
                     getPOListParamBack = this.TempData["OnwayList"] as GetPOListParamBack;
                 }
@@ -113,7 +131,7 @@ namespace KingPlatform.Areas.HuaweiOrderManage.Controllers
                 int num = getPOListParamBack.result.Count;
                 for (int i = 0; i < num; i++)
                 {
-                    if (i >= (showPO * 20 - (showPO * 20 / 100) * 100) && i < ((showPO + 1) * 20 - (showPO * 20 / 100) * 100))
+                    if (i >= ((page - 1) * 20) && i < (page * 20))
                     {
                         getPOListParamBack1.result.Add(getPOListParamBack.result[i]);
                     }
