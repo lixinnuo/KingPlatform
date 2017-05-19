@@ -423,6 +423,7 @@
   <ItemGroup>
     <Content Include="Areas\HuaweiOrderManage\Views\FindPOList\News.cshtml" />
     <Content Include="Areas\HuaweiOrderManage\Views\FindPOList\Onway.cshtml" />
+    <Content Include="Areas\HuaweiOrderManage\Views\FindPOList\Closed.cshtml" />
     <None Include="Properties\PublishProfiles\KingPlatformConfig.pubxml" />
   </ItemGroup>
   <PropertyGroup>

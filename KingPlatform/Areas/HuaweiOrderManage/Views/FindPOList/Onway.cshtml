@@ -28,6 +28,7 @@
                     label: '承诺日期', name: 'promiseDate', width: 80, align: 'left', editable:true,
                     formatter: "date", formatoptions: { srcformat: 'Y-m-d', newformat: 'Y-m-d' }
                 },
+                {label: '变更原因', name: 'promiseDateChangeReason', width: 80, align: 'left', editable: true},
                 {
                     label: '有效日期', name: 'expireDate', width: 80, align: 'left',
                     formatter: "date", formatoptions: { srcformat: 'Y-m-d', newformat: 'Y-m-d' }
@@ -56,6 +57,7 @@
                 else {
                     $("#gridList").editRow(rowid, true);
                     $("#" + rowid + "_promiseDate").removeClass("form-control");
+                    $("#" + rowid + "_promiseDateChangeReason").removeClass("form-control");
                     $("#choseNum").html(ids.length + 1);
                 }
             },
@@ -73,16 +75,19 @@
     function btn_update() {
         var ids = $("#gridList").jqGrid("getGridParam", "selarrrow");
         var promiseDate = new Array();
+        var promiseDateChangeReason = new Array();
         for (var i = 0; i < ids.length; i++) {
             promiseDate[i] = $('#' + ids[i] + '_promiseDate').val();
+            promiseDateChangeReason[i] = $('#' + ids[i] + '_promiseDateChangeReason').val();
         }
         ids = ids.join("#");
         promiseDate = promiseDate.join("#");
+        promiseDateChangeReason = promiseDateChangeReason.join("#");
         $.modalConfirm("您确定要提交这些订单变更么？", function (r) {
             if (r) {
                 $.submitForm({
                     url: "/HuaweiOrderManage/FindPOList/OnwayPOList",
-                    param: { ids: ids, promiseDate: promiseDate, types: "OnwayList" },
+                    param: { ids: ids, promiseDate: promiseDate, promiseDateChangeReason: promiseDateChangeReason, types: "OnwayList" },
                     success: function () {
                         $('#ajax-loader').fadeIn();
                         window.location.reload();

@@ -1,5 +1,5 @@
 ﻿@{
-    ViewBag.Title = "Cancel";
+    ViewBag.Title = "Onway";
     Layout = "~/Views/Shared/_Index.cshtml";
 }
 <script>
@@ -9,9 +9,10 @@
 
     function getPoList() {
         var $gridList = $("#gridList");
+        var lastSel;
         $gridList.dataGrid({
             url: "/HuaweiOrderManage/FindPOList/PostPOList",
-            postData: { poStatusValue: "huaweiNotifyOrderChange" },
+            postData: { poStatusValue: "all", shipmentValue: "CLOSED" },
             height: $(window).height() - 128,
             colModel: [
                 { label: '订单号', name: 'poNumber', width: 100, align: 'left' },
@@ -24,9 +25,10 @@
                     formatter: "date", formatoptions: { srcformat: 'Y-m-d H:i:s', newformat: 'Y-m-d H:i:s' }
                 },
                 {
-                    label: '承诺日期', name: 'promiseDate', width: 80, align: 'left',
+                    label: '承诺日期', name: 'promiseDate', width: 80, align: 'left', editable:true,
                     formatter: "date", formatoptions: { srcformat: 'Y-m-d', newformat: 'Y-m-d' }
                 },
+                {label: '变更原因', name: 'promiseDateChangeReason', width: 80, align: 'left', editable: true},
                 {
                     label: '有效日期', name: 'expireDate', width: 80, align: 'left',
                     formatter: "date", formatoptions: { srcformat: 'Y-m-d', newformat: 'Y-m-d' }
@@ -49,8 +51,13 @@
                 var ids = $("#gridList").jqGrid("getGridParam", "selarrrow");
                 if ($.inArray(rowid, ids) >= 0) {
                     $("#choseNum").html(ids.length - 1);
+                    //$("#" + rowid + "_promiseDate").remove();
+                    //$("#" + rowid).find("td").eq(8).html($("#" + rowid).find("td").eq(8).attr("title"));
                 }
                 else {
+                    $("#gridList").editRow(rowid, true);
+                    $("#" + rowid + "_promiseDate").removeClass("form-control");
+                    $("#" + rowid + "_promiseDateChangeReason").removeClass("form-control");
                     $("#choseNum").html(ids.length + 1);
                 }
             },
@@ -65,23 +72,22 @@
         });
     }
 
-    function btn_signBackPOList(flag) {
-        var operateType;
-        var message;
-        if (flag) {
-            operateType = "accept";
-            message = "注： 您确定要【接受】这些变更订单吗？";
-        } else {
-            operateType = "reject";
-            message = "注： 您确定要【驳回】这些变更订单吗？";
-        }
+    function btn_update() {
         var ids = $("#gridList").jqGrid("getGridParam", "selarrrow");
+        var promiseDate = new Array();
+        var promiseDateChangeReason = new Array();
+        for (var i = 0; i < ids.length; i++) {
+            promiseDate[i] = $('#' + ids[i] + '_promiseDate').val();
+            promiseDateChangeReason[i] = $('#' + ids[i] + '_promiseDateChangeReason').val();
+        }
         ids = ids.join("#");
-        $.modalConfirm(message, function (r) {
+        promiseDate = promiseDate.join("#");
+        promiseDateChangeReason = promiseDateChangeReason.join("#");
+        $.modalConfirm("您确定要提交这些订单变更么？", function (r) {
             if (r) {
                 $.submitForm({
-                    url: "/HuaweiOrderManage/FindPOList/SignBackPOList",
-                    param: { ids: ids, operateType: operateType, types: "ChangePOList" },
+                    url: "/HuaweiOrderManage/FindPOList/OnwayPOList",
+                    param: { ids: ids, promiseDate: promiseDate, promiseDateChangeReason: promiseDateChangeReason, types: "OnwayList" },
                     success: function () {
                         $('#ajax-loader').fadeIn();
                         window.location.reload();
@@ -90,18 +96,7 @@
                 })
             }
         });
-    }
-
-    function btn_details() {
-        var keyValue = $("#gridList").jqGrid("getGridParam", "selrow");
-        $.modalOpen({
-            id: "Details",
-            title: "查看变更明细",
-            url: "/HuaweiOrderManage/FindPOList/ChangeDetails?keyValue=" + keyValue,
-            width: "700px",
-            height: "550px",
-            btn: null,
-        });
+        
     }
 
 </script>
@@ -110,7 +105,7 @@
 </div>
 <div class="topPanel">
     <div class="search">
-        <span>华为发起变更PO列表</span>
+        <span>在途PO列表</span>
     </div>
     <div class="toolbar">
         <div class="btn-group">
@@ -118,11 +113,9 @@
         </div>
         <div class="operate">
             <ul class="nav nav-pills">
-                <li class="first">华为发起变更PO列表</li>
+                <li class="first">在途PO列表</li>
                 <li class="first">已选中<span id="choseNum">0</span>项</li>
-                <li><a id="NF-btn_details" authorize="yes" onclick="btn_details()"><i class="fa fa-pencil-square-o"></i>查询PO变更明细</a></li>
-                <li><a id="NF-signBackPOList" authorize="yes" onclick="btn_signBackPOList(true)"><i class="fa fa-check"></i>PO签返（接受）</a></li>
-                <li><a id="NF-signBackPOList" authorize="yes" onclick="btn_signBackPOList(false)"><i class="fa fa-reply"></i>PO签返（驳回）</a></li>
+                <li><a id="NF-btn_details" authorize="yes" onclick="btn_update()"><i class="fa fa-pencil-square-o"></i>处理</a></li>
             </ul>
             <a href="javascript:;" class="close"></a>
         </div>

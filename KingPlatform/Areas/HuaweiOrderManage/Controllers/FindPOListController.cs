@@ -52,7 +52,7 @@ namespace KingPlatform.Areas.HuaweiOrderManage.Controllers
         /// <returns></returns>
         [HttpGet]
         [HandlerAjaxOnly]
-        public ActionResult PostPOList(string poStatusValue, string shipmentValue = "all", int page = 1)
+        public ActionResult PostPOList(string poStatusValue, string shipmentValue = "all", int page = 1, string warningStatus = "")
         {
             string findPOListurlTrue = "";
             int getpage = page;
@@ -84,10 +84,22 @@ namespace KingPlatform.Areas.HuaweiOrderManage.Controllers
                     }
                     if (getPOListParamBack1.result.Count < 100) break;
                 }
+                if (warningStatus == "new_po_undeal_more_than_3_days")      //新订单超三天未处理
+                {
+                    DateTime date_3_days = DateTime.Now.Date.AddDays(-3);
+                    for (int i = getPOListParamBack.result.Count - 1; i >= 0; i--)
+                    {
+                        if (DateTime.Compare(Convert.ToDateTime(getPOListParamBack.result[i].publishDate), date_3_days)  >= 0)
+                        {
+                            getPOListParamBack.result.Remove(getPOListParamBack.result[i]);
+                        }
+                    }
+                    getPOListParamBack.pageVO.totalRows = getPOListParamBack.result.Count;
+                }
             }
             else
             {
-                if (poStatusValue == "huaweiPublishOrder")               //获取储存的华为新PO列表
+                if (poStatusValue == "huaweiPublishOrder" && warningStatus == "")               //获取储存的华为新PO列表
                 {
                      getPOListParamBack = this.TempData["NewPOList"] as GetPOListParamBack;
                 }
@@ -103,8 +115,12 @@ namespace KingPlatform.Areas.HuaweiOrderManage.Controllers
                 {
                     getPOListParamBack = this.TempData["OnwayList"] as GetPOListParamBack;
                 }
+                else if (poStatusValue == "huaweiPublishOrder" && warningStatus == "new_po_undeal_more_than_3_days")  //获取储存的新订单超三天未处理列表
+                {
+                    getPOListParamBack = this.TempData["new_po_undeal_more_than_3_days"] as GetPOListParamBack;
+                }
             }
-            if (poStatusValue == "huaweiPublishOrder")               //保存华为新PO列表
+            if (poStatusValue == "huaweiPublishOrder" && warningStatus == "")               //保存华为新PO列表
             {
                 this.TempData["NewPOList"] = getPOListParamBack;
             }
@@ -120,6 +136,10 @@ namespace KingPlatform.Areas.HuaweiOrderManage.Controllers
             {
                 this.TempData["OnwayList"] = getPOListParamBack;
             }
+            else if (poStatusValue == "huaweiPublishOrder" && warningStatus == "")  //保存新订单超三天未处理
+            {
+                this.TempData["new_po_undeal_more_than_3_days"] = getPOListParamBack;
+            }
 
             if (getPOListParamBack.pageVO == null)
             {
@@ -129,9 +149,9 @@ namespace KingPlatform.Areas.HuaweiOrderManage.Controllers
             {
                 GetPOListParamBack getPOListParamBack1 = new GetPOListParamBack();
                 int num = getPOListParamBack.result.Count;
-                for (int i = 0; i < num; i++)
+                for (int i = num - 1; i >= 0; i--)
                 {
-                    if (i >= ((page - 1) * 20) && i < (page * 20))
+                    if (i < num - ((page - 1) * 20) && i >= num - (page * 20))
                     {
                         getPOListParamBack1.result.Add(getPOListParamBack.result[i]);
                     }
@@ -261,13 +281,14 @@ namespace KingPlatform.Areas.HuaweiOrderManage.Controllers
         /// <param name="types">类型</param>
         /// <returns></returns>
         [HandlerAjaxOnly]
-        public ActionResult OnwayPOList(string ids, string promiseDate, string types)
+        public ActionResult OnwayPOList(string ids, string promiseDate, string promiseDateChangeReason, string types)
         {
             getPOListParamBack = new GetPOListParamBack();
             getPOListParamBack = this.TempData[types] as GetPOListParamBack;
             List<PoLinesAllVO> postOnwayPO = new List<PoLinesAllVO>();
             string[] idSplit = ids.Split('#');
             string[] dateSplit = promiseDate.Split('#');
+            string[] reasonSplit = promiseDateChangeReason.Split('#');
 
             for (int i = 0; i < idSplit.Length; i++)
             {
@@ -275,7 +296,7 @@ namespace KingPlatform.Areas.HuaweiOrderManage.Controllers
                 poLinesAllVO.instanceId = getPOListParamBack.result[Int32.Parse(idSplit[i]) - 1].instanceId;
                 poLinesAllVO.poNumber = getPOListParamBack.result[Int32.Parse(idSplit[i]) - 1].poNumber;
                 poLinesAllVO.lineLocationId = getPOListParamBack.result[Int32.Parse(idSplit[i]) - 1].lineLocationId;
-                poLinesAllVO.promiseDateChangeReason = "XX";
+                poLinesAllVO.promiseDateChangeReason = reasonSplit[i];
                 poLinesAllVO.typeLookupCode = "2";
                 poLinesAllVO.promiseDateStr = dateSplit[i];
                 //poLinesAllVO.needQuantity = getPOListParamBack.result[Int32.Parse(idSplit[i]) - 1].needQuantity;
@@ -360,6 +381,11 @@ namespace KingPlatform.Areas.HuaweiOrderManage.Controllers
         }
         [HttpGet]
         public virtual ActionResult Onway()
+        {
+            return View();
+        }
+        [HttpGet]
+        public virtual ActionResult Closed()
         {
             return View();
         }
@@ -560,7 +586,7 @@ namespace KingPlatform.Areas.HuaweiOrderManage.Controllers
             public string poLineNum { get; set; }               //PO行号
             public string itemCode { get; set; }                //Item编码
             public string itemDescription { get; set; }         //Item描述
-            public string needQuantity { get; set; }            //需求数量
+            public int? needQuantity { get; set; }            //需求数量
             public string unitOfMeasure { get; set; }           //单位
             public string priceOverride { get; set; }           //单价
             public string currencyCode { get; set; }            //币种
@@ -641,7 +667,7 @@ namespace KingPlatform.Areas.HuaweiOrderManage.Controllers
             public string promiseDateChangeReason { get; set; }     //修改原因
             public string typeLookupCode { get; set; }              //修改类型  “2”是修改交期 “1”是修改数量 “3”是既修改交期也修改数量
             public string promiseDateStr { get; set; }              //新的交期时间
-            public string needQuantity { get; set; }               //新的修改数量
+            public int? needQuantity { get; set; }               //新的修改数量
         }
         #endregion
     }

@@ -19,7 +19,7 @@
 .topPanel .search .input-group{line-height:30px;margin-top:1px;}
 .topPanel .search .input-group .btn{padding: 0px 0px;font-size: 14px;height:29px;min-width:30px;}
 .topPanel .search .input-group .btn i{margin-right:0px;}
-.topPanel .search .input-group .form-control{box-shadow:none;height:29px;line-height:29px;padding-top:0px;padding-bottom:0px;padding-right:0px;padding-left:7px;resize: none;}
+.topPanel .search .input-group .form-control{box-shadow:none;height:29px;line-height:29px;padding:0 0 0 7px;resize: none;}
 .topPanel .search .input-group .form-control:focus{border-color:#ddd;-webkit-box-shadow:none;box-shadow:none;}
 .topPanel .search .btn i{margin-right:4px;font-size:14px;}
 .topPanel .toolbar{float: right;padding-right: 10px;}
@@ -28,7 +28,7 @@
 .topPanel .toolbar .operate ul{margin: 9px 0 0 -2px;}
 .topPanel .toolbar .operate ul li{float: left;height: 12px;line-height: 12px;}
 .topPanel .toolbar .operate ul li.split{position: relative;display: block;border-right: 1px solid #c9c9c9;height: 16px;margin-left:5px;margin-right:5px;margin-top: 8px;}
-.topPanel .toolbar .operate ul li a{cursor:pointer;padding: 10px 10px;}
+.topPanel .toolbar .operate ul li a{cursor:pointer;padding: 8px;border:1px solid #c9c9c9;margin-left:15px;}
 .topPanel .toolbar .operate ul li i{margin-right:4px;font-size:13px;color: #666666;vertical-align: middle;margin-top: -1px;}
 .topPanel .toolbar .operate ul .first{position: relative;display: block;padding: 2px 15px;padding-right:10px;margin-top: 8px;margin-right:0px;border-right: 1px solid #c9c9c9;}
 .topPanel .toolbar .operate ul li.first > span{margin-left: 5px;margin-right:5px;}
@@ -40,7 +40,7 @@
 .form .formTitle{position:relative;left:0px;text-align:right;white-space:nowrap;font-weight:normal;width:90px;padding-right:15px;}
 .form .formTitle font{color:red;position:absolute;right:0px;}
 .form .formValue{position:relative;padding:5px;width:auto;}
-.form .formValue input.form-control{height:30px;line-height:30px;padding-top:0px;padding-bottom:0px;padding-right:0px;padding-left:5px;resize: none;border-radius: 0px;box-shadow:none;}
+.form .formValue input.form-control{height:30px;line-height:30px;padding:0 0 0 5px;resize: none;border-radius: 0px;box-shadow:none;}
 .form .formValue select.form-control{border-radius: 0px;box-shadow:none;}
 .form .formValue textarea.form-control{padding-left:5px;resize: none;border-radius: 0px;box-shadow:none;}
 .form .formValue .input-group .btn{padding: 4px 0px;font-size: 14px;height:30px;min-width: 30px;border-radius: 0px;}
@@ -66,7 +66,7 @@
 .price-info table .formValue{text-align:left;font-size: 12px;}
 .price-info table .formValue input{border-top:none;border-right:none;border-left:none;height:22px!important;line-height:22px!important;font-size: 12px;}
 .price-table table{margin: 0px;margin-top:1px;border-collapse: collapse;width: 100%;border-left: 1px solid #ccc;}
-.price-table table thead tr td{border-top: 1px solid #ccc;border-bottom: 1px solid #ccc;border-right: 1px solid #ccc;padding-top:5px;padding-bottom:5px;text-overflow:ellipsis;word-break:keep-all;overflow:hidden;font-weight:bold;padding-left:5px;padding-right:5px;font-size: 12px;}
+.price-table table thead tr td{border-top: 1px solid #ccc;border-bottom: 1px solid #ccc;border-right: 1px solid #ccc;padding:5px;text-overflow:ellipsis;word-break:keep-all;overflow:hidden;font-weight:bold;font-size: 12px;}
 .price-table table tbody tr td{border-bottom: 1px solid #ccc;border-right: 1px solid #ccc;height:25px;line-height:25px;word-break: break-all;padding-left:5px;padding-right:5px;font-size: 12px;}
 .wrapper{border: 1px solid #ddd;overflow:auto;color: #475059;background-color:#fff;}
 .wrapper .nav-tabs{position:relative;z-index:1;margin:0;padding:15px 15px 0;border-color:#ddd}
@@ -85,5 +85,6 @@
 .wrapper .pop-list li .form-control{float: left;width: 300px;margin-right: 5px;line-height: 30px;height: 30px;padding:0px;padding-left:5px;margin-top:3px;border-radius: 3px;box-shadow:none;resize: none;}
 .POboardnum {color:#00a5ff; font-size:14px;}
 .POboardTotalnum {color:#00a5ff;}
-
-
+.red {color:red;}
+.remark ul {list-style: none;padding:0;}
+ .remark ul li i {color:#00a5ff;}

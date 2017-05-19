@@ -11,7 +11,7 @@
         var $gridList = $("#gridList");
         $gridList.dataGrid({
             url: "/HuaweiOrderManage/FindPOList/PostPOList",
-            postData: { poStatusValue: "po_warning_overdue" },
+            postData: { poStatusValue: "huaweiPublishOrder", warningStatus: "new_po_undeal_more_than_3_days" },
             height: $(window).height() - 128,
             colModel: [
                 { label: '订单号', name: 'poNumber', width: 100, align: 'left' },
@@ -21,7 +21,7 @@
                 { label: '数量', name: 'needQuantity', width: 80, align: 'left' },
                 {
                     label: '下发日期', name: 'publishDate', width: 120, align: 'left',
-                    formatter: "date", formatoptions: { srcformat: 'Y-m-d', newformat: 'Y-m-d' }
+                    formatter: "date", formatoptions: { srcformat: 'Y-m-d H:i:s', newformat: 'Y-m-d H:i:s' }
                 },
                 {
                     label: '承诺日期', name: 'promiseDate', width: 120, align: 'left',
@@ -88,9 +88,10 @@
                 </td>
                 <td style="padding-left: 10px;">
                     <div id="time_horizon" class="btn-group">
-                        <a class="btn btn-default active" data-value="po_warning_overdue">过期PO</a>
-                        <a class="btn btn-default" data-value="new_po_undeal_more_than_3_days">订单超三天未处理</a>
+                        <a class="btn btn-default active" data-value="new_po_undeal_more_than_3_days">新订单超三天未处理</a>
+                        <a class="btn btn-default" data-value="po_no_arrive_more_than_6_monthes">预计两周内到货</a>
                         <a class="btn btn-default" data-value="po_no_arrive_more_than_6_monthes">下单六个月未交货</a>
+                        <a class="btn btn-default" data-value="po_warning_overdue">过期PO</a>
                     </div>
                 </td>
             </tr>

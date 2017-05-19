@@ -57,24 +57,26 @@
                     <table class="table table-hover">
                         <tr style="height:60px;font-size:16px;background-color:#e4edff;color:#00a5ff;">
                             <td class="col-md-6" style="padding-top:18px;padding-left:20px;">待接受</td>
-                            <td class="col-md-6" style="padding-top:18px;padding-left:20px;"><span id="noacceptedPO" class="POboardTotalnum">0</span></td>
+                            <td class="col-md-6" style="padding-top:18px;padding-left:20px;">
+                                <span id="noacceptedPO" class="POboardTotalnum">0</span>
+                            </td>
                         </tr>
                         <tr style="height:40px;">
                             <td class="col-md-6" style="padding-top:10px;padding-left:20px;">新订单</td>
                             <td class="col-md-6" style="padding-top:10px;padding-left:20px;">
-                                <a id="newOrderQuantity" class="POboardnum" name="newOrderQuantity" href="javascript:void()" data-name="新PO列表" data-id="2bcb1fef-78f4-4a44-a0b8-4a0355d78a7a" data-href="/HuaweiOrderManage/FindPOList/News">0</a>
+                                <a id="newOrderQuantity" class="POboardnum" name="newOrderQuantity" href="javascript:void()" data-name="新PO列表" data-id="2bcb1fef-78f4-4a44-a0b8-4a0355d78a7a" data-href="/HuaweiOrderManage/FindPOList/News">0</a><span class="red">*</span>
                             </td>
                         </tr>
                         <tr style="height:40px;">
                             <td class="col-md-6" style="padding-top:10px;padding-left:20px;">内容变更通知</td>
                             <td class="col-md-6" style="padding-top:10px;padding-left:20px;">
-                                <a id="changedOrderQuantity" class="POboardnum" name="changedOrderQuantity" href="javascript:void()" data-name="变更PO列表" data-id="d26d8152-3441-42fe-ac9e-d2c08201685d" data-href="/HuaweiOrderManage/FindPOList/Change">0</a>
+                                <a id="changedOrderQuantity" class="POboardnum" name="changedOrderQuantity" href="javascript:void()" data-name="变更PO列表" data-id="d26d8152-3441-42fe-ac9e-d2c08201685d" data-href="/HuaweiOrderManage/FindPOList/Change">0</a><span class="red">*</span>
                             </td>
                         </tr>
                         <tr style="height:40px;">
                             <td class="col-md-6" style="padding-top:10px;padding-left:20px;">订单取消通知</td>
                             <td class="col-md-6" style="padding-top:10px;padding-left:20px;">
-                                <a id="cancelOrderQuantity" class="POboardnum" name="cancelOrderQuantity" href="javascript:void()" data-name="取消PO列表" data-id="b7eb5f85-4890-41d0-a59a-1570f7f6cfb9" data-href="/HuaweiOrderManage/FindPOList/Cancel">0</a>
+                                <a id="cancelOrderQuantity" class="POboardnum" name="cancelOrderQuantity" href="javascript:void()" data-name="取消PO列表" data-id="b7eb5f85-4890-41d0-a59a-1570f7f6cfb9" data-href="/HuaweiOrderManage/FindPOList/Cancel">0</a><span class="red">*</span>
                             </td>
                         </tr>
                         <tr style="height:40px;">
@@ -124,19 +126,19 @@
                         <tr style="height:40px;">
                             <td class="col-md-6" style="padding-top:10px;padding-left:20px;">在途订单</td>
                             <td class="col-md-6" style="padding-top:10px;padding-left:20px;">
-                                <a id="intransitOrderQuantity" class="POboardnum" name="intransitOrderQuantity" href="javascript:void()" data-name="在途PO列表" data-id="cbbf8982-92f5-472b-ab2c-ac151d203860" data-href="/HuaweiOrderManage/FindPOList/Onway">0</a>
+                                <a id="intransitOrderQuantity" class="POboardnum" name="intransitOrderQuantity" href="javascript:void()" data-name="在途PO列表" data-id="cbbf8982-92f5-472b-ab2c-ac151d203860" data-href="/HuaweiOrderManage/FindPOList/Onway">0</a><span class="red">*</span>
                             </td>
                         </tr>
                         <tr style="height:40px;">
                             <td class="col-md-6" style="padding-top:10px;padding-left:20px;">订单已取消</td>
                             <td class="col-md-6" style="padding-top:10px;padding-left:20px;">
-                                <a id="cancelledOrderQuantity" class="POboardnum" name="cancelledOrderQuantity" href="javascript:void()" data-name="订单已取消" data-id="d26d8152-3441-42fe-ac9e-d2c08201685d" data-href="/HuaweiOrderManage/FindPOList/Change">0</a>
+                                <a id="cancelledOrderQuantity" class="POboardnum" name="cancelledOrderQuantity" href="javascript:void()" data-name="" data-id="" data-href="">0</a>
                             </td>
                         </tr>
                         <tr style="height:40px;">
                             <td class="col-md-6" style="padding-top:10px;padding-left:20px;">订单已关闭</td>
                             <td class="col-md-6" style="padding-top:10px;padding-left:20px;">
-                                <a id="closedOrderQuantity" class="POboardnum" name="closedOrderQuantity" href="javascript:void()" data-name="订单已关闭" data-id="b7eb5f85-4890-41d0-a59a-1570f7f6cfb9" data-href="/HuaweiOrderManage/FindPOList/Cancel">0</a>
+                                <a id="closedOrderQuantity" class="POboardnum" name="closedOrderQuantity" href="javascript:void()" data-name="已关闭PO列表" data-id="b76b0c2b-21c3-4844-8a7e-f8909d25d288" data-href="/HuaweiOrderManage/FindPOList/Closed">0</a><span class="red">*</span>
                             </td>
                         </tr>
 
@@ -151,25 +153,25 @@
                         <tr style="height:40px;">
                             <td class="col-md-6" style="padding-top:10px;padding-left:20px;">新订单超三天未处理</td>
                             <td class="col-md-6" style="padding-top:10px;padding-left:20px;">
-                                <a id="expiredOrderQuantity" class="POboardnum" name="expiredOrderQuantity" href="javascript:void()" data-name="预警PO列表" data-id="0daf345b-8519-4a1d-acb5-a17406ed235c" data-href="/HuaweiOrderManage/FindPOList/Warning">0</a>
+                                <a id="expiredOrderQuantity" class="POboardnum" name="expiredOrderQuantity" href="javascript:void()" data-name="预警PO列表" data-id="0daf345b-8519-4a1d-acb5-a17406ed235c" data-href="/HuaweiOrderManage/FindPOList/Warning">0</a><span class="red">*</span>
                             </td>
                         </tr>
                         <tr style="height:40px;">
                             <td class="col-md-6" style="padding-top:10px;padding-left:20px;">预计两周内到货</td>
                             <td class="col-md-6" style="padding-top:10px;padding-left:20px;">
-                                <a id="arrivalOnWeekOrderQuantity" class="POboardnum" name="arrivalOnWeekOrderQuantity" href="javascript:void()" data-name="预警PO列表" data-id="2bcb1fef-78f4-4a44-a0b8-4a0355d78a7a" data-href="/HuaweiOrderManage/FindPOList/News">0</a>
+                                <a id="arrivalOnWeekOrderQuantity" class="POboardnum" name="arrivalOnWeekOrderQuantity" href="javascript:void()" data-name="预警PO列表" data-id="0daf345b-8519-4a1d-acb5-a17406ed235c" data-href="/HuaweiOrderManage/FindPOList/Warning">0</a><span class="red">*</span>
                             </td>
                         </tr>
                         <tr style="height:40px;">
                             <td class="col-md-6" style="padding-top:10px;padding-left:20px;">下单六个月未交货</td>
                             <td class="col-md-6" style="padding-top:10px;padding-left:20px;">
-                                <a id="nonDeliveryOrderQuantity" class="POboardnum" name="nonDeliveryOrderQuantity" href="javascript:void()" data-name="预警PO列表" data-id="d26d8152-3441-42fe-ac9e-d2c08201685d" data-href="/HuaweiOrderManage/FindPOList/Change">0</a>
+                                <a id="nonDeliveryOrderQuantity" class="POboardnum" name="nonDeliveryOrderQuantity" href="javascript:void()" data-name="预警PO列表" data-id="0daf345b-8519-4a1d-acb5-a17406ed235c" data-href="/HuaweiOrderManage/FindPOList/Warning">0</a><span class="red">*</span>
                             </td>
                         </tr>
                         <tr style="height:40px;">
                             <td class="col-md-6" style="padding-top:10px;padding-left:20px;">过期订单</td>
                             <td class="col-md-6" style="padding-top:10px;padding-left:20px;">
-                                <a id="overdueOrderQuantity" class="POboardnum" name="overdueOrderQuantity" href="javascript:void()" data-name="预警PO列表" data-id="0daf345b-8519-4a1d-acb5-a17406ed235c" data-href="/HuaweiOrderManage/FindPOList/Warning">0</a>
+                                <a id="overdueOrderQuantity" class="POboardnum" name="overdueOrderQuantity" href="javascript:void()" data-name="预警PO列表" data-id="0daf345b-8519-4a1d-acb5-a17406ed235c" data-href="/HuaweiOrderManage/FindPOList/Warning">0</a><span class="red">*</span>
                             </td>
                         </tr>
 
@@ -177,5 +179,11 @@
                 </td>
             </tr>
         </table>
+        <div class="remark">
+            <ul>
+                <li><i class="fa fa-circle"></i>&nbsp;&nbsp;点击数字打开新页面到具体列表，*表示可打开页面。</li>
+            </ul>
+        </div>
+
     </div>
 </form>
