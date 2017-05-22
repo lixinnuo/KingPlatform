@@ -161,6 +161,8 @@
     <Content Include="Content\img\samples\emma.png" />
     <Content Include="Content\img\samples\george.png" />
     <Content Include="Content\img\samples\head_120.png" />
+    <Content Include="Content\img\hw_notes.png" />
+    <Content Include="Content\img\hw_title.png" />
     <Content Include="Content\img\samples\jessica.jpg" />
     <Content Include="Content\img\samples\kunis-300.jpg" />
     <Content Include="Content\img\samples\kunis.png" />
@@ -426,6 +428,7 @@
     <Content Include="Areas\HuaweiOrderManage\Views\FindPOList\Closed.cshtml" />
     <None Include="Properties\PublishProfiles\KingPlatformConfig.pubxml" />
   </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

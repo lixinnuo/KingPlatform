@@ -15,12 +15,19 @@
             height: $(window).height() - 128,
             colModel: [
                 { label: '订单号', name: 'poNumber', width: 100, align: 'left' },
-                { label: '订单行号', name: 'poLineNum', width: 50, align: 'left' },
-                { label: '编码', name: 'itemCode', width: 80, align: 'left' },
-                { label: '描述', name: 'itemDescription', width: 350, align: 'left' },
-                { label: '需求数量', name: 'needQuantity', width: 80, align: 'left' },
+                { label: '行号', name: 'poLineNum', width: 30, align: 'left' },
+                { label: '编码', name: 'itemCode', width: 70, align: 'left' },
+                { label: '描述', name: 'itemDescription', width: 450, align: 'left' },
+                { label: '需求数量', name: 'quantity', width: 80, align: 'left' },
+                { label: '已收货数量', name: 'quantityReceived', width: 80, align: 'left', hidden: true },
                 {
-                    label: '下发日期', name: 'publishDate', width: 120, align: 'left', 
+                    label: '未交货数量', name: 'quantity', width: 80, align: 'left',
+                    formatter: function (cellvalue, options, rowObject) {
+                        return rowObject.quantity - rowObject.quantityReceived;
+                    }
+                },
+                {
+                    label: '下单日期', name: 'publishDate', width: 120, align: 'left', 
                     formatter: "date", formatoptions: { srcformat: 'Y-m-d H:i:s', newformat: 'Y-m-d H:i:s' }
                 },
                 {
@@ -31,8 +38,18 @@
                     label: '有效日期', name: 'expireDate', width: 80, align: 'left',
                     formatter: "date", formatoptions: { srcformat: 'Y-m-d', newformat: 'Y-m-d' }
                 },
-                { label: '收货地点', name: 'shipToLocation', width: 350, align: 'left' },
-                { label: '采购员', name: 'agentName', width: 80, align: 'left' },
+                { label: '币种', name: 'currencyCode', width: 50, align: 'left' },
+                { label: '单价', name: 'priceOverride', width: 50, align: 'left' },
+                { label: '数量', name: 'quantity', width: 50, align: 'left' },
+                {
+                    label: '小计', name: 'totalPrice', width: 50, align: 'left',
+                    formatter: function (cellvalue, options, rowObject) {
+                        return rowObject.quantity * rowObject.priceOverride;
+                    }
+                },
+                { label: '单位', name: 'unitOfMeasure', width: 50, align: 'left' },
+                { label: '收货地点', name: 'shipToLocation', width: 550, align: 'left' },
+                { label: '采购员', name: 'agentName', width: 250, align: 'left' },
                 { label: '备注', name: 'remark', width: 200, align: 'left' }
             ],
             pager: "#gridPager",
@@ -91,6 +108,18 @@
             }
         });
     }
+
+    function btn_exportPOPDF() {
+        var keyValue = $("#gridList").jqGrid("getGridParam", "selrow");
+        $.submitForm({
+            url: "/HuaweiOrderManage/FindPOList/ExportPOPDF",
+            param: { id: keyValue, types: "NewPOList" },
+            success: function (data) {
+                alert(data);
+            }
+        });
+
+    }
 </script>
 <div id="ajax-loader">
     <img src="~/Content/img/ajax-loader.gif" />
@@ -109,6 +138,7 @@
                 <li class="first">已选中<span id="choseNum">0</span>项</li>
                 <li><a id="NF-signBackPOList" authorize="yes" onclick="btn_signBackPOList(true)"><i class="fa fa-check"></i>PO签返（接受）</a></li>
                 <li><a id="NF-signBackPOList" authorize="yes" onclick="btn_signBackPOList(false)"><i class="fa fa-reply"></i>PO签返（驳回）</a></li>
+                <li><a id="NF-exportPOPDF" authorize="yes" onclick="btn_exportPOPDF()"><i class="fa fa-reply"></i>导出PDF</a></li>
             </ul>
             <a href="javascript:;" class="close"></a>
         </div>

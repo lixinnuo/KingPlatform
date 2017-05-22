@@ -354,6 +354,17 @@ namespace KingPlatform.Areas.HuaweiOrderManage.Controllers
             return Content(getPOListParamBack.ToJson());
         }
 
+        [HandlerAjaxOnly]
+        public ActionResult ExportPOPDF(string id, string types)
+        {
+            if (types == "NewPOList")
+            {
+                getPOListParamBack = this.TempData["NewPOList"] as GetPOListParamBack;
+            }
+            string result = iTextPDF.CreateHWPOPDF();
+            return Content(result);
+        }
+
         [HttpGet]
         public virtual ActionResult News()
         {
@@ -586,7 +597,8 @@ namespace KingPlatform.Areas.HuaweiOrderManage.Controllers
             public string poLineNum { get; set; }               //PO行号
             public string itemCode { get; set; }                //Item编码
             public string itemDescription { get; set; }         //Item描述
-            public int? needQuantity { get; set; }            //需求数量
+            public int? quantity { get; set; }                  //需求数量
+            public int? quantityReceived { get; set; }          //已收货数量
             public string unitOfMeasure { get; set; }           //单位
             public string priceOverride { get; set; }           //单价
             public string currencyCode { get; set; }            //币种
