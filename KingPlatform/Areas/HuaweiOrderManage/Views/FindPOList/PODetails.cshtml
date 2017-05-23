@@ -1,0 +1,111 @@
+﻿@{
+    ViewBag.Title = "PODetails";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+<script>
+    var poNumber = $.request("poNumber");
+    var poLineNum = $.request("poLineNum");
+    var types = $.request("types");
+    $(function () {
+        $.ajax({
+            url: "/HuaweiOrderManage/FindPOList/GetPODetail",
+            data: { poNumber: poNumber, poLineNum: poLineNum, types: types },
+            dataType: "json",
+            async: false,
+            success: function (data) {
+                $("#form1").formSerialize(data);
+                $("#totalMoney").val(data.quantity * data.priceOverride + "(" + data.currencyCode + ")");
+                $("#form1").find('.form-control,input').attr('readonly', 'readonly');
+            }
+        });
+    });
+
+    function btn_exportPOPDF() {
+        $.ajax({
+            url: "/HuaweiOrderManage/FindPOList/ExportPOPDF",
+            data: { poNumber: poNumber, poLineNum: poLineNum, types: types },
+            success: function (data) {
+                
+            }
+        });
+       
+    }
+</script>
+<form id="form1">
+    <div style="margin-top: 10px; margin-left: 10px; margin-right: 10px;">
+        <ul class="nav nav-tabs">
+            <li class="active"><a href="#">订单详细信息</a></li>
+        </ul>
+        <div style="padding-top: 20px; margin-right: 30px;">
+            <table class="form">
+                <tr>
+                    <th class="formTitle">订单编号:</th>
+                    <td class="formValue">
+                        <input id="poNumber" name="poNumber" type="text" class="form-control" />
+                    </td>
+                    <th class="formTitle">供应商编码:</th>
+                    <td class="formValue">
+                        <input id="vendorCode" name="vendorCode" type="text" class="form-control" />
+                    </td>
+                </tr>
+                <tr>
+                    <th class="formTitle">订单总金额:</th>
+                    <td class="formValue">
+                        <input id="totalMoney" name="totalMoney" type="text" class="form-control" />
+                    </td>
+                    <th class="formTitle">供应商名称:</th>
+                    <td class="formValue">
+                        <input id="vendorName" name="vendorName" type="text" class="form-control" />
+                    </td>
+                </tr>
+                <tr>
+                    <th class="formTitle">采购员:</th>
+                    <td class="formValue">
+                        <input id="agentName" name="agentName" type="text" class="form-control" />
+                    </td>
+                    <th class="formTitle">下单日期:</th>
+                    <td class="formValue">
+                        <input id="publishDate" name="publishDate" type="text" class="form-control" />
+                    </td>
+                </tr>
+                <tr>
+                    <th class="formTitle">版本号:</th>
+                    <td colspan="3" class="formValue">
+                        <input id="revisionNum" name="revisionNum" type="text" class="form-control" />
+                    </td>
+                </tr>
+                <tr>
+                    <th class="formTitle">支付条款:</th>
+                    <td colspan="3" class="formValue">
+                        <input id="paymentTerms" name="paymentTerms" type="text" class="form-control" />
+                    </td>
+                </tr>
+                <tr>
+                    <th class="formTitle">开票单位:</th>
+                    <td colspan="3" class="formValue">
+                        <input id="issuOffice" name="issuOffice" type="text" class="form-control" />
+                    </td>
+                </tr>
+                <tr>
+                    <th class="formTitle">开票地址:</th>
+                    <td colspan="3" class="formValue">
+                        <input id="billToLocation" name="billToLocation" type="text" class="form-control" />
+                    </td>
+                </tr>
+                <tr>
+                    <th class="formTitle" valign="top" style="padding-top: 5px;">
+                        备注
+                    </th>
+                    <td class="formValue" colspan="3">
+                        <textarea id="remark" name="remark" class="form-control" style="height: 60px;"></textarea>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="4" style="text-align:center;">
+                        <a id="King-exportPOPDF" class="btn btn-primary" onclick="btn_exportPOPDF()"><i class="fa fa-reply"></i>导出PDF</a>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</form>

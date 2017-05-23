@@ -14,11 +14,17 @@
             postData: { poStatusValue: "huaweiPublishOrder", warningStatus: "new_po_undeal_more_than_3_days" },
             height: $(window).height() - 128,
             colModel: [
-                { label: '订单号', name: 'poNumber', width: 100, align: 'left' },
-                { label: '订单行号', name: 'poLineNum', width: 50, align: 'left' },
-                { label: '编码', name: 'itemCode', width: 80, align: 'left' },
-                { label: '描述', name: 'itemDescription', width: 350, align: 'left' },
-                { label: '数量', name: 'needQuantity', width: 80, align: 'left' },
+                {
+                    label: '订单号', name: 'poNumber', width: 100, align: 'left',
+                    formatter: function (cellvalue, options, rowObject) {
+                        return "<a onclick=\"viewDetails('" + cellvalue + "','" + rowObject.poLineNum + "')\" style='cursor:pointer;color:blue;'>" + cellvalue + "</a>";
+                    }
+                },
+                { label: '订单', name: 'poLineNum', width: 30, align: 'left' },
+                { label: '编码', name: 'itemCode', width: 70, align: 'left' },
+                { label: '描述', name: 'itemDescription', width: 450, align: 'left' },
+                { label: '需求数量', name: 'quantity', width: 80, align: 'left' },
+                { label: '已收货数量', name: 'quantityReceived', width: 80, align: 'left', hidden: true },
                 {
                     label: '下发日期', name: 'publishDate', width: 120, align: 'left',
                     formatter: "date", formatoptions: { srcformat: 'Y-m-d H:i:s', newformat: 'Y-m-d H:i:s' }
@@ -27,17 +33,23 @@
                     label: '承诺日期', name: 'promiseDate', width: 120, align: 'left',
                     formatter: "date", formatoptions: { srcformat: 'Y-m-d', newformat: 'Y-m-d' }
                 },
+                { label: '币种', name: 'currencyCode', width: 50, align: 'left' },
+                { label: '单价', name: 'priceOverride', width: 50, align: 'left' },
+                { label: '数量', name: 'quantity', width: 50, align: 'left' },
                 {
-                    label: '有效日期', name: 'expireDate', width: 120, align: 'left',
-                    formatter: "date", formatoptions: { srcformat: 'Y-m-d', newformat: 'Y-m-d' }
+                    label: '小计', name: 'totalPrice', width: 50, align: 'left',
+                    formatter: function (cellvalue, options, rowObject) {
+                        return rowObject.quantity * rowObject.priceOverride;
+                    }
                 },
-                { label: '收货地点', name: 'shipToLocation', width: 350, align: 'left' },
-                { label: '采购员', name: 'agentName', width: 80, align: 'left' },
+                { label: '单位', name: 'unitOfMeasure', width: 50, align: 'left' },
+                { label: '收货地点', name: 'shipToLocation', width: 550, align: 'left' },
+                { label: '采购员', name: 'agentName', width: 250, align: 'left' },
                 { label: '备注', name: 'remark', width: 200, align: 'left' }
             ],
             pager: "#gridPager",
             multiselect: true,
-            rowNum: 20,
+            rowNum: 18,
             rowList: {},
             autoScroll: true,
             viewrecords: true,
@@ -67,7 +79,17 @@
                 postData: queryJson,
             }).trigger('reloadGrid');
         });
+    }
 
+    function viewDetails(poNumber, poLineNum) {
+        $.modalOpen({
+            id: "Details",
+            title: "订单详细信息",
+            url: "/HuaweiOrderManage/FindPOList/PODetails?poNumber=" + poNumber + "&poLineNum=" + poLineNum + "&types=NewPOList",
+            width: "700px",
+            height: "550px",
+            btn: null,
+        });
     }
 
 </script>

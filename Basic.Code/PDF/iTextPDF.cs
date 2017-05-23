@@ -10,21 +10,21 @@ namespace Basic.Code
         /// <summary>
         /// 导出华为订单的PDF
         /// </summary>
-        public static string  CreateHWPOPDF()
+        public static void  CreateHWPOPDF(string mes)
         {
+            PODatails data = new PODatails();
+            data = mes.ToObject<PODatails>();
             Document document = new Document(PageSize.A3);
-            string pdfURL = "";
+            string pdfName = "", pdfPath = "";
             try
             {
-                string pdfName = DateTime.Now.ToString("yyyyMMddHHmmss");
+                pdfName =   DateTime.Now.ToString("yyyyMMddHHmmss");
                 if (!Directory.Exists(System.Web.HttpContext.Current.Server.MapPath("~/Download/HWPO/pdf/")))
                 {
                     Directory.CreateDirectory(System.Web.HttpContext.Current.Server.MapPath("~/Download/HWPO/pdf/"));
                 }
-                string pdfPath = System.Web.HttpContext.Current.Server.MapPath(string.Format("~/Download/HWPO/pdf/{0}.pdf", pdfName));
+                pdfPath = System.Web.HttpContext.Current.Server.MapPath(string.Format("~/Download/HWPO/pdf/{0}.pdf", pdfName));
                 PdfWriter writer = PdfWriter.getInstance(document, new FileStream(pdfPath, FileMode.Create));
-
-                pdfURL = System.Web.HttpContext.Current.Request.Headers["host"] + (string.Format("~/Download/HWPO/pdf/{0}.pdf", pdfName));
 
                 HeaderFooter header = new HeaderFooter(new Phrase("page: 1"), false);
                 header.Border = Rectangle.NO_BORDER;
@@ -43,7 +43,7 @@ namespace Basic.Code
                 Image title = Image.getInstance(System.Web.HttpContext.Current.Server.MapPath("~/Content/img/hw_title.png"));
                 document.Add(title);
 
-                Paragraph p1 = new Paragraph(new Chunk("PO Detail Screen for PO:XXXXXX", EnglishFont1));
+                Paragraph p1 = new Paragraph(new Chunk("PO Detail Screen for PO:" + data.poNumber, EnglishFont1));
                 document.Add(p1);
 
                 PdfPTable ptable = new PdfPTable(4);
@@ -53,34 +53,34 @@ namespace Basic.Code
                 ptable.setWidths(headerwidths);
                 ptable.WidthPercentage = 100;
                 ptable.addCell(new Phrase("PO/Rel. NO:", EnglishFont));
-                ptable.addCell(new Phrase("HW20195422-106", EnglishFont));
+                ptable.addCell(new Phrase(data.poNumber, EnglishFont));
                 ptable.addCell(new Phrase("Supplier Code:", EnglishFont));
-                ptable.addCell(new Phrase("021821", EnglishFont));
+                ptable.addCell(new Phrase(data.vendorCode, EnglishFont));
 
                 ptable.addCell(new Phrase("PO Type:", EnglishFont));
-                ptable.addCell(new Phrase("STANDARD", EnglishFont));
+                ptable.addCell(new Phrase(data.shipmentType, EnglishFont));
                 ptable.addCell(new Phrase("Supplier:", EnglishFont));
-                ptable.addCell(new Phrase("深圳金信诺高新技术股份有限公司", font2));
+                ptable.addCell(new Phrase(data.vendorName, font2));
 
                 ptable.addCell(new Phrase("PO/Rel. Ver.:", EnglishFont));
-                ptable.addCell(new Phrase("0", EnglishFont));
+                ptable.addCell(new Phrase("", EnglishFont));
                 ptable.addCell(new Phrase("Total Amount(Exclude Tax):", EnglishFont));
-                ptable.addCell(new Phrase("1056858.37", EnglishFont));
+                ptable.addCell(new Phrase((data.quantity * data.priceOverride).ToString(), EnglishFont));
 
                 ptable.addCell(new Phrase("Data Created:", EnglishFont));
-                ptable.addCell(new Phrase("2014-01-06", EnglishFont));
+                ptable.addCell(new Phrase(data.publishDate.Substring(10), EnglishFont));
                 ptable.addCell(new Phrase("Tax Rate:", EnglishFont));
-                ptable.addCell(new Phrase("0.17", EnglishFont));
+                ptable.addCell(new Phrase(data.taxRate.ToString(), EnglishFont));
 
                 ptable.addCell(new Phrase("Last Modified:", EnglishFont));
-                ptable.addCell(new Phrase("2014-01-06", EnglishFont));
+                ptable.addCell(new Phrase(data.publishDate.Substring(10), EnglishFont));
                 ptable.addCell(new Phrase("Tax:", EnglishFont));
-                ptable.addCell(new Phrase("179665.92", EnglishFont));
+                ptable.addCell(new Phrase((data.quantity * data.priceOverride * data.taxRate).ToString(), EnglishFont));
 
                 ptable.addCell(new Phrase("Currency:", EnglishFont));
-                ptable.addCell(new Phrase("CNY", EnglishFont));
+                ptable.addCell(new Phrase(data.currencyCode, EnglishFont));
                 ptable.addCell(new Phrase("Total Amount(Include Tax):", EnglishFont));
-                ptable.addCell(new Phrase("1236524.29", EnglishFont));
+                ptable.addCell(new Phrase((data.quantity * data.priceOverride * (1 + data.taxRate)).ToString(), EnglishFont));
 
                 ptable.addCell(new Phrase("Payment Terms:", EnglishFont));
                 Phrase ph1 = new Phrase("货到", font2);
@@ -88,19 +88,18 @@ namespace Basic.Code
                 ph1.Add(new Phrase("天", font2));
                 ptable.addCell(ph1);
                 ptable.addCell(new Phrase("Phone:", EnglishFont));
-                ptable.addCell(new Phrase("(0755)26581829", EnglishFont));
+                ptable.addCell(new Phrase(data.sendVendorTelNum, EnglishFont));
 
                 ptable.addCell(new Phrase("Term/Mode:", EnglishFont));
-                ptable.addCell(new Phrase("DDP_SZ/Final delivery", EnglishFont));
+                ptable.addCell(new Phrase(data.businessMode, EnglishFont));
                 ptable.addCell(new Phrase("Fax:", EnglishFont));
-                ptable.addCell(new Phrase("(0755)26581802", EnglishFont));
+                ptable.addCell(new Phrase(data.sendVendorFax, EnglishFont));
 
                 ptable.addCell(new Phrase("Buyer:", EnglishFont));
-                Phrase ph2 = new Phrase("于汇海 ", font2);
-                ph2.Add(new Phrase("00123023_2, Yu Huihai", EnglishFont));
-                ptable.addCell(ph2);
+                ptable.addCell(new Phrase(data.agentName, font2));
                 ptable.addCell(new Phrase("Bill To Address:", EnglishFont));
-                ptable.addCell(new Phrase("华为技术有限公司应付业务部(生产采购核算部）", font2));
+                string[] sbillToLocation = data.billToLocation.Split(',');
+                ptable.addCell(new Phrase(sbillToLocation[0], font2));
 
                 document.Add(ptable);
 
@@ -121,19 +120,19 @@ namespace Basic.Code
                 ptable1.addCell(new Phrase("Del Place", EnglishFont));
 
                 ptable1.addCell(new Phrase("1", EnglishFont));
-                ptable1.addCell(new Phrase("04130104", EnglishFont));
-                ptable1.addCell(new Phrase("射频电缆-6m-(N50直公-ⅩⅢ)-(COAX50-8.7/3.55黑)-(N50直公 - ⅩⅢ) - 1 / 2英寸超柔跳线////", font2));
-                ptable1.addCell(new Phrase("4784", EnglishFont));
-                ptable1.addCell(new Phrase("PCS", EnglishFont));
-                ptable1.addCell(new Phrase("71.1785", EnglishFont));
-                ptable1.addCell(new Phrase("08-FEB-2014", EnglishFont));
-                ptable1.addCell(new Phrase("H80_松山湖B1 - 4号楼", font2));
+                ptable1.addCell(new Phrase(data.itemCode, EnglishFont));
+                ptable1.addCell(new Phrase(data.itemDescription + "////", font2));
+                ptable1.addCell(new Phrase(data.quantity.ToString(), EnglishFont));
+                ptable1.addCell(new Phrase(data.unitOfMeasure, EnglishFont));
+                ptable1.addCell(new Phrase(data.priceOverride.ToString(), EnglishFont));
+                ptable1.addCell(new Phrase("", EnglishFont));
+                ptable1.addCell(new Phrase("", font2));
 
                 document.Add(ptable1);
 
                 Image notes = Image.getInstance(System.Web.HttpContext.Current.Server.MapPath("~/Content/img/hw_notes.png"));
                 document.Add(notes);
-
+                
             }
             catch (DocumentException de)
             {
@@ -144,8 +143,10 @@ namespace Basic.Code
                 Console.Error.WriteLine(ioe.Message);
             }
             document.Close();
-            return pdfURL;
+            if (FileDownHelper.FileExists(pdfPath))
+            {
+                FileDownHelper.DownLoadold(pdfPath, pdfName + ".pdf");
+            }
         }
-        
     }
 }
