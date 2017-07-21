@@ -36,9 +36,10 @@ namespace Basic.Code
             {
                 FileInfo fi = new FileInfo(destFileName);
                 HttpContext.Current.Response.Clear();
+                HttpContext.Current.Response.ClearContent();
                 HttpContext.Current.Response.ClearHeaders();
                 HttpContext.Current.Response.Buffer = false;
-                HttpContext.Current.Response.AppendHeader("Content-Disposition", "attachment;filename=" + HttpUtility.UrlEncode(name, System.Text.Encoding.UTF8));
+                HttpContext.Current.Response.AppendHeader("Content-Disposition", "attachment;filename=" + HttpUtility.UrlEncode(name, System.Text.Encoding.ASCII));
                 HttpContext.Current.Response.AppendHeader("Content-Length", fi.Length.ToString());
                 HttpContext.Current.Response.ContentType = "application/octet-stream";
                 HttpContext.Current.Response.WriteFile(destFileName);

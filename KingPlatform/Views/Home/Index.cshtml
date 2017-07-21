@@ -156,7 +156,7 @@
     <script type="text/javascript" src="~/Content/js/index.js"></script>
     <script type="text/javascript" src="~/Content/js/indextab.js"></script>
     <script>
-        function newIframe(dataId, dataHref, dataName) {
+        function newIframe(dataId, dataHref, dataName, dataParam) {
             $("#header-nav>ul>li.open").removeClass("open");
             var dataId = dataId;
             if (dataId != "") {
@@ -170,24 +170,15 @@
             }
             $('.menuTab').each(function () {
                 if ($(this).data('id') == dataId) {
-                    if (!$(this).hasClass('active')) {
-                        $(this).addClass('active').siblings('.menuTab').removeClass('active');
-                        $.Kingtab.scrollToTab(this);
-                        $('.mainContent .King_iframe').each(function () {
-                            if ($(this).data('id') == dataId) {
-                                $(this).show().siblings('.King_iframe').hide();
-                                return false;
-                            }
-                        });
-                    }
-                    flag = false;
-                    return false;
+                    $('.King_iframe[data-id="' + $(this).data('id') + '"]').remove();
+                    $(this).remove();
+                    flag = true;
                 }
             });
             if (flag) {
                 var str = '<a href="javascript:;" class="active menuTab" data-id="' + dataId + '">' + menuName + ' <i class="fa fa-remove"></i></a>';
                 $('.menuTab').removeClass('active');
-                var str1 = '<iframe class="King_iframe" id="iframe' + dataId + '" name="iframe' + dataId + '"  width="100%" height="100%" src="' + dataUrl + '" frameborder="0" data-id="' + dataId + '" seamless></iframe>';
+                var str1 = '<iframe class="King_iframe" id="iframe' + dataId + '" name="iframe' + dataId + '"  width="100%" height="100%" src="' + dataUrl + "?" + dataParam + '" frameborder="0" data-id="' + dataId + '" seamless></iframe>';
                 $('.mainContent').find('iframe.King_iframe').hide();
                 $('.mainContent').append(str1);
                 $.loading(true);
@@ -198,11 +189,6 @@
                 $.Kingtab.scrollToTab($('.menuTab.active'));
             }
             return false;
-            /*$('.menuItem').each(function () {
-                if ($(this).attr("href") == strHref) {
-                    $(this).click();
-                }
-            });*/
         }
     </script>
     @*<script type="text/javascript" src="~/Content/js/loading/pace.min.js"></script>*@

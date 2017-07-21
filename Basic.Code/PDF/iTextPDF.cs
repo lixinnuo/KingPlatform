@@ -10,7 +10,7 @@ namespace Basic.Code
         /// <summary>
         /// 导出华为订单的PDF
         /// </summary>
-        public static void  CreateHWPOPDF(string mes)
+        public static string CreateHWPOPDF(string mes, string filePath)
         {
             PODatails data = new PODatails();
             data = mes.ToObject<PODatails>();
@@ -18,12 +18,12 @@ namespace Basic.Code
             string pdfName = "", pdfPath = "";
             try
             {
-                pdfName =   DateTime.Now.ToString("yyyyMMddHHmmss");
-                if (!Directory.Exists(System.Web.HttpContext.Current.Server.MapPath("~/Download/HWPO/pdf/")))
+                pdfName = data.poNumber + "--" + DateTime.Now.ToString("yyyyMMddHHmmss");
+                if (!Directory.Exists(System.Web.HttpContext.Current.Server.MapPath(filePath)))
                 {
-                    Directory.CreateDirectory(System.Web.HttpContext.Current.Server.MapPath("~/Download/HWPO/pdf/"));
+                    Directory.CreateDirectory(System.Web.HttpContext.Current.Server.MapPath(filePath));
                 }
-                pdfPath = System.Web.HttpContext.Current.Server.MapPath(string.Format("~/Download/HWPO/pdf/{0}.pdf", pdfName));
+                pdfPath = System.Web.HttpContext.Current.Server.MapPath(string.Format(filePath + "{0}.pdf", pdfName));
                 PdfWriter writer = PdfWriter.getInstance(document, new FileStream(pdfPath, FileMode.Create));
 
                 HeaderFooter header = new HeaderFooter(new Phrase("page: 1"), false);
@@ -143,10 +143,7 @@ namespace Basic.Code
                 Console.Error.WriteLine(ioe.Message);
             }
             document.Close();
-            if (FileDownHelper.FileExists(pdfPath))
-            {
-                FileDownHelper.DownLoadold(pdfPath, pdfName + ".pdf");
-            }
+            return pdfName + ".pdf";
         }
     }
 }

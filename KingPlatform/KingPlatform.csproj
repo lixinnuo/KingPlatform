@@ -237,35 +237,9 @@
     <Content Include="Areas\SystemSecurity\Views\Log\Index.cshtml" />
     <Content Include="Areas\SystemSecurity\Views\Log\RemoveLog.cshtml" />
     <Content Include="Areas\SystemSecurity\Views\ServerMonitoring\Index.cshtml" />
-    <Content Include="Content\js\datepicker\calendar.js" />
-    <Content Include="Content\js\datepicker\DatePicker.js" />
-    <Content Include="Content\js\datepicker\lang\en.js" />
-    <Content Include="Content\js\datepicker\lang\zh-cn.js" />
-    <Content Include="Content\js\datepicker\lang\zh-tw.js" />
-    <Content Include="Content\js\datepicker\skin\datePicker.gif" />
-    <Content Include="Content\js\datepicker\skin\datePicker.png" />
-    <Content Include="Content\js\datepicker\skin\datepicker_icon.png" />
-    <Content Include="Content\js\datepicker\skin\default\datepicker-dev.css" />
-    <Content Include="Content\js\datepicker\skin\default\datepicker.css" />
-    <Content Include="Content\js\datepicker\skin\default\img.gif" />
-    <Content Include="Content\js\datepicker\skin\default\img.png" />
-    <Content Include="Content\js\datepicker\skin\WdatePicker.css" />
-    <Content Include="Content\js\datepicker\skin\whyGreen\bg.jpg" />
-    <Content Include="Content\js\datepicker\skin\whyGreen\datepicker.css" />
-    <Content Include="Content\js\datepicker\skin\whyGreen\img.gif" />
-    <Content Include="Content\js\datepicker\WdatePicker.js" />
-    <Content Include="Content\js\datepicker\开发包\lang\en.js" />
-    <Content Include="Content\js\datepicker\开发包\lang\zh-cn.js" />
-    <Content Include="Content\js\datepicker\开发包\lang\zh-tw.js" />
-    <Content Include="Content\js\datepicker\开发包\readme.txt" />
-    <Content Include="Content\js\datepicker\开发包\skin\datePicker.gif" />
-    <Content Include="Content\js\datepicker\开发包\skin\datePicker.png" />
-    <Content Include="Content\js\datepicker\开发包\skin\default\datepicker.css" />
-    <Content Include="Content\js\datepicker\开发包\skin\default\img.gif" />
-    <Content Include="Content\js\datepicker\开发包\skin\WdatePicker.css" />
-    <Content Include="Content\js\datepicker\开发包\skin\whyGreen\bg.jpg" />
-    <Content Include="Content\js\datepicker\开发包\skin\whyGreen\datepicker.css" />
-    <Content Include="Content\js\datepicker\开发包\skin\whyGreen\img.gif" />
+    <Content Include="Content\js\datepicker\bootstrap-datepicker.js" />
+    <Content Include="Content\js\datepicker\bootstrap-datepicker.min.css" />
+    <Content Include="Content\js\datepicker\locales\bootstrap-datepicker.zh-CN.js" />
     <Content Include="Content\js\dialog\dialog.css" />
     <Content Include="Content\js\dialog\dialog.js" />
     <Content Include="Content\js\dialog\img\icon-ext.png" />
@@ -382,8 +356,6 @@
     <Content Include="Configs\log4net.config" />
     <Content Include="Areas\HuaweiOrderManage\Views\web.config" />
     <Content Include="Areas\HuaweiOrderManage\Views\FindPOList\ChangeDetails.cshtml" />
-    <Content Include="Areas\HuaweiOrderManage\Views\FindPOList\Cancel.cshtml" />
-    <Content Include="Areas\HuaweiOrderManage\Views\FindPOList\Change.cshtml" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -420,12 +392,7 @@
     <Content Include="Areas\HuaweiOrderManage\Views\FindPOList\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Areas\HuaweiOrderManage\Views\FindPOList\Warning.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="Areas\HuaweiOrderManage\Views\FindPOList\News.cshtml" />
-    <Content Include="Areas\HuaweiOrderManage\Views\FindPOList\Onway.cshtml" />
-    <Content Include="Areas\HuaweiOrderManage\Views\FindPOList\Closed.cshtml" />
     <Content Include="Areas\HuaweiOrderManage\Views\FindPOList\PODetails.cshtml" />
     <None Include="Properties\PublishProfiles\KingPlatformConfig.pubxml" />
   </ItemGroup>

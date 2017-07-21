@@ -15,6 +15,11 @@
             success: function (data) {
                 $("#form1").formSerialize(data);
                 $("#totalMoney").val(data.quantity * data.priceOverride + "(" + data.currencyCode + ")");
+                var JsonDateValue = new Date(data.publishDate);     //格式化日期
+                var year = JsonDateValue.getYear() + 1900;
+                var month = JsonDateValue.getMonth() + 1;
+                var dateTime = year + "-" + month + "-" + JsonDateValue.getDate() + " " + JsonDateValue.getHours() + ":" + JsonDateValue.getMinutes() + ":" + JsonDateValue.getSeconds();
+                $("#publishDate").val(dateTime);
                 $("#form1").find('.form-control,input').attr('readonly', 'readonly');
             }
         });
@@ -32,7 +37,7 @@
     }
 </script>
 <form id="form1">
-    <div style="margin-top: 10px; margin-left: 10px; margin-right: 10px;">
+    <div style="margin: 10px 10px 0 10px;">
         <ul class="nav nav-tabs">
             <li class="active"><a href="#">订单详细信息</a></li>
         </ul>
@@ -43,15 +48,15 @@
                     <td class="formValue">
                         <input id="poNumber" name="poNumber" type="text" class="form-control" />
                     </td>
-                    <th class="formTitle">供应商编码:</th>
+                    <th class="formTitle">行号:</th>
                     <td class="formValue">
-                        <input id="vendorCode" name="vendorCode" type="text" class="form-control" />
+                        <input id="poLineNum" name="poLineNum" type="text" class="form-control" />
                     </td>
                 </tr>
                 <tr>
-                    <th class="formTitle">订单总金额:</th>
+                    <th class="formTitle">供应商编码:</th>
                     <td class="formValue">
-                        <input id="totalMoney" name="totalMoney" type="text" class="form-control" />
+                        <input id="vendorCode" name="vendorCode" type="text" class="form-control" />
                     </td>
                     <th class="formTitle">供应商名称:</th>
                     <td class="formValue">
@@ -63,15 +68,19 @@
                     <td class="formValue">
                         <input id="agentName" name="agentName" type="text" class="form-control" />
                     </td>
-                    <th class="formTitle">下单日期:</th>
+                    <th class="formTitle">订单总金额:</th>
                     <td class="formValue">
-                        <input id="publishDate" name="publishDate" type="text" class="form-control" />
+                        <input id="totalMoney" name="totalMoney" type="text" class="form-control" />
                     </td>
                 </tr>
                 <tr>
                     <th class="formTitle">版本号:</th>
-                    <td colspan="3" class="formValue">
+                    <td class="formValue">
                         <input id="revisionNum" name="revisionNum" type="text" class="form-control" />
+                    </td>
+                    <th class="formTitle">下单日期:</th>
+                    <td class="formValue">
+                        <input id="publishDate" name="publishDate" type="text" class="form-control" />
                     </td>
                 </tr>
                 <tr>
@@ -93,11 +102,9 @@
                     </td>
                 </tr>
                 <tr>
-                    <th class="formTitle" valign="top" style="padding-top: 5px;">
-                        备注
-                    </th>
+                    <th class="formTitle">备注:</th>
                     <td class="formValue" colspan="3">
-                        <textarea id="remark" name="remark" class="form-control" style="height: 60px;"></textarea>
+                        <textarea id="remark" name="remark" class="form-control" ></textarea>
                     </td>
                 </tr>
                 <tr>

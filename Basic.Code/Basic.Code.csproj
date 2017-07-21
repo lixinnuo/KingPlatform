@@ -33,7 +33,7 @@
   <ItemGroup>
     <Reference Include="ICSharpCode.SharpZipLib, Version=0.5.0.0, Culture=neutral, PublicKeyToken=1b03e6acf1164f73">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>bin\Debug\ICSharpCode.SharpZipLib.dll</HintPath>
+      <HintPath>..\..\KingPlatform - 副本\Basic.Code\bin\Debug\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
     <Reference Include="itextsharp, Version=1.0.4.0, Culture=neutral">
       <SpecificVersion>False</SpecificVersion>
@@ -87,6 +87,7 @@
     <Compile Include="Extend\Ext.Convert.cs" />
     <Compile Include="Extend\Ext.DateTime.cs" />
     <Compile Include="Extend\Ext.Format.cs" />
+    <Compile Include="Extend\ExtArray.cs" />
     <Compile Include="Extend\ExtLinq.cs" />
     <Compile Include="Extend\ExtLinq.SortBy.cs" />
     <Compile Include="Extend\ExtList.Comparint.cs" />

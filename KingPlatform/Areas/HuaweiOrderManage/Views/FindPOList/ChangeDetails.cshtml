@@ -3,11 +3,13 @@
     Layout = "~/Views/Shared/_Form.cshtml";
 }
 <script>
-    var keyValue = $.request("keyValue");
+    var poNumber = $.request("poNumber");
+    var poLineNum = $.request("poLineNum");
+    var types = $.request("types");
     $(function () {
         $.ajax({
             url: "/HuaweiOrderManage/FindPOList/FindColTask",
-            data: { keyValue: keyValue },
+            data: { poNumber: poNumber, poLineNum: poLineNum, types: types },
             dataType: "json",
             async: false,
             success: function (data) {
@@ -18,7 +20,7 @@
     });
 </script>
 <form id="form1">
-    <div style="margin-top: 10px; margin-left: 10px; margin-right: 10px;">
+    <div style="margin: 10px 10px 0 10px;">
         <ul class="nav nav-tabs">
             <li class="active"><a href="#">变更明细</a></li>
         </ul>
@@ -46,11 +48,13 @@
                 </tr>
                 <tr>
                     <th class="formTitle">变更前内容</th>
-                    <td class="formValue">
+                    <td class="formValue" colspan="3">
                         <input id="changePreContent" name="changePreContent" type="text" class="form-control" />
                     </td>
+                </tr>
+                <tr>
                     <th class="formTitle">变更后内容</th>
-                    <td class="formValue">
+                    <td class="formValue" colspan="3">
                         <input id="changeAfterContent" name="changeAfterContent" type="text" class="form-control" />
                     </td>
                 </tr>

@@ -37,6 +37,28 @@
 .topPanel .toolbar .operate .dropdown-menu{top: 24px;}
 .topPanel .toolbar .operate .dropdown-menu li{float:none;height: auto;}
 .topPanel .toolbar .operate .dropdown-menu li a{padding: 5px 20px;}
+
+.potopPanel{height: 100px;line-height: 100px;background: #fff;border: 1px solid #ddd;margin: 0px;border-bottom: none;position: relative;}
+.potopPanel .toolbar{padding-right: 10px;}
+.potopPanel .toolbar .btn i{margin-right:5px;font-size: 13px;}
+.potopPanel .toolbar .poselect{line-height:30px;height: 30px;width: 100%;background: #fff;position: absolute;top:0px;z-index:1000; padding:10px 0 10px 10px;}
+.potopPanel .toolbar .poselect .dropdown-menu{top: 40px;}
+.potopPanel .toolbar .poselect .first{left:10px;}
+.potopPanel .toolbar .poselect .dropdown-menu li{float:none;height: auto;}
+.potopPanel .toolbar .poselect .dropdown-menu li a{padding: 5px 20px;}
+
+.potopPanel .toolbar .operate{line-height:50px;height: 50px;width: 100%;background: #fff;position: absolute;top:50px;z-index:999;}
+.potopPanel .toolbar .operate ul{margin: 9px 0 0 -2px;}
+.potopPanel .toolbar .operate ul li{float: left;height: 12px;line-height: 12px;}
+.potopPanel .toolbar .operate ul li.split{position: relative;display: block;border-right: 1px solid #c9c9c9;height: 16px;margin-left:5px;margin-right:5px;margin-top: 8px;}
+.potopPanel .toolbar .operate ul li a{cursor:pointer;padding: 8px;border:1px solid #c9c9c9;margin-left:15px;}
+.potopPanel .toolbar .operate ul li i{margin-right:4px;font-size:13px;color: #666666;vertical-align: middle;margin-top: -1px;}
+.potopPanel .toolbar .operate ul .first{position: relative;display: block;padding: 2px 15px;padding-right:10px;margin-top: 8px;margin-right:0px;border-right: 1px solid #c9c9c9;}
+.potopPanel .toolbar .operate ul li.first > span{margin-left: 5px;margin-right:5px;}
+.potopPanel .toolbar .operate .refresh{position: absolute;top:10px;right:40px;display:block;}
+.potopPanel .toolbar .operate .close{position: absolute;top:18px;right:12px;display:block;height: 12px;width: 12px;background: url(../img/button_pm_close.png) left center no-repeat;}
+#po-ajax-loader {cursor:progress;position:fixed;top:101px;left:1px;width:100%;height:100%;background-color:#fff; z-index:10000;overflow:hidden;text-align:center;padding-top:200px;}
+
 .form{width:100%;margin:0px;padding:0px;border-collapse:collapse;border-width:3px 1px 1px;table-layout:fixed}
 .form .formTitle{position:relative;left:0px;text-align:right;white-space:nowrap;font-weight:normal;width:90px;padding-right:15px;}
 .form .formTitle font{color:red;position:absolute;right:0px;}
@@ -84,8 +106,26 @@
 .wrapper .pop-list li h5{font-size: 12px;font-weight: bold;line-height: 24px;}
 .wrapper .pop-list label{line-height: 30px;display: block;float: left;min-width: 100px;height: 30px;padding: 5px 0;padding-right:15px;}
 .wrapper .pop-list li .form-control{float: left;width: 300px;margin-right: 5px;line-height: 30px;height: 30px;padding:0px;padding-left:5px;margin-top:3px;border-radius: 3px;box-shadow:none;resize: none;}
+
+/*PO模块样式*/
+.bgWhite {background-color:#fff;}
+.before-signe-back {padding:0 !important;border-top:2px solid #00a5ff !important;}
+.signed_back {padding:0 !important;border-top:2px solid #46cccd !important;}
+.warn {padding:0 !important;border-top:2px solid #fdae79 !important;}
+.before-signe-back tr,.signed_back tr,.warn tr {height:40px !important;}
+.before-signe-back tr td,.signed_back tr td,.warn tr td {height:40px !important;padding: 10px 0 0 20px !important;}
+.before-signe-back .first-tr {height:60px !important;font-size:16px !important;background-color:#e4edff !important;color:#00a5ff !important;}
+.signed_back .first-tr {height:60px !important;font-size:16px !important;background-color:#d7f0f4 !important;color:#46cccd !important;}
+.warn .first-tr {height:60px !important;font-size:16px !important;background-color:#fff6f0 !important;color:#fdae79 !important;}
+.before-signe-back .first-td,.signed_back .first-td,.warn .first-td {padding: 18px 0 0 20px !important;}
+
 .POboardnum {color:#00a5ff; font-size:14px;}
 .POboardTotalnum {color:#00a5ff;}
 .red {color:red;}
 .remark ul {list-style: none;padding:0;}
 .remark ul li i {color:#00a5ff;}
+.changebox {height:28px;margin:0;padding:0;}
+
+/*PO模块样式*/
+
+
