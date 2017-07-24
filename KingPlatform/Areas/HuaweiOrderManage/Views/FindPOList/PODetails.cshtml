@@ -5,11 +5,11 @@
 <script>
     var poNumber = $.request("poNumber");
     var poLineNum = $.request("poLineNum");
-    var types = $.request("types");
+    var poTypes = $.request("poTypes");
     $(function () {
         $.ajax({
             url: "/HuaweiOrderManage/FindPOList/GetPODetail",
-            data: { poNumber: poNumber, poLineNum: poLineNum, types: types },
+            data: { poNumber: poNumber, poLineNum: poLineNum, poTypes: poTypes },
             dataType: "json",
             async: false,
             success: function (data) {
@@ -26,14 +26,7 @@
     });
 
     function btn_exportPOPDF() {
-        $.ajax({
-            url: "/HuaweiOrderManage/FindPOList/ExportPOPDF",
-            data: { poNumber: poNumber, poLineNum: poLineNum, types: types },
-            success: function (data) {
-                
-            }
-        });
-       
+        $.download("/HuaweiOrderManage/FindPOList/ExportPOPDF", "poNumber=" + poNumber + "&poLineNum=" + poLineNum + "&poTypes=" + poTypes, 'post');
     }
 </script>
 <form id="form1">

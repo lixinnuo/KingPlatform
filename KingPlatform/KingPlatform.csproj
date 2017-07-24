@@ -120,7 +120,9 @@
     <Compile Include="App_Start\Handler\HandlerLoginAttribute.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Areas\HuaweiOrderManage\Controllers\FindPOListController.cs" />
+    <Compile Include="Areas\HuaweiOrderManage\Controllers\StockManageController.cs" />
     <Compile Include="Areas\HuaweiOrderManage\HuaweiOrderManageAreaRegistration.cs" />
+    <Compile Include="Areas\HuaweiOrderManage\Models\FindPOListModel.cs" />
     <Compile Include="Areas\SystemManage\Controllers\AreaController.cs" />
     <Compile Include="Areas\SystemManage\Controllers\DutyController.cs" />
     <Compile Include="Areas\SystemManage\Controllers\ItemsDataController.cs" />
@@ -152,6 +154,8 @@
     <Content Include="Content\css\framework-login.css" />
     <Content Include="Content\img\ajax-loader.gif" />
     <Content Include="Content\img\button_pm_close.png" />
+    <Content Include="Content\img\huawei-logo.png" />
+    <Content Include="Content\img\huawei_notes.png" />
     <Content Include="Content\img\loading.gif" />
     <Content Include="Content\img\logo.png" />
     <Content Include="Content\img\radio1.jpg" />
@@ -396,7 +400,9 @@
     <Content Include="Areas\HuaweiOrderManage\Views\FindPOList\PODetails.cshtml" />
     <None Include="Properties\PublishProfiles\KingPlatformConfig.pubxml" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Areas\HuaweiOrderManage\Views\StockManage\" />
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

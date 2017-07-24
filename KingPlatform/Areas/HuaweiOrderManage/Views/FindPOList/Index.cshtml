@@ -20,25 +20,22 @@
                 $("#vendorApplyQtyChangeOrderQuantity").html(data.vendorApplyQtyChangeOrderQuantity);                       //待华为确认数量变更
                 $("#vendorApplyCancelOrderQuantity").html(data.vendorApplyCancelOrderQuantity);                             //待华为确认取消
                 $("#rmaBarterOrderQuantity").html(data.rmaBarterOrderQuantity);                                             //RMA换货订单
-                $("#noacceptedPO").html(data.newOrderQuantity + data.changedOrderQuantity + data.cancelOrderQuantity + data.deliveryTimeChangedOrderQuantity + data.cancelledToConfirmedOrderQuantity + data.deliveryTimeChangedPendingOrderQuantity + data.vendorApplyQtyChangeOrderQuantity + data.vendorApplyCancelOrderQuantity + data.rmaBarterOrderQuantity)  //待接收数量
+                $("#before_signe_back").html(data.newOrderQuantity + data.changedOrderQuantity + data.cancelOrderQuantity + data.deliveryTimeChangedOrderQuantity + data.cancelledToConfirmedOrderQuantity + data.deliveryTimeChangedPendingOrderQuantity + data.vendorApplyQtyChangeOrderQuantity + data.vendorApplyCancelOrderQuantity + data.rmaBarterOrderQuantity)  //待接收数量
 
                 $("#intransitOrderQuantity").html(data.intransitOrderQuantity);                                             //在途订单
                 $("#closed4Receving").html(data.closed4Receving);                                                           //已接受未关闭
                 $("#cancelledOrderQuantity").html(data.cancelledOrderQuantity);                                             //订单已取消
                 $("#closedOrderQuantity").html(data.closedOrderQuantity);                                                   //订单已关闭
-                $("#acceptedPO").html(data.intransitOrderQuantity + data.closed4Receving + data.cancelledOrderQuantity + data.closedOrderQuantity);    //已接受PO数量
+                $("#signed_back").html(data.intransitOrderQuantity + data.closed4Receving + data.cancelledOrderQuantity + data.closedOrderQuantity);    //已接受PO数量
 
                 $("#expiredOrderQuantity").html(data.expiredOrderQuantity);                                                 //新订单超三天未处理
                 $("#arrivalOnWeekOrderQuantity").html(data.arrivalOnWeekOrderQuantity);                                     //预计两周内到货
                 $("#nonDeliveryOrderQuantity").html(data.nonDeliveryOrderQuantity);                                         //下单六个月未交货
                 $("#overdueOrderQuantity").html(data.overdueOrderQuantity);                                                 //过期订单
-                $("#warningPO").html(data.expiredOrderQuantity + data.arrivalOnWeekOrderQuantity + data.nonDeliveryOrderQuantity + data.overdueOrderQuantity);
+                $("#warn").html(data.expiredOrderQuantity + data.arrivalOnWeekOrderQuantity + data.nonDeliveryOrderQuantity + data.overdueOrderQuantity);
             }
         });
-        $("a").click(function () {
-            //var dataHref = $(this).data("href");
-            //var dataId = $(this).data("id");
-            //var dataName = $(this).data("name");
+        $("a").on('click', function () {
             var dataHref = "/HuaweiOrderManage/FindPOList/News";
             var dataId = "2bcb1fef-78f4-4a44-a0b8-4a0355d78a7a";
             var dataName = "PO列表";
@@ -59,13 +56,13 @@
                         <tr class="first-tr">
                             <td class="col-md-6 first-td">待接受</td>
                             <td class="col-md-6 first-td">
-                                <span id="noacceptedPO" class="POboardTotalnum">0</span>
+                                <a id="before_signe_back" class="POboardTotalnum" name="before_signe_back" href="javascript:void()" data-param="Second=待接受&Third=ALL">0</a>
                             </td>
                         </tr>
                         <tr>
                             <td class="col-md-6">新订单</td>
                             <td class="col-md-6">
-                                <a id="newOrderQuantity" class="POboardnum" name="newOrderQuantity" href="javascript:void()" data-param="Second=待接受&Third=新订单">0</a><span class="red">*</span>
+                                <a id="newOrderQuantity" class="POboardnum" name="newOrderQuantity" href="javascript:void()" data-param="Second=待接受&Third=新订单">0</a>
                             </td>
                         </tr>
                         <tr>
@@ -83,13 +80,13 @@
                         <tr>
                             <td class="col-md-6">内容变更通知</td>
                             <td class="col-md-6">
-                                <a id="changedOrderQuantity" class="POboardnum" name="changedOrderQuantity" href="javascript:void()" data-param="Second=待接受&Third=内容变更通知">0</a><span class="red">*</span>
+                                <a id="changedOrderQuantity" class="POboardnum" name="changedOrderQuantity" href="javascript:void()" data-param="Second=待接受&Third=内容变更通知">0</a>
                             </td>
                         </tr>
                         <tr>
                             <td class="col-md-6">订单取消通知</td>
                             <td class="col-md-6">
-                                <a id="cancelOrderQuantity" class="POboardnum" name="cancelOrderQuantity" href="javascript:void()" data-param="Second=待接受&Third=订单取消通知">0</a><span class="red">*</span>
+                                <a id="cancelOrderQuantity" class="POboardnum" name="cancelOrderQuantity" href="javascript:void()" data-param="Second=待接受&Third=订单取消通知">0</a>
                             </td>
                         </tr>
                         <tr>
@@ -122,30 +119,31 @@
                     <table class="table table-hover">
                         <tr class="first-tr">
                             <td class="col-md-6 first-td">已接受</td>
-                            <td class="col-md-6 first-td"><span id="acceptedPO" class="POboardTotalnum">0</span></td>
+                            <td class="col-md-6 first-td">
+                                <a id="signed_back" class="POboardTotalnum" name="signed_back" href="javascript:void()" data-param="Second=已接受&Third=ALL">0</a></td>
                         </tr>
                         <tr>
                             <td class="col-md-6">在途订单</td>
                             <td class="col-md-6">
-                                <a id="intransitOrderQuantity" class="POboardnum" name="intransitOrderQuantity" href="javascript:void()" data-param="Second=已接受&Third=在途订单">0</a><span class="red">*</span>
+                                <a id="intransitOrderQuantity" class="POboardnum" name="intransitOrderQuantity" href="javascript:void()" data-param="Second=已接受&Third=在途订单">0</a>
                             </td>
                         </tr>
                         <tr>
                             <td class="col-md-6">已交货未关闭</td>
                             <td class="col-md-6">
-                                <a id="closed4Receving" class="POboardnum" name="closed4Receving" href="javascript:void()" data-param="Second=已接受&Third=已交货未关闭">0</a><span class="red">*</span>
+                                <a id="closed4Receving" class="POboardnum" name="closed4Receving" href="javascript:void()" data-param="Second=已接受&Third=已交货未关闭">0</a>
                             </td>
                         </tr>
                         <tr>
                             <td class="col-md-6">取消订单</td>
                             <td class="col-md-6">
-                                <a id="cancelledOrderQuantity" class="POboardnum" name="cancelledOrderQuantity" href="javascript:void()" data-param="Second=已接受&Third=订单已取消">0</a>
+                                <a id="cancelledOrderQuantity" class="POboardnum" name="cancelledOrderQuantity" href="javascript:void()" data-param="Second=已接受&Third=取消订单">0</a>
                             </td>
                         </tr>
                         <tr>
                             <td class="col-md-6">关闭订单</td>
                             <td class="col-md-6">
-                                <a id="closedOrderQuantity" class="POboardnum" name="closedOrderQuantity" href="javascript:void()" data-param="Second=已接受&Third=订单已关闭">0</a><span class="red">*</span>
+                                <a id="closedOrderQuantity" class="POboardnum" name="closedOrderQuantity" href="javascript:void()" data-param="Second=已接受&Third=关闭订单">0</a>
                             </td>
                         </tr>
                     </table>
@@ -154,30 +152,30 @@
                     <table class="table table-hover">
                         <tr class="first-tr">
                             <td class="col-md-6 first-td">预警</td>
-                            <td class="col-md-6 first-td"><span id="warningPO" class="POboardTotalnum">0</span></td>
+                            <td class="col-md-6 first-td"><span id="warn" class="POboardTotalnum">0</span></td>
                         </tr>
                         <tr>
                             <td class="col-md-6">新订单超三天未处理</td>
                             <td class="col-md-6">
-                                <a id="expiredOrderQuantity" class="POboardnum" name="expiredOrderQuantity" href="javascript:void()" data-param="Second=预警&Third=新订单超三天未处理">0</a><span class="red">*</span>
+                                <a id="expiredOrderQuantity" class="POboardnum" name="expiredOrderQuantity" href="javascript:void()" data-param="Second=预警&Third=新订单超三天未处理">0</a>
                             </td>
                         </tr>
                         <tr>
                             <td class="col-md-6">预计两周内到货</td>
                             <td class="col-md-6">
-                                <a id="arrivalOnWeekOrderQuantity" class="POboardnum" name="arrivalOnWeekOrderQuantity" href="javascript:void()" data-param="Second=预警&Third=预计两周内到货">0</a><span class="red">*</span>
+                                <a id="arrivalOnWeekOrderQuantity" class="POboardnum" name="arrivalOnWeekOrderQuantity" href="javascript:void()" data-param="Second=预警&Third=预计两周内到货">0</a>
                             </td>
                         </tr>
                         <tr>
                             <td class="col-md-6">下单六个月未交货</td>
                             <td class="col-md-6">
-                                <a id="nonDeliveryOrderQuantity" class="POboardnum" name="nonDeliveryOrderQuantity" href="javascript:void()" data-param="Second=预警&Third=下单六个月未交货">0</a><span class="red">*</span>
+                                <a id="nonDeliveryOrderQuantity" class="POboardnum" name="nonDeliveryOrderQuantity" href="javascript:void()" data-param="Second=预警&Third=下单六个月未交货">0</a>
                             </td>
                         </tr>
                         <tr>
                             <td class="col-md-6">过期订单</td>
                             <td class="col-md-6">
-                                <a id="overdueOrderQuantity" class="POboardnum" name="overdueOrderQuantity" href="javascript:void()" data-param="Second=预警&Third=过期订单">0</a><span class="red">*</span>
+                                <a id="overdueOrderQuantity" class="POboardnum" name="overdueOrderQuantity" href="javascript:void()" data-param="Second=预警&Third=过期订单">0</a>
                             </td>
                         </tr>
 

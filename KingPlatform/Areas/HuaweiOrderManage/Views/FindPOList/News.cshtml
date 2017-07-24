@@ -57,14 +57,14 @@
     }
 
     //获取订单列表信息
-    function getPoList(poSubType, shipmentStatus, businessType, poStatus, colTaskOrPoStatus, statusType) {
+    function getPoList(poSubType, shipmentStatus, businessType, poStatus, colTaskOrPoStatus, statusType, poTypes) {
         var $gridList = $("#gridList");
         $gridList.jqGrid('clearGridData');
         $('#po-ajax-loader').fadeIn();
-        $gridList.jqGrid('setGridParam', { postData: { poSubType: poSubType, shipmentStatus: shipmentStatus, businessType: businessType, poStatus: poStatus, colTaskOrPoStatus: colTaskOrPoStatus, statusType: statusType, rnd: Math.random() } }).trigger('reloadGrid');
+        $gridList.jqGrid('setGridParam', { postData: { poSubType: poSubType, shipmentStatus: shipmentStatus, businessType: businessType, poStatus: poStatus, colTaskOrPoStatus: colTaskOrPoStatus, statusType: statusType, poTypes: poTypes, rnd: Math.random() } }).trigger('reloadGrid');
         $gridList.dataGrid({
             url: "/HuaweiOrderManage/FindPOList/PostPOList",
-            postData: { poSubType: poSubType, shipmentStatus: shipmentStatus, businessType: businessType, poStatus: poStatus, colTaskOrPoStatus: colTaskOrPoStatus, statusType: statusType, rnd: Math.random() },
+            postData: { poSubType: poSubType, shipmentStatus: shipmentStatus, businessType: businessType, poStatus: poStatus, colTaskOrPoStatus: colTaskOrPoStatus, statusType: statusType, poTypes: poTypes, rnd: Math.random() },
             height: $(window).height() - 178,
             colModel: [
                 {
@@ -100,9 +100,25 @@
                     formatter: "date", formatoptions: { srcformat: 'Y-m-d', newformat: 'Y-m-d' }
                 },
                 { label: '变更原因', name: 'promiseDateChangeReason', width: 80, align: 'left', editable: true },
+                { label: '修改内容', name: 'objectChangeContext', width: 300, align: 'left', hidden: true },
                 {
                     label: '承诺日期', name: 'promiseDate', width: 80, align: 'left', editable: true,
-                    formatter: "date", formatoptions: { srcformat: 'Y-m-d', newformat: 'Y-m-d' },
+                    formatter: function (cellvalue, options, rowObject) {
+                        if ($.parseJSON(rowObject.objectChangeContext).changeList != undefined) {
+                            if ($.parseJSON(rowObject.objectChangeContext).changeList.length != 0) {
+                                if ($.parseJSON(rowObject.objectChangeContext).changeList[0].columnName == "promiseDate") {
+                                    return $.parseJSON(rowObject.objectChangeContext).changeList[0].newValue.substring(0, 8).replace(/^(\d{4})(\d{2})(\d{2})$/, "$1-$2-$3");
+                                } else {
+                                    return rowObject.promiseDate.substring(0, 10);
+                                }
+                            } else {
+                                return rowObject.promiseDate.substring(0, 10);
+                            }
+                        } else {
+                            return rowObject.promiseDate.substring(0, 10);
+                        }
+                        
+                    },
                     editoptions: {
                         dataInit: function (element) {
                             $(element).datepicker({
@@ -134,7 +150,7 @@
                 { label: '单价', name: 'priceOverride', width: 50, align: 'left' },
                 { label: '单位', name: 'unitOfMeasure', width: 50, align: 'left' },
                 {
-                    label: '总金额', name: 'totalPrice', width: 50, align: 'left',
+                    label: '总金额', name: 'totalPrice', width: 70, align: 'left',
                     formatter: function (cellvalue, options, rowObject) {
                         return ((rowObject.quantity - rowObject.quantityCancelled) * rowObject.priceOverride).toFixed(rowObject.precision);
                     }
@@ -193,6 +209,11 @@
             message = "注： 您确定要【驳回】这些订单吗？";
         }
         var ids = $("#gridList").jqGrid("getGridParam", "selarrrow");
+        console.log(ids);
+        if (ids.length == 0) {
+            $.modalAlert("请勾选要操作的PO行！", 'warning');
+            return false;
+        }
         var poNumber = new Array();
         var poLineNum = new Array();
         for (var i = 0; i < ids.length; i++) {
@@ -209,7 +230,7 @@
             if (r) {
                 $.submitForm({
                     url: "/HuaweiOrderManage/FindPOList/SignBackPOList",
-                    param: { poNumber: poNumber, poLineNum: poLineNum, operateType: operateType, types: poTypes },
+                    param: { poNumber: poNumber, poLineNum: poLineNum, operateType: operateType, poTypes: poTypes },
                     success: function () {
                         $('#po-ajax-loader').fadeIn();
                         window.location.reload();
@@ -222,6 +243,10 @@
     //查询变更明细
     function btn_details() {
         var keyValue = $("#gridList").jqGrid("getGridParam", "selrow");
+        if (keyValue == null) {
+            $.modalAlert("请勾选要操作的PO行！", 'warning');
+            return false;
+        }
         var rowData = $("#gridList").jqGrid("getRowData", keyValue);
         var index1 = rowData.poNumber.indexOf('>');
         var index2 = rowData.poNumber.indexOf('<', index1);
@@ -230,7 +255,7 @@
         $.modalOpen({
             id: "Details",
             title: "查看变更明细",
-            url: "/HuaweiOrderManage/FindPOList/ChangeDetails?poNumber=" + poNumber + "&poLineNum=" + poLineNum + "&types=" + poTypes,
+            url: "/HuaweiOrderManage/FindPOList/ChangeDetails?poNumber=" + poNumber + "&poLineNum=" + poLineNum + "&poTypes=" + poTypes,
             width: "700px",
             height: "550px",
             btn: null,
@@ -242,7 +267,7 @@
         $.modalOpen({
             id: "Details",
             title: "订单详细信息",
-            url: "/HuaweiOrderManage/FindPOList/PODetails?poNumber=" + poNumber + "&poLineNum=" + poLineNum + "&types=" + poTypes,
+            url: "/HuaweiOrderManage/FindPOList/PODetails?poNumber=" + poNumber + "&poLineNum=" + poLineNum + "&poTypes=" + poTypes,
             width: "800px",
             height: "550px",
             btn: null,
@@ -252,6 +277,10 @@
     //供应商PO变更，修改内容
     function btn_update() {
         var ids = $("#gridList").jqGrid("getGridParam", "selarrrow");
+        if (ids.length == 0) {
+            $.modalAlert("请勾选要操作的PO行！", 'warning');
+            return false;
+        }
         var poNumber = new Array();
         var poLineNum = new Array();
         var promiseDate = new Array();
@@ -273,7 +302,7 @@
             if (r) {
                 $.submitForm({
                     url: "/HuaweiOrderManage/FindPOList/OnwayPOList",
-                    param: { poNumber: poNumber, poLineNum: poLineNum, promiseDate: promiseDate, promiseDateChangeReason: promiseDateChangeReason, types: poTypes },
+                    param: { poNumber: poNumber, poLineNum: poLineNum, promiseDate: promiseDate, promiseDateChangeReason: promiseDateChangeReason, poTypes: poTypes },
                     success: function () {
                         $('#ajax-loader').fadeIn();
                         window.location.reload();
@@ -289,7 +318,6 @@
         if (secondValue == "待接受" && thirdValue == "ALL") {
             poStatus = "before_signe_back";
             colTaskOrPoStatus = "all";
-            businessType = "";
             poTypes = "before_signe_back";
         } else if (secondValue == "待接受" && thirdValue == "新订单") {
             colTaskOrPoStatus = "huaweiPublishOrder";
@@ -370,7 +398,7 @@
             poTypes = "po_warning_overdue";
         }
         $("#thirdShow").html(thirdValue);
-        getPoList(poSubType, shipmentStatus, businessType, poStatus, colTaskOrPoStatus, statusType);
+        getPoList(poSubType, shipmentStatus, businessType, poStatus, colTaskOrPoStatus, statusType, poTypes);
     }
 </script>
 <div class="potopPanel">
@@ -391,7 +419,7 @@
         </div>
         <div class="operate">
             <ul class="nav nav-pills">
-                <li class="first">华为<span id="thirdShow"></span>列表</li>
+                <li class="first"><span id="thirdShow"></span>列表</li>
                 <li class="first">已选中<span id="choseNum">0</span>项</li>
                 <li><a id="NF-signBackPOList" authorize="yes" onclick="btn_signBackPOList(true)"><i class="fa fa-check"></i>接受</a></li>
                 <li><a id="NF-btn_update" authorize="yes" onclick="btn_update()"><i class="fa fa-pencil-square-o"></i>修改</a></li>

@@ -112,7 +112,7 @@
 .before-signe-back {padding:0 !important;border-top:2px solid #00a5ff !important;}
 .signed_back {padding:0 !important;border-top:2px solid #46cccd !important;}
 .warn {padding:0 !important;border-top:2px solid #fdae79 !important;}
-.before-signe-back tr,.signed_back tr,.warn tr {height:40px !important;}
+.before-signe-back tr,.signed_back tr,.warn tr {height:40px !important; cursor:pointer !important;}
 .before-signe-back tr td,.signed_back tr td,.warn tr td {height:40px !important;padding: 10px 0 0 20px !important;}
 .before-signe-back .first-tr {height:60px !important;font-size:16px !important;background-color:#e4edff !important;color:#00a5ff !important;}
 .signed_back .first-tr {height:60px !important;font-size:16px !important;background-color:#d7f0f4 !important;color:#46cccd !important;}

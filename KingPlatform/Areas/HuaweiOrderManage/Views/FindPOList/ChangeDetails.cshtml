@@ -5,11 +5,11 @@
 <script>
     var poNumber = $.request("poNumber");
     var poLineNum = $.request("poLineNum");
-    var types = $.request("types");
+    var poTypes = $.request("poTypes");
     $(function () {
         $.ajax({
             url: "/HuaweiOrderManage/FindPOList/FindColTask",
-            data: { poNumber: poNumber, poLineNum: poLineNum, types: types },
+            data: { poNumber: poNumber, poLineNum: poLineNum, poTypes: poTypes },
             dataType: "json",
             async: false,
             success: function (data) {
