@@ -1,72 +1,78 @@
 ﻿@{
     ViewBag.Title = "ChangeDetails";
-    Layout = "~/Views/Shared/_Form.cshtml";
+    Layout = "~/Views/Shared/_Index.cshtml";
 }
 <script>
     var poNumber = $.request("poNumber");
     var poLineNum = $.request("poLineNum");
     var poTypes = $.request("poTypes");
     $(function () {
-        $.ajax({
+        getPoList(poNumber, poLineNum, poTypes);
+    });
+
+    function getPoList(poNumber, poLineNum, poTypes) {
+        var $gridList = $("#gridList");
+        $('#po-ajax-loader').fadeIn();
+        $gridList.dataGrid({
             url: "/HuaweiOrderManage/FindPOList/FindColTask",
-            data: { poNumber: poNumber, poLineNum: poLineNum, poTypes: poTypes },
-            dataType: "json",
-            async: false,
-            success: function (data) {
-                $("#form1").formSerialize(data);
-                $("#form1").find('.form-control,input').attr('readonly', 'readonly');
+            postData: { poNumber: poNumber, poLineNum: poLineNum, poTypes: poTypes, rnd: Math.random() },
+            height: $(window).height() - 70,
+            colModel: [
+                {
+                    label: '任务单类型', name: 'businessType', width: 120, align: 'left', frozen: true,
+                    formatter: function (cellvalue, options, rowObject) {
+                        if (cellvalue == "huaweiPublishOrder") {
+                            return "华为发布新订单";
+                        } else if (cellvalue == "huaweiApplyRequredDateChange") {
+                            return "华为订单交期修改";
+                        } else if (cellvalue == "huaweiNotifyOrderChange") {
+                            return "华为通知内容修改";
+                        } else if (cellvalue == "huaweiNotifyCancelOrder") {
+                            return "华为通知取消";
+                        }  else if (cellvalue == "vendorApplyQuantityChange") {
+                            return "供应商申请数量交期";
+                        } else if (cellvalue == "vendorApplyPromiseDateChange") {
+                            return "供应商申请变更交期";
+                        } else {
+                            return cellvalue
+                        }
+                    }
+                },
+                { label: '订单号', name: 'poNumber', width: 100, align: 'left', frozen: true },
+                { label: '当前处理人', name: 'currentHandler', width: 120, align: 'left' },
+                { label: '最后操作人', name: 'lastHandler', width: 120, align: 'left' },
+                { label: '变更字段', name: 'changeColumnName', width: 120, align: 'left' },
+                { label: '变更前', name: 'changePreContent', width: 150, align: 'left' },
+                { label: '变更后', name: 'changeAfterContent', width: 150, align: 'left' },
+                { label: '变更理由', name: 'openRemark', width: 150, align: 'left' },
+                {
+                    label: '任务单发布日期', name: 'creationDate', width: 100, align: 'left',
+                    formatter: "date", formatoptions: { srcformat: 'Y-m-d', newformat: 'Y-m-d' }
+                },
+                {
+                    label: '任务单关闭日期', name: 'lastUpdateDate', width: 100, align: 'left',
+                    formatter: "date", formatoptions: { srcformat: 'Y-m-d', newformat: 'Y-m-d' }
+                },
+                { label: '任务单状态', name: 'status', width: 80, align: 'left' },
+                { label: '审批意见', name: 'closeRemark', width: 150, align: 'left' },
+            ],
+            pager: "#gridPager",
+            rowNum: 20,
+            rowList: [15, 20, 50],
+            autoScroll: true,
+            viewrecords: true,
+            gridComplete: function () {
+                $('#po-ajax-loader').fadeOut();
+                $("input[type='checkbox']").removeClass('checkbox');
             }
         });
-    });
+        jQuery("#gridList").jqGrid('setFrozenColumns');
+    }
 </script>
-<form id="form1">
-    <div style="margin: 10px 10px 0 10px;">
-        <ul class="nav nav-tabs">
-            <li class="active"><a href="#">变更明细</a></li>
-        </ul>
-        <div style="padding-top: 20px; margin-right: 30px;">
-            <table class="form">
-                <tr>
-                    <th class="formTitle">PO号</th>
-                    <td class="formValue">
-                        <input id="poNumber" name="poNumber" type="text" class="form-control" />
-                    </td>
-                    <th class="formTitle">PO行号</th>
-                    <td class="formValue">
-                        <input id="poLineNum" name="poLineNum" type="text" class="form-control" />
-                    </td>
-                </tr>
-                <tr>
-                    <th class="formTitle">变更字段</th>
-                    <td class="formValue">
-                        <input id="changeColumnName" name="changeColumnName" type="text" class="form-control" />
-                    </td>
-                    <th class="formTitle">变更理由</th>
-                    <td class="formValue">
-                        <input id="openRemark" name="openRemark" type="text" class="form-control" />
-                    </td>
-                </tr>
-                <tr>
-                    <th class="formTitle">变更前内容</th>
-                    <td class="formValue" colspan="3">
-                        <input id="changePreContent" name="changePreContent" type="text" class="form-control" />
-                    </td>
-                </tr>
-                <tr>
-                    <th class="formTitle">变更后内容</th>
-                    <td class="formValue" colspan="3">
-                        <input id="changeAfterContent" name="changeAfterContent" type="text" class="form-control" />
-                    </td>
-                </tr>
-                <tr>
-                    <th class="formTitle" valign="top" style="padding-top: 5px;">
-                        备注
-                    </th>
-                    <td class="formValue" colspan="3">
-                        <textarea id="memo" name="memo" class="form-control" style="height: 60px;"></textarea>
-                    </td>
-                </tr>
-            </table>
-        </div>
-    </div>
-</form>
+<div id="po-ajax-loader">
+    <img src="~/Content/img/ajax-loader.gif" />
+</div>
+<div class="gridPanel">
+    <table id="gridList"></table>
+    <div id="gridPager"></div>
+</div>

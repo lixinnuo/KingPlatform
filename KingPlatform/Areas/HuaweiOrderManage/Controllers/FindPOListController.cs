@@ -205,13 +205,13 @@ namespace KingPlatform.Areas.HuaweiOrderManage.Controllers
                 getPODetails.shipmentNum = getPOListParamBack.result[num].shipmentNum;
                 getPODetails.poReleaseId = getPOListParamBack.result[num].poReleaseId;
                 getPODetails.poHeaderId = getPOListParamBack.result[num].poHeaderId;
-                getPODetails.selectType = "0";
+                getPODetails.selectType = "1";
                 string json = js.Serialize(getPODetails);
                 string result = HttpMethods.HttpPost(getPODetailsurl, json, true, accessToken);
                 result = result.Replace(":null", ":''");
                 GetPODetailsBack getPODetailsBack = js.Deserialize<GetPODetailsBack>(result);
 
-                return Content(getPODetailsBack.result[0].ToJson());
+                return Content(getPODetailsBack.result.ToJson());
             }
         }
 

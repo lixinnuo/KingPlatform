@@ -68,7 +68,7 @@
             height: $(window).height() - 178,
             colModel: [
                 {
-                    label: '订单状态', name: 'shipmentStatus', width: 100, align: 'left',
+                    label: '订单状态', name: 'shipmentStatus', width: 100, align: 'left', frozen:true,
                     formatter: function (cellvalue, options, rowObject) {
                         if (cellvalue == "NEW") {
                             return "新下订单";
@@ -84,12 +84,18 @@
                     }
                 },
                 {
-                    label: '订单号', name: 'poNumber', width: 100, align: 'left',
+                    label: '总任务单', name: 'taskQuantity', width: 60, align: 'left', frozen: true,
+                    formatter: function (cellvalue, options, rowObject) {
+                        return "<a onclick=\"task_details('" + rowObject.poNumber + "','" + rowObject.poLineNum + "')\" style='cursor:pointer;color:blue;'>" + cellvalue + "</a>";
+                    }
+                },
+                {
+                    label: '订单号', name: 'poNumber', width: 100, align: 'left', frozen:true,
                     formatter: function (cellvalue, options, rowObject) {
                         return "<a onclick=\"viewDetails('" + cellvalue + "','" + rowObject.poLineNum + "')\" style='cursor:pointer;color:blue;'>" + cellvalue + "</a>";
                     }
                 },
-                { label: '行号', name: 'poLineNum', width: 30, align: 'left' },
+                { label: '行号', name: 'poLineNum', width: 30, align: 'left', frozen: true },
                 { label: '编码', name: 'itemCode', width: 80, align: 'left' },
                 {
                     label: '下单日期', name: 'publishDate', width: 120, align: 'left',
@@ -195,6 +201,7 @@
                 $('#po-ajax-loader').fadeIn();
             }
         });
+        jQuery("#gridList").jqGrid('setFrozenColumns');
     }
 
     //PO签返
@@ -241,22 +248,12 @@
     }
 
     //查询变更明细
-    function btn_details() {
-        var keyValue = $("#gridList").jqGrid("getGridParam", "selrow");
-        if (keyValue == null) {
-            $.modalAlert("请勾选要操作的PO行！", 'warning');
-            return false;
-        }
-        var rowData = $("#gridList").jqGrid("getRowData", keyValue);
-        var index1 = rowData.poNumber.indexOf('>');
-        var index2 = rowData.poNumber.indexOf('<', index1);
-        var poNumber = rowData.poNumber.substring(index1 + 1, index2);
-        var poLineNum = rowData.poLineNum;
+    function task_details(poNumber, poLineNum) {
         $.modalOpen({
             id: "Details",
             title: "查看变更明细",
             url: "/HuaweiOrderManage/FindPOList/ChangeDetails?poNumber=" + poNumber + "&poLineNum=" + poLineNum + "&poTypes=" + poTypes,
-            width: "700px",
+            width: "900px",
             height: "550px",
             btn: null,
         });
@@ -423,7 +420,6 @@
                 <li class="first">已选中<span id="choseNum">0</span>项</li>
                 <li><a id="NF-signBackPOList" authorize="yes" onclick="btn_signBackPOList(true)"><i class="fa fa-check"></i>接受</a></li>
                 <li><a id="NF-btn_update" authorize="yes" onclick="btn_update()"><i class="fa fa-pencil-square-o"></i>修改</a></li>
-                <li><a id="NF-btn_details" authorize="yes" onclick="btn_details()"><i class="fa fa-pencil-square-o"></i>查询PO变更明细</a></li>
                 @*<li><a id="NF-signBackPOList" authorize="yes" onclick="btn_signBackPOList(false)"><i class="fa fa-reply"></i>PO签返（驳回）</a></li>*@
             </ul>
             <a class="btn btn-primary refresh" title="重新加载" onclick="$.reload()"><span class="glyphicon glyphicon-refresh"></span></a>

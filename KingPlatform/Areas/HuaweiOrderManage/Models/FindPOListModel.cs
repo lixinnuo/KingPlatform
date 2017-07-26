@@ -117,6 +117,8 @@ namespace KingPlatform.Areas.HuaweiOrderManage.Models
         public string lastUpdateDate { get; set; }       //最后更新时间
         public string sendVendorAddr { get; set; }          //ship to address
         public string needByDate { get; set; }              //需求时间
+        public int taskQuantity { get; set; }            //总任务单
+        public int openTaskQuantity { get; set; }        //待签返任务单
         public int instanceId { get; set; }              //华为系统内部标识用
         public long poHeaderId { get; set; }              //华为系统内部标识用
         public long poReleaseId { get; set; }             //华为系统内部标识用
@@ -254,9 +256,15 @@ namespace KingPlatform.Areas.HuaweiOrderManage.Models
         public string changePreContent { get; set; }        //变更前内容
         public string changeAfterContent { get; set; }      //变更后内容
         public string openRemark { get; set; }              //变更理由
-        public string memo { get; set; }                    //备注
         public string lineLocationId { get; set; }            //PO发运行ID
         public string poHeaderId { get; set; }                //PO头ID
+        public string businessType { get; set; }            //任务单类型
+        public string currentHandler { get; set; }          //当前处理人
+        public string lastHandler { get; set; }             //最后处理人
+        public DateTime? creationDate { get; set; }         //任务发布日期
+        public DateTime? lastUpdateDate { get; set; }       //任务结束日期
+        public string status { get; set; }                  //任务单状态
+        public string closeRemark { get; set; }             //审批意见
     }
     #endregion
 
