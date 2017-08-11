@@ -1,11 +1,13 @@
 ﻿using Basic.Code;
 using System;
-using System.Collections.Generic;
+using System.Data;
+using System.Data.OleDb;
 using System.IO;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using System.Web.Script.Serialization;
+using System.Collections.Generic;
+using KingPlatform.Areas.HuaweiOrderManage.Models;
 
 namespace KingPlatform.Areas.HuaweiOrderManage.Controllers
 {
@@ -22,6 +24,7 @@ namespace KingPlatform.Areas.HuaweiOrderManage.Controllers
         string secury = "JqkgDMDzbDlaTA9EFpkRB9veArsa"; */                                                             //系统值
 
         // GET: HuaweiOrderManage/StockManage
+        [HttpGet]
         public ActionResult Index()
         {
             return View();
@@ -33,15 +36,61 @@ namespace KingPlatform.Areas.HuaweiOrderManage.Controllers
         /// <returns></returns>
         [HttpGet]
         [HandlerAjaxOnly]
-        public void StockList(string poSubType = "")
+        public ActionResult StockList(string filename = "filename", int page = 1, int rows = 20)
         {
-            string findPOListurlTrue = "";
-            string accessToken = HttpMethods.GetAccessToken(HttpMethods.HttpPost(url_token, key, secury));      //获取华为access_token
-            JavaScriptSerializer js = new JavaScriptSerializer();
-            //定义接口json数据 获取新POList传入参数
-                
+            if (filename != "")
+            {
+                JavaScriptSerializer js = new JavaScriptSerializer();
+                var uploadDir = Server.MapPath("~/Resource/Huawei/HWStock/xlsx/");  //Upload 文件夹
+                var filePath = Path.Combine(uploadDir, filename);                     //文件地址
+                string fileType = Path.GetExtension(filePath);
 
+                try
+                {
+                    //连接字符串
+                    string connstring = string.Format("Provider=Microsoft.Jet.OLEDB.{0}.0;" +
+                                    "Extended Properties=\"Excel {1}.0;HDR=YES;IMEX=1;\";" +
+                                    "data source={2};",
+                                    (fileType == ".xls" ? 4 : 12), (fileType == ".xls" ? 8 : 12), filePath);
+                    using (OleDbConnection conn = new OleDbConnection(connstring))
+                    {
+                        conn.Open();
+                        DataTable sheetsName = conn.GetOleDbSchemaTable(OleDbSchemaGuid.Tables, new object[] { null, null, null, "Table" }); //得到所有sheet的名字
+                        string firstSheetName = sheetsName.Rows[0][2].ToString(); //得到第一个sheet的名字
+                        string sql = string.Format("SELECT * FROM [{0}]", firstSheetName); //查询字符串
+                        //string sql = string.Format("SELECT * FROM [{0}] WHERE [工厂代码] is not null", firstSheetName); //查询字符串
 
+                        OleDbDataAdapter ada = new OleDbDataAdapter(sql, connstring);
+                        DataSet set = new DataSet();
+                        ada.Fill(set);
+
+                        string dataJson = Basic.Code.Json.SetToJson(set);
+
+                        dataJson = dataJson.Replace("Table", "factoryInventoryList").Replace("工厂代码", "vendorFactoryCode").Replace("供应商物料编码", "vendorItemCode").Replace("物料编码版本", "vendorItemRevision").Replace("客户代码", "customerCode").Replace("供应商子库", "vendorStock").Replace("供应商货位", "vendorLocation").Replace("入库时间", "stockTime").Replace("库存(pcs)", "goodQuantity").Replace("待检库存", "inspectQty").Replace("隔离品数量", "faultQty");
+                        //for(int i = 0; i < dataJson.)
+
+                        StockManageModel stockManageModel = new StockManageModel();
+                        stockManageModel = js.Deserialize<StockManageModel>(dataJson);
+
+                        var data = new
+                        {
+                            rows = stockManageModel.factoryInventoryList,
+                            total = Math.Ceiling(Convert.ToDouble(stockManageModel.factoryInventoryList.Count / (rows * 1.00))) ,
+                            page = page,
+                            records = stockManageModel.factoryInventoryList.Count
+                        };
+                        return Content(data.ToJson());
+                    }
+                }
+                catch (Exception)
+                {
+                    return Content("获取信息失败。");
+                }
+            }
+            else
+            {
+                return Content("获取信息失败。");
+            }
         }
 
         #region 文件上传
@@ -54,8 +103,8 @@ namespace KingPlatform.Areas.HuaweiOrderManage.Controllers
             var guid = Request["guid"];//前端传来的GUID号
             var dir = Server.MapPath("~/Resource/Huawei/HWStock/xlsx/");//文件上传目录
             dir = Path.Combine(dir, fileRelName);//临时保存分块的目录
-            if (!System.IO.Directory.Exists(dir))
-                System.IO.Directory.CreateDirectory(dir);
+            if (!Directory.Exists(dir))
+                Directory.CreateDirectory(dir);
             string filePath = Path.Combine(dir, index.ToString());//分块文件名为索引名，更严谨一些可以加上是否存在的判断，防止多线程时并发冲突
             var data = Request.Files["file"];//表单中取得分块文件
             //if (data != null)//为null可能是暂停的那一瞬间
@@ -71,7 +120,7 @@ namespace KingPlatform.Areas.HuaweiOrderManage.Controllers
             var fileName = Request["fileName"];//文件名
             string fileRelName = fileName.Substring(0, fileName.LastIndexOf('.'));
             var dir = Path.Combine(uploadDir, fileRelName);//临时文件夹          
-            var files = System.IO.Directory.GetFiles(dir);//获得下面的所有文件
+            var files = Directory.GetFiles(dir);//获得下面的所有文件
             var length1 = fileName.LastIndexOf('.');
             var finalName = fileRelName + "_" + DateTime.Now.ToString("yyyyMMddHHmmss") + fileName.Substring(length1, (fileName.Length - length1));
             var finalPath = Path.Combine(uploadDir, finalName);//最终的文件名（文件名+当前时间）
@@ -85,7 +134,7 @@ namespace KingPlatform.Areas.HuaweiOrderManage.Controllers
             }
             fs.Flush();
             fs.Close();
-            System.IO.Directory.Delete(dir);//删除文件夹
+            Directory.Delete(dir);//删除文件夹
             return Json(new { finalName = finalName });//返回新的文件名
         }
         #endregion

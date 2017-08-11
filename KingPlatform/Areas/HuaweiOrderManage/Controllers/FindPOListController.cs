@@ -3,10 +3,7 @@ using System.Collections.Generic;
 using System.Web.Mvc;
 using Basic.Code;
 using System.Web.Script.Serialization;
-using System.Xml.Linq;
 using System.Linq;
-using Newtonsoft.Json;
-using System.Reflection;
 using KingPlatform.Areas.HuaweiOrderManage.Models;
 
 namespace KingPlatform.Areas.HuaweiOrderManage.Controllers

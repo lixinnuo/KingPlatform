@@ -23,7 +23,7 @@ namespace KingPlatform.Areas.HuaweiOrderManage.Models
     /// </summary>
     public class stockDetails
     {
-        public string vendorFactoryCode { get; set; }                   //供应商工厂代码   Y
+        public string vendorFactoryCode { get; set; }                   //工厂代码   Y
         public string vendorItemCode { get; set; }                      //供应商物料编码   Y
         public string customerCode { get; set; }                        //客户代码  Y
         public string vendorStock { get; set; }                         //供应商子库 Y

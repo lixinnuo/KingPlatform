@@ -41,5 +41,21 @@ namespace Basic.Code
         {
             return Json == null ? JObject.Parse("{}") : JObject.Parse(Json.Replace("&nbsp;", ""));
         }
+
+        /// <summary>    
+        /// DataSet转换为Json    
+        /// </summary>    
+        /// <param name="dataSet">DataSet对象</param>    
+        /// <returns>Json字符串</returns>    
+        public static string SetToJson(DataSet dataSet)
+        {
+            string jsonString = "{";
+            foreach (DataTable table in dataSet.Tables)
+            {
+                jsonString += "\"" + table.TableName + "\":" + ToJson(table) + ",";
+            }
+            jsonString = jsonString.TrimEnd(',');
+            return jsonString + "}";
+        }
     }
 }
