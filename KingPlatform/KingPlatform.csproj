@@ -123,6 +123,7 @@
     <Compile Include="Areas\HuaweiOrderManage\Controllers\StockManageController.cs" />
     <Compile Include="Areas\HuaweiOrderManage\HuaweiOrderManageAreaRegistration.cs" />
     <Compile Include="Areas\HuaweiOrderManage\Models\FindPOListModel.cs" />
+    <Compile Include="Areas\HuaweiOrderManage\Models\StockManageModel.cs" />
     <Compile Include="Areas\SystemManage\Controllers\AreaController.cs" />
     <Compile Include="Areas\SystemManage\Controllers\DutyController.cs" />
     <Compile Include="Areas\SystemManage\Controllers\ItemsDataController.cs" />
@@ -350,6 +351,10 @@
     <Content Include="Content\js\wdtree\images\tree\loading.gif" />
     <Content Include="Content\js\wdtree\tree.css" />
     <Content Include="Content\js\wdtree\tree.js" />
+    <Content Include="Content\js\webUpLoader\Uploader.swf" />
+    <Content Include="Content\js\webUpLoader\webuploader.css" />
+    <Content Include="Content\js\webUpLoader\webuploader.js" />
+    <Content Include="Content\js\webUpLoader\webuploader.min.js" />
     <Content Include="Content\js\wizard\wizard.css" />
     <Content Include="Content\js\wizard\wizard.js" />
     <Content Include="Global.asax" />
@@ -396,11 +401,10 @@
   <ItemGroup>
     <Content Include="Areas\HuaweiOrderManage\Views\FindPOList\News.cshtml" />
     <Content Include="Areas\HuaweiOrderManage\Views\FindPOList\PODetails.cshtml" />
+    <Content Include="Areas\HuaweiOrderManage\Views\StockManage\Index.cshtml" />
     <None Include="Properties\PublishProfiles\KingPlatformConfig.pubxml" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Areas\HuaweiOrderManage\Views\StockManage\" />
-  </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

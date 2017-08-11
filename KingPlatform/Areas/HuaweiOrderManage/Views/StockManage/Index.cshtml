@@ -1,0 +1,167 @@
+﻿@{
+    ViewBag.Title = "StockManage";
+    Layout = "~/Views/Shared/_Index.cshtml";
+}
+<link rel="stylesheet" type="text/css" href="~/Content/js/webUpLoader/webuploader.css" />
+<script type="text/javascript" src="~/Content/js/webUpLoader/webuploader.min.js"></script>
+<div class="topPanel">
+    <div class="toolbar">
+        <div class="operate" style="left:0;">
+            <ul class="nav nav-pills">
+                <li><a id="NF-downloadTemplates" authorize="yes" onclick="btn_signBackPOList(true)"><i class="fa fa-check"></i>下载模板</a></li>
+                <li><a id="picker" style="padding:0; border:0;"><i class="fa fa-pencil-square-o"></i>选择文件</a></li>
+                <li id="thelist" class="uploader-list"></li>
+                <li><a id="ctlBtn"><i class="fa fa-pencil-square-o"></i>开始上传</a></li>
+            </ul>
+            
+            <a class="btn btn-primary refresh" title="重新加载" onclick="$.reload()"><span class="glyphicon glyphicon-refresh"></span></a>
+        </div>
+    </div>
+</div>
+<div class="gridPanel">
+    <table id="gridList"></table>
+    <div id="gridPager"></div>
+</div>
+
+<script type="text/javascript">
+    function getPoList(filename) {
+        var $gridList = $("#gridList");
+        $gridList.jqGrid('clearGridData');
+        $('#po-ajax-loader').fadeIn();
+        $gridList.jqGrid('setGridParam', { postData: { filename: filename, rnd: Math.random() } }).trigger('reloadGrid');
+        $gridList.dataGrid({
+            url: "/HuaweiOrderManage/StockManage/StockList",
+            postData: { filename: filename, rnd: Math.random() },
+            height: $(window).height() - 178,
+            colModel: [
+                { label: '供应商工厂代码', name: 'vendorFactoryCode', width: 100, align: 'left', frozen: true },
+                { label: '供应商物料编码', name: 'vendorItemCode', width: 60, align: 'left', frozen: true },
+                { label: '客户代码', name: 'customerCode', width: 100, align: 'left' },
+                { label: '供应商子库', name: 'vendorStock', width: 100, align: 'left' },
+                { label: '供应商货位', name: 'vendorLocation', width: 100, align: 'left' },
+                {
+                    label: '入库时间', name: 'stockTime', width: 100, align: 'left',
+                    editoptions: {
+                        dataInit: function (element) {
+                            $(element).datepicker({
+                                language: "zh-CN",//语言
+                                autoclose: true,//自动关闭
+                                todayBtn: "linked",//
+                                format: "yyyy-mm-dd"//时间显示格式
+                            });
+                            $(this).click(function (e) {//选中时间后隐藏
+                                $(e).parent().datepicker('hide');
+                            });
+                        }
+                    }
+                },
+                { label: '供应商物料编码版本', name: 'vendorItemRevision', width: 100, align: 'left' },
+                { label: '库存', name: 'goodQuantity', width: 100, align: 'left' },
+                { label: '待检库存', name: 'inspectQty', width: 100, align: 'left' },
+                { label: '隔离品数量', name: 'faultQty', width: 100, align: 'left' }
+            ],
+            pager: "#gridPager",
+            rowNum: 20,
+            rowList: [15, 20, 50],
+            autoScroll: true,
+            viewrecords: true,
+            sortname: 'publishDate',
+            gridComplete: function () {
+                $('#po-ajax-loader').fadeOut();
+            },
+            onPaging: function (pgButton) {
+                $("#choseNum").html(0);
+                $('#po-ajax-loader').fadeIn();
+            }
+        });
+        jQuery("#gridList").jqGrid('setFrozenColumns');
+    }
+
+    var GUID = WebUploader.Base.guid();//一个GUID
+    var filename = "";
+
+    $(function () {
+        var uploader = WebUploader.create({
+            // 选完文件后，是否自动上传。
+            auto: false,
+            // swf文件路径
+            swf: '~/Content/js/webUpLoader/Uploader.swf',
+
+            // 文件接收服务端。
+            server: '/HuaweiOrderManage/StockManage/FileUpload',
+
+            // 选择文件的按钮。可选。
+            // 内部根据当前运行是创建，可能是input元素，也可能是flash.
+            pick: '#picker',
+
+            chunked: true,//开始分片上传
+            chunkSize: 2048000,//每一片的大小
+            formData: {
+                guid: GUID //自定义参数，待会儿解释
+            },
+            // 不压缩image, 默认如果是jpeg，文件上传前会压缩一把再上传！
+            resize: false
+        });
+        // 当有文件被添加进队列的时候
+        uploader.on('fileQueued', function (file) {
+            $("#thelist").append('<span id="' + file.id + '" class="item">' +
+                    '<h4 class="info">' + file.name + '</h4>' +
+                    '<p class="state">等待上传...</p>' +
+                '</span>');
+        });
+
+        uploader.on('uploadSuccess', function (file) {
+            $('#' + file.id).find('p.state').text('已上传');
+        });
+
+        // 文件上传过程中创建进度条实时显示。
+        uploader.on('uploadProgress', function (file, percentage) {
+            var $li = $('#' + file.id),
+            $percent = $li.find('.progress .progress-bar');
+
+            // 避免重复创建
+            if (!$percent.length) {
+                $percent = $('<div class="progress progress-striped active">' +
+                  '<div class="progress-bar" role="progressbar" style="width: 0%">' +
+                  '</div>' +
+                '</div>').appendTo($li).find('.progress-bar');
+            }
+
+            $li.find('p.state').text('上传中');
+
+            $percent.css('width', percentage * 100 + '%');
+        });
+
+        // 文件上传成功，给item添加成功class, 用样式标记上传成功。
+        uploader.on('uploadSuccess', function (file, response) {
+            $('#' + file.id).find('p.state').text('已上传');
+            $.post('/HuaweiOrderManage/StockManage/Merge', { guid: GUID, fileName: file.name }, function (data) {
+                console.log(data);
+                filename = data;
+                getPoList(filename);
+                $("#thelist .state").html("上传成功...");
+            });
+        });
+
+        // 文件上传失败，显示上传出错。
+        uploader.on('uploadError', function (file) {
+            $('#' + file.id).find('p.state').text('上传出错');
+        });
+
+        // 完成上传完了，成功或者失败，先删除进度条。
+        uploader.on('uploadComplete', function (file) {
+            $('#' + file.id).find('.progress').fadeOut();
+        });
+
+        //所有文件上传完毕
+        uploader.on("uploadFinished", function () {
+            //提交表单
+        });
+        //开始上传
+        $("#ctlBtn").click(function () {
+            uploader.upload();
+        });
+        getPoList(filename);
+    });
+</script>
+

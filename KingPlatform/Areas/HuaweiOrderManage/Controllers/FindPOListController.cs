@@ -393,7 +393,7 @@ namespace KingPlatform.Areas.HuaweiOrderManage.Controllers
                     getPOListParamBack1.result.Add(getPOListParamBack.result[j]);
                 }
             }
-            string filePath = "~/Resource/HWPO/pdf/";                                                           //文件存放地址
+            string filePath = "~/Resource/Huawei/HWPO/pdf/";                                                           //文件存放地址
             string fileName = iTextPDF.CreateHWPOPDF(getPOListParamBack1.ToJson(), filePath);        //生产pdf文件，下载
 
             string filename = Server.UrlDecode(fileName);

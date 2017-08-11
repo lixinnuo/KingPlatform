@@ -29,6 +29,8 @@
 .topPanel .toolbar .operate ul li{float: left;height: 12px;line-height: 12px;}
 .topPanel .toolbar .operate ul li.split{position: relative;display: block;border-right: 1px solid #c9c9c9;height: 16px;margin-left:5px;margin-right:5px;margin-top: 8px;}
 .topPanel .toolbar .operate ul li a{cursor:pointer;padding: 8px;border:1px solid #c9c9c9;margin-left:15px;}
+.topPanel .toolbar .operate ul li span h4{display:inline-block; margin:5px 0 5px 15px;}
+.topPanel .toolbar .operate ul li span p{display:inline-block; margin-left:5px;}
 .topPanel .toolbar .operate ul li i{margin-right:4px;font-size:13px;color: #666666;vertical-align: middle;margin-top: -1px;}
 .topPanel .toolbar .operate ul .first{position: relative;display: block;padding: 2px 15px;padding-right:10px;margin-top: 8px;margin-right:0px;border-right: 1px solid #c9c9c9;}
 .topPanel .toolbar .operate ul li.first > span{margin-left: 5px;margin-right:5px;}
@@ -125,6 +127,7 @@
 .remark ul {list-style: none;padding:0;}
 .remark ul li i {color:#00a5ff;}
 .changebox {height:26px;margin:0;padding:0;}
+.po-select {width:250px;height:auto;float:left;margin-right:5px;}
 
 /*PO模块样式*/
 

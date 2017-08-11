@@ -41,8 +41,8 @@ namespace Basic.Code
                 Font font4 = new Font(ChineseSun, 8, Font.NORMAL);
                 Font font5 = new Font(ChineseSun, 6, Font.NORMAL);
                 Font EnglishFont = FontFactory.getFont(FontFactory.TIMES_NEW_ROMAN, 18, Font.BOLD);
-                Font EnglishFont1 = FontFactory.getFont(FontFactory.TIMES_NEW_ROMAN, 12, Font.BOLD);
-                Font EnglishFont2 = FontFactory.getFont(FontFactory.TIMES_NEW_ROMAN, 12, Font.NORMAL);
+                Font EnglishFont1 = FontFactory.getFont(FontFactory.TIMES_NEW_ROMAN, 10, Font.BOLD);
+                Font EnglishFont2 = FontFactory.getFont(FontFactory.TIMES_NEW_ROMAN, 10, Font.NORMAL);
                 Font EnglishFont3 = FontFactory.getFont(FontFactory.TIMES_NEW_ROMAN, 10, Font.NORMAL);
 
                 //标题
@@ -58,23 +58,21 @@ namespace Basic.Code
                 logo.Add(image);
                 document.Add(logo);
 
-                Paragraph logoContent4 = new Paragraph();
-                logoContent4.Add(new Phrase(" ", font1));
-                document.Add(logoContent4);
+                Paragraph logoContent3 = new Paragraph();
+                logoContent3.Add(new Phrase(" ", font5));
+                document.Add(logoContent3);
 
                 Paragraph logoContent1 = new Paragraph();
                 logoContent1.Add(new Phrase("          华为技术有限公司", font1));
                 document.Add(logoContent1);
 
                 Paragraph logoContent2 = new Paragraph();
-                logoContent2.Add(new Phrase("                  Huawei Technologies Co., Ltd.", EnglishFont1));
+                logoContent2.Add(new Phrase("                      Huawei Technologies Co., Ltd.", EnglishFont1));
                 document.Add(logoContent2);
 
-                Paragraph logoContent3 = new Paragraph();
-                logoContent3.Add(new Phrase(" ", font1));
                 document.Add(logoContent3);
 
-                Paragraph p1 = new Paragraph(new Chunk("PO Detail Screen for PO:  " + data.result[0].poNumber, EnglishFont1));
+                Paragraph p1 = new Paragraph(new Phrase("PO Detail Screen for PO:  " + data.result[0].poNumber, EnglishFont1));
                 document.Add(p1);
 
                 PdfPTable ptable = new PdfPTable(4);
@@ -105,7 +103,8 @@ namespace Basic.Code
                 for (int i = 0; i < data.result.Count; i++) {
                     totalAmount += (int)(data.result[i].quantity) - (int)data.result[i].quantityCancelled;
                 }
-                ptable.addCell(new Phrase(Math.Round((double)(totalAmount * data.result[0].priceOverride), 2).ToString(), EnglishFont2));
+                double amount1 = (double)(totalAmount * data.result[0].priceOverride);
+                ptable.addCell(new Phrase(String.Format("{0:F}", amount1), EnglishFont2));               //默认为保留两位
 
                 ptable.addCell(new Phrase("Last Modified:", EnglishFont1));
                 ptable.addCell(new Phrase(data.result[0].lastUpdateDate.Substring(0, 10), EnglishFont2));
@@ -115,15 +114,17 @@ namespace Basic.Code
                 ptable.addCell(new Phrase("Currency:", EnglishFont1));
                 ptable.addCell(new Phrase(data.result[0].currencyCode, EnglishFont2));
                 ptable.addCell(new Phrase("Tax:", EnglishFont1));
-                ptable.addCell(new Phrase(Math.Round((double)(totalAmount * data.result[0].priceOverride * data.result[0].taxRate)).ToString(), EnglishFont2));
+                double tax = (double)(totalAmount * data.result[0].priceOverride * data.result[0].taxRate);
+                ptable.addCell(new Phrase(String.Format("{0:F}", tax), EnglishFont2));
 
                 ptable.addCell(new Phrase("Payment Terms:", EnglishFont1));
                 ptable.addCell(new Phrase(data.result[0].paymentTerms, font3));
                 ptable.addCell(new Phrase("Total Amount(Include Tax):", EnglishFont3));
-                ptable.addCell(new Phrase(Math.Round((double)(totalAmount * data.result[0].priceOverride * (1 + data.result[0].taxRate))).ToString(), EnglishFont2));
+                double amount2 = (double)(totalAmount * data.result[0].priceOverride * (1 + data.result[0].taxRate));
+                ptable.addCell(new Phrase(String.Format("{0:F}", amount2), EnglishFont2));
 
                 ptable.addCell(new Phrase("Term/Mode:", EnglishFont1));
-                ptable.addCell(new Phrase(data.result[0].businessMode, font3));
+                ptable.addCell(new Phrase(data.result[0].fobLookupCode + "/" + data.result[0].carrierName, font3));
                 ptable.addCell(new Phrase("Phone:", EnglishFont1));
                 ptable.addCell(new Phrase(data.result[0].sendVendorTelNum, EnglishFont2));
 
@@ -158,11 +159,13 @@ namespace Basic.Code
 
                 document.Add(ptable);
 
+                document.Add(logoContent3); //空一行
+
                 PdfPTable ptable1 = new PdfPTable(8);
                 ptable1.DefaultCell.Border = Rectangle.LEFT | Rectangle.RIGHT | Rectangle.TOP | Rectangle.BOTTOM;
                 ptable1.DefaultCell.BorderWidth = 1;
                 ptable1.DefaultCell.PaddingBottom = 5;
-                float[] headerwidths1 = { 5, 15, 25, 5, 5, 10, 15, 20 };
+                float[] headerwidths1 = { 5, 15, 25, 7, 7, 6, 12, 23 };
                 ptable1.setWidths(headerwidths1);
                 ptable1.WidthPercentage = 100;
                 ptable1.addCell(new Phrase("SN", EnglishFont2));
@@ -172,7 +175,7 @@ namespace Basic.Code
                 ptable1.addCell(new Phrase("Unit", EnglishFont2));
                 ptable1.addCell(new Phrase("Price", EnglishFont2));
                 ptable1.addCell(new Phrase("Del.Date", EnglishFont2));
-                ptable1.addCell(new Phrase("Del Place", EnglishFont2));
+                ptable1.addCell(new Phrase("Del.Place", EnglishFont2));
 
                 for (int i = 0; i < data.result.Count; i++)
                 {
@@ -183,7 +186,7 @@ namespace Basic.Code
                     ptable1.addCell(new Phrase(data.result[i].unitOfMeasure, EnglishFont3));
                     ptable1.addCell(new Phrase(data.result[i].priceOverride.ToString(), EnglishFont3));
                     ptable1.addCell(new Phrase(data.result[i].needByDate.Substring(0, 10), EnglishFont3));
-                    ptable1.addCell(new Phrase("", font2));
+                    ptable1.addCell(new Phrase("H80_DCS_南岗工业区2栋", font3));
                 }  
                 document.Add(ptable1);
 

@@ -117,6 +117,7 @@ namespace KingPlatform.Areas.HuaweiOrderManage.Models
         public string lastUpdateDate { get; set; }       //最后更新时间
         public string sendVendorAddr { get; set; }          //ship to address
         public string needByDate { get; set; }              //需求时间
+        public string fobLookupCode { get; set; }           //打印中的Term
         public int taskQuantity { get; set; }            //总任务单
         public int openTaskQuantity { get; set; }        //待签返任务单
         public int instanceId { get; set; }              //华为系统内部标识用
