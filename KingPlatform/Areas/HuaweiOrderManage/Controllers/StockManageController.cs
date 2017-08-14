@@ -13,10 +13,10 @@ namespace KingPlatform.Areas.HuaweiOrderManage.Controllers
 {
     public class StockManageController : Controller
     {
-        string url_token = "https://api-beta.huawei.com:443/oauth2/token";                                              //查询华为access_token
-        string findPOListurl = "https://api-beta.huawei.com:443/service/esupplier/importInventory/1.0.0/1";             //库存明细接口
-        string key = "CkAb2QO3G50NQZcrm2VYPycgEMga";                                                                    //系统键 测试平台
-        string secury = "UEvjRaxRoggXXM2G1Y5izAk1b_ga";                                                                 //系统值
+        //string url_token = "https://api-beta.huawei.com:443/oauth2/token";                                              //查询华为access_token
+        //string findPOListurl = "https://api-beta.huawei.com:443/service/esupplier/importInventory/1.0.0/1";             //库存明细接口
+        //string key = "CkAb2QO3G50NQZcrm2VYPycgEMga";                                                                    //系统键 测试平台
+        //string secury = "UEvjRaxRoggXXM2G1Y5izAk1b_ga";                                                                 //系统值
 
         /*string url_token = "https://openapi.huawei.com:443/oauth2/token";                                              //查询华为access_token
         string findPOListurl = "https://api.huawei.com:443/service/esupplier/importInventory/1.0.0/1";                 //库存明细接口
