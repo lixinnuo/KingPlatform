@@ -68,6 +68,7 @@ namespace Basic.Code
         public string sendVendorAddr { get; set; }          //ship to address
         public string needByDate { get; set; }              //需求时间
         public string fobLookupCode { get; set; }           //打印中的Term
+        public string partNumber { get; set; }              //打印中的description
         public int taskQuantity { get; set; }            //总任务单
         public int openTaskQuantity { get; set; }        //待签返任务单
         public int instanceId { get; set; }              //华为系统内部标识用

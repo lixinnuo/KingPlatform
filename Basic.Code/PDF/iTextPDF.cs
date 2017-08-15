@@ -165,7 +165,7 @@ namespace Basic.Code
                 ptable1.DefaultCell.Border = Rectangle.LEFT | Rectangle.RIGHT | Rectangle.TOP | Rectangle.BOTTOM;
                 ptable1.DefaultCell.BorderWidth = 1;
                 ptable1.DefaultCell.PaddingBottom = 5;
-                float[] headerwidths1 = { 5, 15, 25, 7, 7, 6, 12, 23 };
+                float[] headerwidths1 = { 5, 15, 25, 8, 6, 8, 10, 23 };
                 ptable1.setWidths(headerwidths1);
                 ptable1.WidthPercentage = 100;
                 ptable1.addCell(new Phrase("SN", EnglishFont2));
@@ -179,14 +179,14 @@ namespace Basic.Code
 
                 for (int i = 0; i < data.result.Count; i++)
                 {
-                    ptable1.addCell(new Phrase(data.result[i].poLineNum, EnglishFont3)); 
+                    ptable1.addCell(new Phrase((i + 1).ToString(), EnglishFont3)); 
                     ptable1.addCell(new Phrase(data.result[i].itemCode, EnglishFont3));
-                    ptable1.addCell(new Phrase(data.result[i].itemDescription, font3));
+                    ptable1.addCell(new Phrase(data.result[i].itemDescription + '/' + data.result[i].partNumber, font3));
                     ptable1.addCell(new Phrase(data.result[i].quantity.ToString(), EnglishFont3));
                     ptable1.addCell(new Phrase(data.result[i].unitOfMeasure, EnglishFont3));
                     ptable1.addCell(new Phrase(data.result[i].priceOverride.ToString(), EnglishFont3));
                     ptable1.addCell(new Phrase(data.result[i].needByDate.Substring(0, 10), EnglishFont3));
-                    ptable1.addCell(new Phrase("H80_DCS_南岗工业区2栋", font3));
+                    ptable1.addCell(new Phrase(data.result[i].shipToLocation.Split(',')[0], font3));
                 }  
                 document.Add(ptable1);
 

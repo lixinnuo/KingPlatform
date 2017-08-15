@@ -58,8 +58,8 @@ namespace KingPlatform.Areas.HuaweiOrderManage.Controllers
         {
             string findPOListurlTrue = "";
             int getpage = page;
-            getPOListParamBack = this.TempData[poTypes] as GetPOListParamBack;            //获取储存的华为PO列表(对应poTypes)
-            if (getpage == 1 && getPOListParamBack == null)
+            
+            if (getpage == 1)
             {
                 string accessToken = HttpMethods.GetAccessToken(HttpMethods.HttpPost(url_token, key, secury));      //获取华为access_token
                 JavaScriptSerializer js = new JavaScriptSerializer();
@@ -84,6 +84,10 @@ namespace KingPlatform.Areas.HuaweiOrderManage.Controllers
                     }
                     if (getPOListParamBack1.result.Count < 100) break;
                 }
+            }
+            else
+            {
+                getPOListParamBack = this.TempData[poTypes] as GetPOListParamBack;            //获取储存的华为PO列表(对应poTypes)
             }
 
             this.TempData[poTypes] = getPOListParamBack;                                      //保存华为PO列表(对应poTypes)
