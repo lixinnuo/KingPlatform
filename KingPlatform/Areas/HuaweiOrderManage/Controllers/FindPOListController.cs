@@ -58,7 +58,8 @@ namespace KingPlatform.Areas.HuaweiOrderManage.Controllers
         {
             string findPOListurlTrue = "";
             int getpage = page;
-            if (getpage == 1)
+            getPOListParamBack = this.TempData[poTypes] as GetPOListParamBack;            //获取储存的华为PO列表(对应poTypes)
+            if (getpage == 1 && getPOListParamBack == null)
             {
                 string accessToken = HttpMethods.GetAccessToken(HttpMethods.HttpPost(url_token, key, secury));      //获取华为access_token
                 JavaScriptSerializer js = new JavaScriptSerializer();
@@ -83,10 +84,6 @@ namespace KingPlatform.Areas.HuaweiOrderManage.Controllers
                     }
                     if (getPOListParamBack1.result.Count < 100) break;
                 }
-            }
-            else
-            {
-                getPOListParamBack = this.TempData[poTypes] as GetPOListParamBack;            //获取储存的华为PO列表(对应poTypes)
             }
 
             this.TempData[poTypes] = getPOListParamBack;                                      //保存华为PO列表(对应poTypes)
@@ -228,7 +225,6 @@ namespace KingPlatform.Areas.HuaweiOrderManage.Controllers
             string[] poNumberSplit = poNumber.Split('#');
             string[] poLineNumSplit = poLineNum.Split('#');
             getPOListParamBack = this.TempData[poTypes] as GetPOListParamBack;                        //获取储存的华为PO列表(对应types)
-            this.TempData[poTypes] = getPOListParamBack;                                              //保存华为PO列表(对应types)
 
             for (int i = 0; i < poNumberSplit.Length; i++)
             {
@@ -265,6 +261,7 @@ namespace KingPlatform.Areas.HuaweiOrderManage.Controllers
             string returnStr = "", passPOStr = "", nopassPOStr = "";
             for (int i = 0; i < poNumberSplit.Length; i++)
             {
+                getPOListParamBack.result.RemoveAll(item => item.poNumber == confirmPOBack.data[i].poNum && item.poLineNum == confirmPOBack.data[i].poLineNum);
                 if (confirmPOBack.data[i].code == "00000")
                 {
                     passPOStr += confirmPOBack.data[i].poNum + "/";
@@ -274,6 +271,7 @@ namespace KingPlatform.Areas.HuaweiOrderManage.Controllers
                     nopassPOStr += confirmPOBack.data[i].poNum + "/";
                 }
             }
+            this.TempData[poTypes] = getPOListParamBack;                                              //保存华为PO列表(对应types)
             if (passPOStr != "")
             {
                 returnStr += "订单 " + passPOStr + " 处理成功！";
@@ -325,17 +323,17 @@ namespace KingPlatform.Areas.HuaweiOrderManage.Controllers
 
             string result = HttpMethods.HttpPost(onwayPOListUrl, json, true, accessToken);
             result = result.Replace(":null", ":''");
-            List<POBackData> pOBackData = js.Deserialize<List<POBackData>>(result);
+            List<POBackData> poBackData = js.Deserialize<List<POBackData>>(result);
             string returnStr = "", passPOStr = "", nopassPOStr = "";
             for (int i = 0; i < poNumberSplit.Length; i++)
             {
-                if (pOBackData[i].code == "00000")
+                if (poBackData[i].code == "00000")
                 {
-                    passPOStr += pOBackData[i].poNum + "/";
+                    passPOStr += poBackData[i].poNum + "/";
                 }
                 else
                 {
-                    nopassPOStr += pOBackData[i].poNum + "/";
+                    nopassPOStr += poBackData[i].poNum + "/";
                 }
             }
             if (passPOStr != "")
