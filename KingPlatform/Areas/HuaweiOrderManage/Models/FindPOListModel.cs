@@ -3,6 +3,26 @@ using System.Collections.Generic;
 
 namespace KingPlatform.Areas.HuaweiOrderManage.Models
 {
+    #region GetPOBoardParam 查询PO看板入参
+    public class GetPOBoardParam
+    {
+        public string orgId { get; set; }               //华为子公司
+        public string poNumber { get; set; }         //PO号
+        public string itemCode { get; set; }     //Item编码
+        public string promiseDateStart { get; set; }                //承诺日期（日期区间起始值）
+        public string promiseDateEnd { get; set; }  //承诺日期（日期区间截止值）
+        public string publishDateStart { get; set; }             //订单下达日期（日期区间起始值
+        public string publishDateEnd { get; set; }             //订单下达日期（日期区间截止值
+        public string partNumber { get; set; }               //厂家型号
+        public string businessMode { get; set; }  //采购模式
+        public string shipmentStatus { get; set; }                   //订单状态
+        public string agentName { get; set; }   //采购员
+        public string businessType { get; set; }           //待办类型
+        public int? moreXDaysUndeal { get; set; }                //超过X天未处理
+        public string manufactureSiteInfo { get; set; }               //生产厂家
+    }
+    #endregion
+
     #region GetPOBoard 查询PO看板出参
     public class GetPOBoard
     {
@@ -50,6 +70,14 @@ namespace KingPlatform.Areas.HuaweiOrderManage.Models
         public string poStatus { get; set; }
         public string colTaskOrPoStatus { get; set; }       //任务单状态
         public string statusType { get; set; }              //状态类别
+        public string itemCode { get; set; }              //Item编码
+        public int? orgId { get; set; }                      //华为子公司ID
+        public string poNumber { get; set; }              //PO号
+        public string promiseDateStart { get; set; }              //承诺开始日期
+        public string promiseDateEnd { get; set; }              //承诺结束日期
+        public string publishDateStart { get; set; }              //发布开始日期
+        public string publishDateEnd { get; set; }              //发布结束日期
+        public string businessMode { get; set; }              //采购模式
     }
     #endregion
 

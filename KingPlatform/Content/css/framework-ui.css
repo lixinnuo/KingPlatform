@@ -114,12 +114,14 @@
 .before-signe-back {padding:0 !important;border-top:2px solid #00a5ff !important;}
 .signed_back {padding:0 !important;border-top:2px solid #46cccd !important;}
 .warn {padding:0 !important;border-top:2px solid #fdae79 !important;}
-.before-signe-back tr,.signed_back tr,.warn tr {height:40px !important; cursor:pointer !important;}
+.searchBoard {padding:0 !important;border-top:2px solid #fdae79 !important;}
+.before-signe-back tr,.signed_back tr,.warn tr,.searchBoard tr {height:40px !important; cursor:pointer !important;}
 .before-signe-back tr td,.signed_back tr td,.warn tr td {height:40px !important;padding: 10px 0 0 20px !important;}
 .before-signe-back .first-tr {height:60px !important;font-size:16px !important;background-color:#e4edff !important;color:#00a5ff !important;}
 .signed_back .first-tr {height:60px !important;font-size:16px !important;background-color:#d7f0f4 !important;color:#46cccd !important;}
 .warn .first-tr {height:60px !important;font-size:16px !important;background-color:#fff6f0 !important;color:#fdae79 !important;}
-.before-signe-back .first-td,.signed_back .first-td,.warn .first-td {padding: 18px 0 0 20px !important;}
+.searchBoard .first-tr {height:60px !important;font-size:16px !important;background-color:#fff !important;color:#000 !important;}
+.before-signe-back .first-td,.signed_back .first-td,.warn .first-td,.searchBoard .first-td {padding: 18px 0 0 20px !important;}
 
 .POboardnum {color:#00a5ff; font-size:14px;}
 .POboardTotalnum {color:#00a5ff;}
@@ -129,6 +131,14 @@
 .changebox {height:26px;margin:0;padding:0;}
 .po-select {width:250px;height:auto;float:left;margin-right:5px;}
 
-/*PO模块样式*/
-
+/*右侧搜索*/
+.row-nav-right {position:absolute;z-index:10000;top:0px;right:0px;width:0px;height:100%;}
+.row-right-search {position:absolute;background-color:#FAFAFA;border:1px solid #9da8ad; z-index:10000; top:0px; right:0px;width:0px;}
+.right-icon {position:absolute;z-index:500; left:-14px;top:0;width:15px;height:44px;background-image:url('../../Content/img/resizer-open-close.png');background-position:0px -45px;}
+.right-icon:hover {cursor:pointer;}
+.row-right-list {margin:8px 8px 0 8px; height:50px; width:220px;}
+.row-right-title {padding:10px; background:#ebebeb; margin:10px;line-height:14px;}
+.row-right-list label {display:block;text-align:left;line-height:14px;margin-left:10px; height:18px;}
+.row-right-list .row-right-input {width:220px; height:32px;font-size:12px;margin-left:10px;}
+.center {text-align:center;}
 

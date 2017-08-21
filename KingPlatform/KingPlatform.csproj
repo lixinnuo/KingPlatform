@@ -162,6 +162,7 @@
     <Content Include="Content\img\logo.png" />
     <Content Include="Content\img\radio1.jpg" />
     <Content Include="Content\img\radio2.jpg" />
+    <Content Include="Content\img\resizer-open-close.png" />
     <Content Include="Content\img\samples\angelina-300.jpg" />
     <Content Include="Content\img\samples\emma-300.jpg" />
     <Content Include="Content\img\samples\emma.png" />
@@ -182,6 +183,8 @@
     <Content Include="Content\img\samples\scarlet-159.png" />
     <Content Include="Content\img\samples\scarlet.png" />
     <Content Include="Content\img\samples\scarlett-300.jpg" />
+    <Content Include="Content\js\bootStrap\bootstrap-select.min.css" />
+    <Content Include="Content\js\bootStrap\bootstrap-select.min.js" />
     <Content Include="Content\js\bootStrap\bootstrap.js" />
     <Content Include="Content\js\bootStrap\bootstrap.min.css" />
     <Content Include="Content\js\cookie\jquery.cookie.js" />

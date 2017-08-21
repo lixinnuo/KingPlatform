@@ -5,6 +5,7 @@ using Basic.Code;
 using System.Web.Script.Serialization;
 using System.Linq;
 using KingPlatform.Areas.HuaweiOrderManage.Models;
+using Newtonsoft.Json;
 
 namespace KingPlatform.Areas.HuaweiOrderManage.Controllers
 {
@@ -38,11 +39,27 @@ namespace KingPlatform.Areas.HuaweiOrderManage.Controllers
         /// <returns></returns>
         [HttpGet]
         [HandlerAjaxOnly]
-        public ActionResult FindPOBoard()
+        public ActionResult FindPOBoard(string searchParam = "")
         {
             string accessToken = HttpMethods.GetAccessToken(HttpMethods.HttpPost(url_token, key, secury));      //获取华为access_token
             JavaScriptSerializer js = new JavaScriptSerializer();
-            string result = HttpMethods.HttpPost(findPOBoardUrl, "{}", true, accessToken);
+            GetPOBoardParam param = new GetPOBoardParam();
+            if (searchParam.IndexOf("*") >= 0)
+            {
+                string[] searchParamSplit = searchParam.Split(new char[] { '*' });
+                param.poNumber = searchParamSplit[0];                    //PO号
+                param.itemCode = searchParamSplit[1];                    //Item编码
+                param.promiseDateStart = searchParamSplit[2];            //承诺日期
+                param.promiseDateEnd = searchParamSplit[3];
+                param.publishDateStart = searchParamSplit[4];            //订单下达日期
+                param.publishDateEnd = searchParamSplit[5];
+                if(searchParamSplit[6] != "")   param.shipmentStatus = searchParamSplit[6];             //订单状态
+
+            }
+            var jSetting = new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore };
+            var json = JsonConvert.SerializeObject(param, Formatting.Indented, jSetting);
+
+            string result = HttpMethods.HttpPost(findPOBoardUrl, json, true, accessToken);
             result = result.Replace(":null", ":''");
             GetPOBoard getPOBoard = js.Deserialize<GetPOBoard>(result);
             return Content(getPOBoard.ToJson());
@@ -54,18 +71,33 @@ namespace KingPlatform.Areas.HuaweiOrderManage.Controllers
         /// <returns></returns>
         [HttpGet]
         [HandlerAjaxOnly]
-        public ActionResult PostPOList(string poSubType = "P", string shipmentStatus = "all", string businessType = "all", string poStatus = "before_signe_back", string colTaskOrPoStatus = "huaweiPublishOrder", string statusType = "COL_TASK_STATUS", string poTypes = "", int page = 1, int rows = 20, string sidx = "publishDate", string sord = "asc")
+        public ActionResult PostPOList(string poSubType = "P", string shipmentStatus = "all", string businessType = "all", string poStatus = "before_signe_back", string colTaskOrPoStatus = "huaweiPublishOrder", string statusType = "COL_TASK_STATUS", string poTypes = "", int page = 1, int rows = 20, string sidx = "publishDate", string sord = "asc", string searchParam = "")
         {
             string findPOListurlTrue = "";
             int getpage = page;
-            
+
             if (getpage == 1)
             {
                 string accessToken = HttpMethods.GetAccessToken(HttpMethods.HttpPost(url_token, key, secury));      //获取华为access_token
                 JavaScriptSerializer js = new JavaScriptSerializer();
+                
                 //定义接口json数据 获取新POList传入参数
                 GetPOListParam param = new GetPOListParam(poSubType, shipmentStatus, businessType, poStatus, colTaskOrPoStatus, statusType);
-                string json = js.Serialize(param);
+
+                if (searchParam.IndexOf("*") >= 0)
+                {
+                    string[] searchParamSplit = searchParam.Split(new char[] { '*' });
+                    param.poNumber = searchParamSplit[0];                    //PO号
+                    param.itemCode = searchParamSplit[1];                    //Item编码
+                    param.promiseDateStart = searchParamSplit[2];            //承诺日期
+                    param.promiseDateEnd = searchParamSplit[3];
+                    param.publishDateStart = searchParamSplit[4];            //订单下达日期
+                    param.publishDateEnd = searchParamSplit[5];
+                    if (searchParamSplit[6] != "") param.shipmentStatus = searchParamSplit[6];             //订单状态
+                }
+
+                var jSetting = new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore };
+                var json = JsonConvert.SerializeObject(param, Formatting.Indented, jSetting);
                 for (int i = 0; ; i++)
                 {
                     getpage = page + i;
@@ -404,10 +436,11 @@ namespace KingPlatform.Areas.HuaweiOrderManage.Controllers
         }
 
         [HttpGet]
-        public virtual ActionResult News(string Second, string Third)
+        public virtual ActionResult News(string Second, string Third, string POParams)
         {
             ViewData["Second"] = Second;
             ViewData["Third"] = Third;
+            ViewData["Params"] = POParams;
             return View();
         }
         [HttpGet]

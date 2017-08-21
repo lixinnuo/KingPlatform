@@ -2,13 +2,54 @@
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_Index.cshtml";
 }
+<script src="~/Content/js/bootStrap/bootstrap-select.min.js"></script>
+<link rel="stylesheet" href="~/Content/js/bootStrap/bootstrap-select.min.css" />
 <script>
     var flag = 1;
     var poTypes;
+    var searchParam = "";
     $(function () {
         //下拉框选择
         $("#po-select-second").val("@ViewData["Second"]");
+        searchParam = "@ViewData["Params"]";
+        $("#poNumber").val(searchParam.split('*')[0]);
+        $("#itemCode").val(searchParam.split('*')[1]);
+        $("#promiseDateStart").val(searchParam.split('*')[2]);
+        $("#promiseDateEnd").val(searchParam.split('*')[3]);
+        $("#publishDateStart").val(searchParam.split('*')[4]);
+        $("#publishDateEnd").val(searchParam.split('*')[5]);
+        $("#shipmentStatus").val(searchParam.split('*')[6]);
         secondChange();
+
+        $("#icon-toggle").on("click", function () {
+            if ($("#nav-right").width() == 0) {
+                $("#right-search, #nav-right").css("width", "240px");
+                $(this).css({ "background-position-y": "-133px" });
+                $("#refresh").css("right", "280px");
+            } else {
+                $("#right-search, #nav-right").css("width", "0px");
+                $(this).css({ "background-position-y": "-45px" });
+                $("#refresh").css("right", "40px");
+            }
+        });
+        $(".time").datepicker({
+            language: "zh-CN",//语言
+            autoclose: true,//自动关闭
+            todayBtn: "linked",//
+            format: "yyyy-mm-dd",//时间显示格式
+
+        });
+
+        $("#po-reset").on("click", function () {
+            $("#poNumber, #itemCode, #promiseDateStart, #promiseDateEnd, #publishDateStart, #publishDateEnd, #shipmentStatus").val("");
+        });
+
+        $("#po-search").on("click", function () {
+            var secondValue = $("#po-select-second").val();
+            var thirdValue = $("#po-select-third").val();
+            searchParam = $("#poNumber").val() + "*" + $("#itemCode").val() + "*" + $("#promiseDateStart").val() + "*" + $("#promiseDateEnd").val() + "*" + $("#publishDateStart").val() + "*" + $("#publishDateEnd").val() + "*" + $("#shipmentStatus").val() + "*";
+            chosePOList(secondValue, thirdValue, searchParam);
+        });
     });
 
     function secondChange() {
@@ -53,18 +94,18 @@
             selectThird.val("@ViewData["Third"]");
             flag++;
         }
-        chosePOList(selectSecond.val(), selectThird.val());
+        chosePOList(selectSecond.val(), selectThird.val(), searchParam);
     }
 
     //获取订单列表信息
-    function getPoList(poSubType, shipmentStatus, businessType, poStatus, colTaskOrPoStatus, statusType, poTypes) {
+    function getPoList(poSubType, shipmentStatus, businessType, poStatus, colTaskOrPoStatus, statusType, poTypes, searchParam) {
         var $gridList = $("#gridList");
         $gridList.jqGrid('clearGridData');
         $('#po-ajax-loader').fadeIn();
-        $gridList.jqGrid('setGridParam', { postData: { poSubType: poSubType, shipmentStatus: shipmentStatus, businessType: businessType, poStatus: poStatus, colTaskOrPoStatus: colTaskOrPoStatus, statusType: statusType, poTypes: poTypes, rnd: Math.random() } }).trigger('reloadGrid');
+        $gridList.jqGrid('setGridParam', { postData: { poSubType: poSubType, shipmentStatus: shipmentStatus, businessType: businessType, poStatus: poStatus, colTaskOrPoStatus: colTaskOrPoStatus, statusType: statusType, poTypes: poTypes, searchParam: searchParam } }).trigger('reloadGrid');
         $gridList.dataGrid({
             url: "/HuaweiOrderManage/FindPOList/PostPOList",
-            postData: { poSubType: poSubType, shipmentStatus: shipmentStatus, businessType: businessType, poStatus: poStatus, colTaskOrPoStatus: colTaskOrPoStatus, statusType: statusType, poTypes: poTypes, rnd: Math.random() },
+            postData: { poSubType: poSubType, shipmentStatus: shipmentStatus, businessType: businessType, poStatus: poStatus, colTaskOrPoStatus: colTaskOrPoStatus, statusType: statusType, poTypes: poTypes, searchParam: searchParam },
             height: $(window).height() - 178,
             colModel: [
                 {
@@ -310,7 +351,7 @@
         });
     }
 
-    function chosePOList(secondValue, thirdValue) {
+    function chosePOList(secondValue, thirdValue, searchParam) {
         //初始化
         var poSubType = "P", shipmentStatus = "all", businessType = "all", poStatus = "before_signe_back", colTaskOrPoStatus = "huaweiPublishOrder", statusType = "COL_TASK_STATUS";
         if (secondValue == "待接受" && thirdValue == "ALL") {
@@ -396,8 +437,9 @@
             poTypes = "po_warning_overdue";
         }
         $("#thirdShow").html(thirdValue);
-        getPoList(poSubType, shipmentStatus, businessType, poStatus, colTaskOrPoStatus, statusType, poTypes);
+        getPoList(poSubType, shipmentStatus, businessType, poStatus, colTaskOrPoStatus, statusType, poTypes, searchParam);
     }
+    
 </script>
 <div class="potopPanel">
     <div class="toolbar">
@@ -423,7 +465,7 @@
                 <li><a id="NF-signBackPOList" authorize="yes" onclick="btn_signBackPOList(false)"><i class="fa fa-reply"></i>驳回</a></li>
                 <li><a id="NF-btn_update" authorize="yes" onclick="btn_update()"><i class="fa fa-pencil-square-o"></i>修改</a></li>
             </ul>
-            <a class="btn btn-primary refresh" title="重新加载" onclick="$.reload()"><span class="glyphicon glyphicon-refresh"></span></a>
+            <a class="btn btn-primary refresh" id="refresh" title="重新加载" onclick="$.reload()"><span class="glyphicon glyphicon-refresh"></span></a>
         </div>
     </div>
 </div>
@@ -433,4 +475,59 @@
 <div class="gridPanel">
     <table id="gridList"></table>
     <div id="gridPager"></div>
+</div>
+<div class="row-nav-right" id="nav-right">
+    <div class="row-right-search" id="right-search">
+        <div class="row-right-list center" style="height:30px;">
+            <div class="row-right-title">查询</div>
+        </div>
+        <div style="height:100%; width:220px; z-index:500;">
+            <div class="row-right-list">
+                <label>PO号</label>
+                <div class="row-right-input">
+                    <input type="text" placeholder="多个请以','隔开" class="form-control" id="poNumber" style="width:174px; height:20px;" />
+                </div>
+            </div>
+            <div class="row-right-list">
+                <label class="row-right-list-title">Item编码</label>
+                <div class="row-right-input">
+                    <input type="text" placeholder="多个请以','隔开" class="form-control" id="itemCode" style="width:174px; height:20px;" />
+                </div>
+            </div>
+            <div class="row-right-list">
+                <label class="row-right-list-title">承诺日期</label>
+                <div class="row-right-input">
+                    <input type="text" class="form-control time" style="display:inline-block; width:70px;height:20px;" id="promiseDateStart" />-
+                    <input type="text" class="form-control time" style="display:inline-block; width:70px;height:20px;" id="promiseDateEnd" />
+                </div>
+            </div>
+            <div class="row-right-list">
+                <label class="row-right-list-title">订单下达日期</label>
+                <div class="row-right-input">
+                    <input type="text" class="form-control time" style="display:inline-block; width:70px;height:20px;" id="publishDateStart" />-
+                    <input type="text" class="form-control time" style="display:inline-block; width:70px;height:20px;" id="publishDateEnd" />
+                </div>
+            </div>
+            <div class="row-right-list">
+                <label class="row-right-list-title">订单状态</label>
+                <div class="row-right-input">
+                    <select class="selectpicker" multiple id="shipmentStatus" style="width:174px; height:20px;">
+                        <option value="all" selected>ALL</option>
+                        <option value="NEW">新下订单</option>
+                        <option value="OPEN">在途订单</option>
+                        <option value="CANCELLED">取消订单</option>
+                        <option value="CLOSED">关闭订单</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="row-right-list">
+                <div class="row-right-input">
+                    <button class="form-control btn-primary" style="display:inline-block; width:70px; height:20px; margin-right:5px;" id="po-search">查询</button>
+                    <button class="form-control" style="display:inline-block;width:70px; height:20px;" id="po-reset">重置</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="right-icon" id="icon-toggle"></div>
 </div>

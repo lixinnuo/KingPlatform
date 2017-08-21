@@ -2,11 +2,44 @@
     ViewBag.Title = "POBoard";
     Layout = "~/Views/Shared/_Form.cshtml";
 }
+<script src="~/Content/js/bootStrap/bootstrap-select.min.js"></script>
+<link rel="stylesheet" href="~/Content/js/bootStrap/bootstrap-select.min.css" />
 <script>
+    var searchParam = "";
     $(function () {
+        getPOBoard("");
+
+        $(".table-hover tr").on('click', function () {
+            var dataHref = "/HuaweiOrderManage/FindPOList/News";
+            var dataId = "2bcb1fef-78f4-4a44-a0b8-4a0355d78a7a";
+            var dataName = "PO列表";
+            searchParam = $("#poNumber").val() + "*" + $("#itemCode").val() + "*" + $("#promiseDateStart").val() + "*" + $("#promiseDateEnd").val() + "*" + $("#publishDateStart").val() + "*" + $("#publishDateEnd").val() + "*" + $("#shipmentStatus").val() + "*";
+            var dataParam = $(this).find('a').data("param") + "&POParams=" + searchParam;
+            parent.window.newIframe(dataId, dataHref, dataName, dataParam);
+        });
+
+        $(".time").datepicker({
+            language: "zh-CN",//语言
+            autoclose: true,//自动关闭
+            todayBtn: "linked",//
+            format: "yyyy-mm-dd",//时间显示格式
+        });
+
+        $("#po-reset").on("click", function () {
+            $("#poNumber, #itemCode, #promiseDateStart, #promiseDateEnd, #publishDateStart, #publishDateEnd, #shipmentStatus").val("");
+        });
+
+        $("#po-search").on("click", function () {
+            searchParam = $("#poNumber").val() + "*" + $("#itemCode").val() + "*" + $("#promiseDateStart").val() + "*" + $("#promiseDateEnd").val() + "*" + $("#publishDateStart").val() + "*" + $("#publishDateEnd").val() + "*" + $("#shipmentStatus").val() + "*";
+            console.log(searchParam);
+            getPOBoard(searchParam);
+        });
+    });
+
+    function getPOBoard(params) {
         $.ajax({
             url: "/HuaweiOrderManage/FindPOList/FindPOBoard",
-            data: { },
+            data: { searchParam: params },
             dataType: "json",
             async: false,
             success: function (data) {
@@ -35,32 +68,17 @@
                 $("#warn").html(data.expiredOrderQuantity + data.arrivalOnWeekOrderQuantity + data.nonDeliveryOrderQuantity + data.overdueOrderQuantity);
             }
         });
-        /*$("a").on('click', function () {
-            event.stopPropagation();        //阻止冒泡
-            var dataHref = "/HuaweiOrderManage/FindPOList/News";
-            var dataId = "2bcb1fef-78f4-4a44-a0b8-4a0355d78a7a";
-            var dataName = "PO列表";
-            var dataParam = $(this).data("param");
-            parent.window.newIframe(dataId, dataHref, dataName, dataParam);
-        });*/
-        $(".table-hover tr").on('click', function () {
-            var dataHref = "/HuaweiOrderManage/FindPOList/News";
-            var dataId = "2bcb1fef-78f4-4a44-a0b8-4a0355d78a7a";
-            var dataName = "PO列表";
-            var dataParam = $(this).find('a').data("param");
-            parent.window.newIframe(dataId, dataHref, dataName, dataParam);
-        });
-    });
+    }
 </script>
 <div id="ajax-loader">
     <img src="~/Content/img/ajax-loader.gif" />
 </div>
-<a class="btn btn-primary refresh" style="position:absolute; top: 10px; right: 10px;" title="重新加载" onclick="$.reload()"><span class="glyphicon glyphicon-refresh"></span></a>
-<form id="form1">
+<a class="btn btn-primary refresh" style="position:absolute; top: 10px; right: 20px;" title="重新加载" onclick="$.reload()"><span class="glyphicon glyphicon-refresh"></span></a>
+
     <div >
         <table class="table table-bordered bgWhite">
             <tr>
-                <td class="col-md-4 before-signe-back">
+                <td class="col-md-3 before-signe-back">
                     <table class="table table-hover">
                         <tr class="first-tr">
                             <td class="col-md-6 first-td">待接受</td>
@@ -124,7 +142,7 @@
                         </tr>
                     </table>
                 </td>
-                <td class="col-md-4 signed_back">
+                <td class="col-md-3 signed_back">
                     <table class="table table-hover">
                         <tr class="first-tr">
                             <td class="col-md-6 first-td">已接受</td>
@@ -157,7 +175,7 @@
                         </tr>
                     </table>
                 </td>
-                <td class="col-md-4 warn">
+                <td class="col-md-3 warn">
                     <table class="table table-hover">
                         <tr class="first-tr">
                             <td class="col-md-6 first-td">预警</td>
@@ -187,7 +205,56 @@
                                 <a id="overdueOrderQuantity" class="POboardnum" name="overdueOrderQuantity" href="javascript:void(0)" data-param="Second=预警&Third=过期订单">0</a>
                             </td>
                         </tr>
-
+                    </table>
+                </td>
+                <td class="col-md-3 searchBoard">
+                    <table class="table">
+                        <tr class="first-tr">
+                            <td class="col-md-3 first-td">查询</td>
+                            <td class="col-md-9 first-td"></td>
+                        </tr>
+                        <tr>
+                            <td class="col-md-3" style="padding: 10px 0 0 20px;">PO号</td>
+                            <td class="col-md-9" style="padding: 2px 0 0 0;">
+                                <input type="text" placeholder="多个请以','隔开" class="form-control" id="poNumber" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-md-3" style="padding: 10px 0 0 20px;">Item编码</td>
+                            <td class="col-md-9" style="padding: 2px 0 0 0;">
+                                <input type="text" placeholder="多个请以','隔开" class="form-control" id="itemCode" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-md-3" style="padding: 10px 0 0 20px;">承诺日期</td>
+                            <td class="col-md-9" style="padding: 2px 0 0 0;">
+                                <input type="text" class="form-control time" style="display:inline-block; width:90px;" id="promiseDateStart" />-
+                                <input type="text" class="form-control time" style="display:inline-block; width:90px;" id="promiseDateEnd" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-md-3" style="padding: 10px 0 0 20px;">订单下达日期</td>
+                            <td class="col-md-9" style="padding: 2px 0 0 0;">
+                                <input type="text" class="form-control time" style="display:inline-block; width:90px;" id="publishDateStart" />-
+                                <input type="text" class="form-control time" style="display:inline-block; width:90px;" id="publishDateEnd" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-md-3" style="padding: 10px 0 0 20px;">订单状态</td>
+                            <td class="col-md-9" style="padding: 2px 0 0 0;">
+                                <select class="selectpicker" multiple id="shipmentStatus">
+                                    <option value="all" selected>ALL</option>
+                                    <option value="NEW">新下订单</option>
+                                    <option value="OPEN">在途订单</option>
+                                    <option value="CANCELLED">取消订单</option>
+                                    <option value="CLOSED">关闭订单</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-md-6"><button class="form-control btn-primary" id="po-search">查询</button></td>
+                            <td class="col-md-6"><button class="form-control" id="po-reset">重置</button></td>
+                        </tr>
                     </table>
                 </td>
             </tr>
@@ -197,6 +264,6 @@
                 <li><i class="fa fa-circle"></i>&nbsp;&nbsp;</li>
             </ul>
         </div>
-
     </div>
-</form>
+
+
