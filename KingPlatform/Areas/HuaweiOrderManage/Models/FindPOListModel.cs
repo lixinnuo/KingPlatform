@@ -81,6 +81,16 @@ namespace KingPlatform.Areas.HuaweiOrderManage.Models
     }
     #endregion
 
+    #region GetKeyPOListParam 获取特定po列表信息
+    public class GetKeyPOListParam
+    {
+        public int instanceId { get; set; }              //华为系统内部标识用
+        public long poHeaderId { get; set; }              //华为系统内部标识用
+        public long poReleaseId { get; set; }             //华为系统内部标识用
+        public bool calculateOrderAmount { get; set; }
+    }
+    #endregion
+
     #region GetPOListParamBack 查询PO列表的出参
     /// <summary>
     /// POList
@@ -287,7 +297,7 @@ namespace KingPlatform.Areas.HuaweiOrderManage.Models
         public string changeAfterContent { get; set; }      //变更后内容
         public string openRemark { get; set; }              //变更理由
         public string lineLocationId { get; set; }            //PO发运行ID
-        public string poHeaderId { get; set; }                //PO头ID
+        public long poHeaderId { get; set; }                //PO头ID
         public string businessType { get; set; }            //任务单类型
         public string currentHandler { get; set; }          //当前处理人
         public string lastHandler { get; set; }             //最后处理人
