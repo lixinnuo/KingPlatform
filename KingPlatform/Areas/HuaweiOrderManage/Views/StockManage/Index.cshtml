@@ -12,6 +12,7 @@
                 <li><a id="picker" style="padding:0; border:0;"><i class="fa fa-pencil-square-o"></i>选择文件</a></li>
                 <li id="thelist" class="uploader-list"></li>
                 <li><a id="ctlBtn"><i class="fa fa-pencil-square-o"></i>开始上传</a></li>
+                <li><a id="btnSubmit" onclick="btn_submit()"><i class="fa fa-pencil-square-o"></i>提交数据</a></li>
             </ul>
             
             <a class="btn btn-primary refresh" title="重新加载" onclick="$.reload()"><span class="glyphicon glyphicon-refresh"></span></a>
@@ -24,7 +25,7 @@
 </div>
 
 <script type="text/javascript">
-    function getPoList(filename) {
+    function getStockList(filename) {
         var $gridList = $("#gridList");
         $gridList.jqGrid('clearGridData');
         $('#po-ajax-loader').fadeIn();
@@ -34,13 +35,13 @@
             postData: { filename: filename, rnd: Math.random() },
             height: $(window).height() - 128,
             colModel: [
-                { label: '供应商工厂代码', name: 'vendorFactoryCode', width: 100, align: 'left', frozen: true },
-                { label: '供应商物料编码', name: 'vendorItemCode', width: 100, align: 'left', frozen: true, editable: true },
-                { label: '客户代码', name: 'customerCode', width: 100, align: 'left', frozen: true, editable: true },
-                { label: '供应商子库', name: 'vendorStock', width: 100, align: 'left', editable: true },
-                { label: '供应商货位', name: 'vendorLocation', width: 100, align: 'left', editable: true },
+                { label: '供应商工厂代码', name: 'vendorFactoryCode', align: 'left', frozen: true },
+                { label: '供应商物料编码', name: 'vendorItemCode', align: 'left', editable: true },
+                { label: '客户代码', name: 'customerCode', align: 'left', editable: true },
+                { label: '供应商子库', name: 'vendorStock', align: 'left', editable: true },
+                { label: '供应商货位', name: 'vendorLocation', align: 'left', editable: true },
                 {
-                    label: '入库时间', name: 'stockTime', width: 100, align: 'left', editable: true,
+                    label: '入库时间', name: 'stockTime', align: 'left', editable: true,
                     editoptions: {
                         dataInit: function (element) {
                             $(element).datepicker({
@@ -55,18 +56,34 @@
                         }
                     }
                 },
-                { label: '供应商物料编码版本', name: 'vendorItemRevision', width: 120, align: 'left', editable: true },
-                { label: '库存', name: 'goodQuantity', width: 100, align: 'left', editable: true },
-                { label: '待检库存', name: 'inspectQty', width: 100, align: 'left', editable: true },
-                { label: '隔离品数量', name: 'faultQty', width: 100, align: 'left', editable: true }
+                { label: '供应商物料编码版本', name: 'vendorItemRevision', align: 'left', editable: true },
+                { label: '库存', name: 'goodQuantity', align: 'left', editable: true },
+                { label: '待检库存', name: 'inspectQty', align: 'left', editable: true },
+                { label: '隔离品数量', name: 'faultQty', align: 'left', editable: true }
             ],
             pager: "#gridPager",
+            multiselect: true,
             rowNum: 20,
             rowList: [15, 20, 50],
             autoScroll: true,
+            shrinkToFit: true,
             viewrecords: true,
             gridComplete: function () {
                 $('#po-ajax-loader').fadeOut();
+                $("input[type='checkbox']").removeClass('checkbox');
+            },
+            onCellSelect: function (rowid, iCol, cellcontent, e) {
+                var ids = $("#gridList").jqGrid("getGridParam", "selarrrow");
+                if ($.inArray(rowid, ids) >= 0) {
+                    //$("#choseNum").html(ids.length - 1);
+                    //$("#gridList").jqGrid('saveRow', rowid, saveParameters);
+                    //$gridList.jqGrid('setCell', rowid, 'promiseDate', '', 'not-editable-cell');
+                }
+                else {
+                    $("#gridList").editRow(rowid, true);
+                    $("input[role=textbox]").removeClass("form-control").addClass("changebox");
+                    //$("#" + rowid + "_vendorItemCode").removeClass("form-control").addClass("changebox");
+                }
             },
             onPaging: function (pgButton) {
                 $('#po-ajax-loader').fadeIn();
@@ -74,6 +91,124 @@
         });
         jQuery("#gridList").jqGrid('setFrozenColumns');
     }
+
+    function btn_submit() {
+        var ids = $("#gridList").jqGrid('getGridParam', 'records');
+
+        var vendorFactoryCode = new Array();
+        var vendorItemCode = new Array();
+        var customerCode = new Array();
+        var vendorStock = new Array();
+        var vendorLocation = new Array();
+        var stockTime = new Array();
+        var vendorItemRevision = new Array();
+        var goodQuantity = new Array();
+        var inspectQty = new Array();
+        var faultQty = new Array();
+
+        for (var i = 0; i < ids; i++) {
+            var rowData = $("#gridList").jqGrid("getRowData", i + 1);
+            vendorFactoryCode[i] = rowData.vendorFactoryCode;
+            vendorItemCode[i] = rowData.vendorItemCode;
+            customerCode[i] = rowData.customerCode;
+            vendorStock[i] = rowData.vendorStock;
+            vendorLocation[i] = rowData.vendorLocation;
+            stockTime[i] = rowData.stockTime;
+            vendorItemRevision[i] = rowData.vendorItemRevision;
+            goodQuantity[i] = rowData.goodQuantity;
+            inspectQty[i] = rowData.inspectQty;
+            faultQty[i] = rowData.faultQty;
+        }
+        vendorFactoryCode = vendorFactoryCode.join("*");
+        vendorItemCode = vendorItemCode.join("*");
+        customerCode = customerCode.join("*");
+        vendorStock = vendorStock.join("*");
+        vendorLocation = vendorLocation.join("*");
+        stockTime = stockTime.join("*");
+        vendorItemRevision = vendorItemRevision.join("*");
+        goodQuantity = goodQuantity.join("*");
+        inspectQty = inspectQty.join("*");
+        faultQty = faultQty.join("*");
+        $.modalConfirm("您确定要提交这些备货信息么？", function (r) {
+            if (r) {
+                $.submitForm({
+                    url: "/HuaweiOrderManage/StockManage/ImportInventory",
+                    param: { vendorFactoryCode: vendorFactoryCode, vendorItemCode: vendorItemCode, customerCode: customerCode, vendorStock: vendorStock, vendorLocation: vendorLocation, stockTime: stockTime, vendorItemRevision: vendorItemRevision, goodQuantity: goodQuantity, inspectQty: inspectQty, faultQty: faultQty },
+                    success: function (data) {
+                        console.log(data);
+                        $('#ajax-loader').fadeIn();
+                        window.location.reload();
+                    }
+                })
+            }
+        });
+    }
+
+    /*function gridOperat(rowid, iRow, iCol, e) {
+        var html = '<div style="display:inline-block;margin-right:10px;" onclick="addRow(' + iRow.rowId + ')" title="插入"><span class="fa fa-plus"></span></div>'
+    		+ '<div style="display:inline-block;margin-right:10px;"  onclick="delRow(' + iRow.rowId + ')" title="删除"><span class="fa fa-trash-o"></span></div>'
+    		+ '<div style="display:inline-block;margin-right:10px;"  onclick="goodsTree(' + iRow.rowId + ')" title="点击选择商品"><span class="fa  fa-reorder"></span></div>';
+        return html;
+    }
+
+    //增加行
+    function addRow(rowid) {
+        console.log(rowid);
+        var newid = parseInt(rowid) + 1;
+        var rowid = parseInt(rowid);
+        var rowData = {
+            vendorFactoryCode: "",
+            vendorItemCode: '',
+            customerCode: '',
+            vendorStock: '',
+            vendorLocation: '',
+            stockTime: '',
+            vendorItemRevision: '',
+            goodQuantity: '',
+            inspectQty: '',
+            faultQty: '',
+            actions1: ''
+        };
+        insertRow(newid, rowData, rowid);
+    }
+    //插入行
+    function insertRow(newid, rowData, rowid) {
+        $('#gridList').jqGrid('addRowData', newid, rowData, 'after', rowid);//插入行
+        var ids = $("#jqGrid").jqGrid('getDataIDs');//获取行总数
+        if (rowid < ids.length - 1) {
+            var j = i = parseInt(rowid) + 1;
+            $('#gridList tr').eq(i).nextAll().each(function () {
+                j++;
+                $(this).attr("id", j);
+                var sx = $(this).children().eq(1);
+                sx.find("div[title='插入']").attr('onclick', 'addRow(' + j + ')');
+                sx.find("div[title='删除']").attr('onclick', 'delRow(' + j + ')');
+                sx.find("div[title='点击选择商品']").attr('onclick', 'goodsTree(' + j + ')');
+
+            });
+        }
+    }
+
+    //删除行
+    function delRow(rowid) {
+        var jqdata = $("#gridList").jqGrid("getRowData");
+        if (jqdata.length > 1) {
+            $('#gridList').jqGrid('delRowData', rowid);
+            var ids = $("#gridList").jqGrid('getDataIDs');//获取行总数
+            if (rowid < ids.length || rowid == ids.length) {
+                var j = i = parseInt(rowid) - 1;
+                $('#gridList tr').eq(i).nextAll().each(function () {
+                    j++;
+                    $(this).attr("id", j);
+                    var sx = $(this).children().eq(1);
+                    sx.find("div[title='插入']").attr('onclick', 'addRow(' + j + ')');
+                    sx.find("div[title='删除']").attr('onclick', 'delRow(' + j + ')');
+                    sx.find("div[title='点击选择商品']").attr('onclick', 'goodsTree(' + j + ')');
+                });
+            }
+            //countTotal();
+        }
+    }*/
 
     var GUID = WebUploader.Base.guid();//一个GUID
     var filename = "";
@@ -102,14 +237,11 @@
         });
         // 当有文件被添加进队列的时候
         uploader.on('fileQueued', function (file) {
+            $("#thelist").html('');
             $("#thelist").append('<span id="' + file.id + '" class="item">' +
                     '<h4 class="info">' + file.name + '</h4>' +
                     '<p class="state">等待上传...</p>' +
                 '</span>');
-        });
-
-        uploader.on('uploadSuccess', function (file) {
-            $('#' + file.id).find('p.state').text('已上传');
         });
 
         // 文件上传过程中创建进度条实时显示。
@@ -134,9 +266,11 @@
         uploader.on('uploadSuccess', function (file, response) {
             $('#' + file.id).find('p.state').text('已上传');
             $.post('/HuaweiOrderManage/StockManage/Merge', { guid: GUID, fileName: file.name }, function (data) {
-                getPoList(data.finalName);
+                //console.log(data.finalName);
+                getStockList(data.finalName);
                 $("#thelist .state").html("上传成功...");
             });
+            uploader.reset();
         });
 
         // 文件上传失败，显示上传出错。
@@ -157,7 +291,7 @@
         $("#ctlBtn").click(function () {
             uploader.upload();
         });
-        getPoList(filename);
+        getStockList(filename);
     });
 </script>
 

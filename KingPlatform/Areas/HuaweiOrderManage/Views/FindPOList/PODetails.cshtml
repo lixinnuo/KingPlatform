@@ -28,6 +28,20 @@
     function btn_exportPOPDF() {
         $.download("/HuaweiOrderManage/FindPOList/ExportPOPDF", "poNumber=" + poNumber + "&poLineNum=" + poLineNum + "&poTypes=" + poTypes, 'post');
     }
+
+    function btn_openPOPDF() {
+        var url = "";
+        $.ajax({
+            url: "/HuaweiOrderManage/FindPOList/GetPDFPath",
+            data: { poNumber: poNumber, poLineNum: poLineNum, poTypes: poTypes },
+            type: "POST",
+            success: function (data) {
+                url = "http://" + window.location.host + data.substr(1);
+                window.open(url, '', 'height=800,width=900,srcollbars=yes,status=yes')
+            }
+        });
+
+    }
 </script>
 <form id="form1">
     <div style="margin: 10px 10px 0 10px;">
@@ -101,7 +115,10 @@
                     </td>
                 </tr>
                 <tr>
-                    <td colspan="4" style="text-align:center;">
+                    <td colspan="2" style="text-align:center;">
+                        <a id="King-exportPOPDF" class="btn btn-primary" onclick="btn_openPOPDF()"><i class="fa fa-reply"></i>打开PDF</a>
+                    </td>
+                    <td colspan="2" style="text-align:center;">
                         <a id="King-exportPOPDF" class="btn btn-primary" onclick="btn_exportPOPDF()"><i class="fa fa-reply"></i>导出PDF</a>
                     </td>
                 </tr>

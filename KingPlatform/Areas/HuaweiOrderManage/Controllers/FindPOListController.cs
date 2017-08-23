@@ -451,6 +451,42 @@ namespace KingPlatform.Areas.HuaweiOrderManage.Controllers
             }
         }
 
+        public string GetPDFPath(string poNumber, string poLineNum, string poTypes)
+        {
+            GetPOListParamBack getPOListParamBack1 = new GetPOListParamBack();                          //定义返回数据
+            getPOListParamBack = this.TempData[poTypes] as GetPOListParamBack;                          //获取储存的华为PO列表(对应types)
+            this.TempData[poTypes] = getPOListParamBack;                                                //保存华为PO列表(对应types)
+            GetKeyPOListParam getKeyPOListParam = new GetKeyPOListParam();
+
+            for (int j = 0; j < getPOListParamBack.result.Count; j++)                                   //遍历getPOListParamBack列表
+            {
+                if (getPOListParamBack.result[j].poNumber == poNumber)
+                {
+                    getKeyPOListParam.instanceId = getPOListParamBack.result[j].instanceId;
+                    getKeyPOListParam.poHeaderId = getPOListParamBack.result[j].poHeaderId;
+                    getKeyPOListParam.poReleaseId = getPOListParamBack.result[j].poReleaseId;
+                    getKeyPOListParam.calculateOrderAmount = true;
+                    break;
+                }
+            }
+
+            JavaScriptSerializer js = new JavaScriptSerializer();
+            string accessToken = HttpMethods.GetAccessToken(HttpMethods.HttpPost(url_token, key, secury));      //获取华为access_token
+            string findPOListurlTrue = findPOListurl + 1.ToString(); //添加页码
+            var jSetting = new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore };
+            var json = JsonConvert.SerializeObject(getKeyPOListParam, Formatting.Indented, jSetting);
+            string result = HttpMethods.HttpPost(findPOListurlTrue, json, true, accessToken);
+            result = result.Replace(":null", ":''");
+            getPOListParamBack1 = js.Deserialize<GetPOListParamBack>(result);
+
+            string filePath = "~/Resource/Huawei/HWPO/pdf/";                                                           //文件存放地址
+            string fileName = iTextPDF.CreateHWPOPDF(getPOListParamBack1.ToJson(), filePath);        //生产pdf文件，下载
+
+            string filename = Server.UrlDecode(fileName);
+            string filepath = filePath + fileName;
+            return filepath;
+        }
+
         [HttpGet]
         public virtual ActionResult News(string Second, string Third, string POParams)
         {

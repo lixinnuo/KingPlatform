@@ -11,17 +11,17 @@ namespace KingPlatform.Areas.HuaweiOrderManage.Models
     /// </summary>
     public class StockManageModel
     {
-        public List<stockDetails> factoryInventoryList { get; set; }    
+        public List<StockDetails> factoryInventoryList { get; set; }    
         public StockManageModel()
         {
-            factoryInventoryList = new List<stockDetails>();
+            factoryInventoryList = new List<StockDetails>();
         }
     }
 
     /// <summary>
     /// 库存信息    非空，每次最大5000
     /// </summary>
-    public class stockDetails
+    public class StockDetails
     {
         public string vendorFactoryCode { get; set; }                   //工厂代码   Y
         public string vendorItemCode { get; set; }                      //供应商物料编码   Y

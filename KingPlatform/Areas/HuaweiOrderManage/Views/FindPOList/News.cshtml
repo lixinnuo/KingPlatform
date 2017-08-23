@@ -119,6 +119,8 @@
                             return "订单取消";
                         } else if (cellvalue == "CLOSED") {
                             return "订单关闭";
+                        } else if (cellvalue == "CLOSED FOR RECEVING") {
+                            return "已交货未关闭";
                         } else {
                             return cellvalue
                         }
@@ -225,13 +227,15 @@
                 var ids = $("#gridList").jqGrid("getGridParam", "selarrrow");
                 if ($.inArray(rowid, ids) >= 0) {
                     $("#choseNum").html(ids.length - 1);
+                    //$("#gridList").jqGrid('saveRow', rowid, saveParameters);
                     //$gridList.jqGrid('setCell', rowid, 'promiseDate', '', 'not-editable-cell');
                 }
                 else {
                     $("#gridList").editRow(rowid, true);
                     $("#choseNum").html(ids.length + 1);
-                    $("#" + rowid + "_promiseDate").removeClass("form-control").addClass("changebox");
-                    $("#" + rowid + "_promiseDateChangeReason").removeClass("form-control").addClass("changebox");
+                    $("input[role=textbox]").removeClass("form-control").addClass("changebox");
+                    //$("#" + rowid + "_promiseDate").removeClass("form-control").addClass("changebox");
+                    //$("#" + rowid + "_promiseDateChangeReason").removeClass("form-control").addClass("changebox");
                 }
             },
             onSelectAll: function (aRowids, status) {
@@ -397,9 +401,9 @@
             poTypes = "OPEN";
         } else if (secondValue == "已接受" && thirdValue == "已交货未关闭") {
             poStatus = "signed_back";
-            colTaskOrPoStatus = "";
+            colTaskOrPoStatus = "CLOSED FOR RECEVING";
             statusType = "PO_STATUS";
-            poTypes = "";
+            poTypes = "CLOSED FOR RECEVING";
         } else if (secondValue == "已接受" && thirdValue == "取消订单") {
             poStatus = "signed_back";
             colTaskOrPoStatus = "CANCELLED";

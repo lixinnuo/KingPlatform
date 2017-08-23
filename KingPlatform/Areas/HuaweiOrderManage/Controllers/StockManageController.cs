@@ -8,20 +8,70 @@ using System.Web.Mvc;
 using System.Web.Script.Serialization;
 using System.Collections.Generic;
 using KingPlatform.Areas.HuaweiOrderManage.Models;
+using Newtonsoft.Json;
 
 namespace KingPlatform.Areas.HuaweiOrderManage.Controllers
 {
     public class StockManageController : Controller
     {
-        //string url_token = "https://api-beta.huawei.com:443/oauth2/token";                                              //查询华为access_token
-        //string findPOListurl = "https://api-beta.huawei.com:443/service/esupplier/importInventory/1.0.0/1";             //库存明细接口
-        //string key = "CkAb2QO3G50NQZcrm2VYPycgEMga";                                                                    //系统键 测试平台
-        //string secury = "UEvjRaxRoggXXM2G1Y5izAk1b_ga";                                                                 //系统值
+        string url_token = "https://api-beta.huawei.com:443/oauth2/token";                                              //查询华为access_token
+        string importInventoryurl = "https://api-beta.huawei.com:443/service/esupplier/importInventory/1.0.0/1";             //库存明细接口
+        string key = "CkAb2QO3G50NQZcrm2VYPycgEMga";                                                                    //系统键 测试平台
+        string secury = "UEvjRaxRoggXXM2G1Y5izAk1b_ga";                                                                 //系统值
 
         /*string url_token = "https://openapi.huawei.com:443/oauth2/token";                                              //查询华为access_token
-        string findPOListurl = "https://api.huawei.com:443/service/esupplier/importInventory/1.0.0/1";                 //库存明细接口
+        string importInventoryurl = "https://api.huawei.com:443/service/esupplier/importInventory/1.0.0/1";                 //库存明细接口
         string key = "CoQUc1M90PLv3PpMldpvwOX1HKIa";                                                                   //系统键 正式平台
-        string secury = "JqkgDMDzbDlaTA9EFpkRB9veArsa"; */                                                             //系统值
+        string secury = "JqkgDMDzbDlaTA9EFpkRB9veArsa"; */                                                                //系统值
+
+        [HttpPost]
+        public string ImportInventory(string vendorFactoryCode, string vendorItemCode, string customerCode, string vendorStock, string vendorLocation, string stockTime, string vendorItemRevision, string goodQuantity, string inspectQty, string faultQty)
+        {
+            string accessToken = HttpMethods.GetAccessToken(HttpMethods.HttpPost(url_token, key, secury));      //获取华为access_token
+            StockManageModel stockManageModel = new StockManageModel();
+            if (vendorFactoryCode.IndexOf("*") >= 0)
+            {
+                string[] vendorFactoryCodeSplit = vendorFactoryCode.Split(new char[] { '*' });
+                string[] vendorItemCodeSplit = vendorItemCode.Split(new char[] { '*' });
+                string[] customerCodeSplit = customerCode.Split(new char[] { '*' });
+                string[] vendorStockSplit = vendorStock.Split(new char[] { '*' });
+                string[] vendorLocationSplit = vendorLocation.Split(new char[] { '*' });
+                string[] stockTimeSplit = stockTime.Split(new char[] { '*' });
+                string[] vendorItemRevisionSplit = vendorItemRevision.Split(new char[] { '*' });
+                string[] goodQuantitySplit = goodQuantity.Split(new char[] { '*' });
+                string[] inspectQtySplit = inspectQty.Split(new char[] { '*' });
+                string[] faultQtySplit = faultQty.Split(new char[] { '*' });
+                for (int i = 0; i < vendorFactoryCodeSplit.Length; i++)
+                {
+                    StockDetails stockDetails = new StockDetails();
+                    stockDetails.vendorFactoryCode = vendorFactoryCodeSplit[i];
+                    stockDetails.vendorItemCode = vendorItemCodeSplit[i];
+                    stockDetails.customerCode = customerCodeSplit[i];
+                    stockDetails.vendorStock = vendorStockSplit[i];
+                    stockDetails.vendorLocation = vendorLocationSplit[i];
+                    stockDetails.stockTime = stockTimeSplit[i];
+                    stockDetails.vendorItemRevision = vendorItemRevisionSplit[i];
+                    stockDetails.goodQuantity = Convert.ToDouble(goodQuantitySplit[i]);
+                    stockDetails.inspectQty = inspectQtySplit[i].ToDouble();
+                    stockDetails.faultQty = faultQtySplit[i].ToDouble();
+                    if (stockDetails.inspectQty == 0)
+                    {
+                        stockDetails.inspectQty = null;
+                    }
+                    if (stockDetails.faultQty == 0)
+                    {
+                        stockDetails.faultQty = null;
+                    }
+                    stockManageModel.factoryInventoryList.Add(stockDetails);
+                }
+            }
+            var jSetting = new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore };
+            var json = JsonConvert.SerializeObject(stockManageModel, Formatting.Indented, jSetting);
+            string result = HttpMethods.HttpPost(importInventoryurl, json, true, accessToken);
+
+            return result;
+        }
+
 
         // GET: HuaweiOrderManage/StockManage
         [HttpGet]
