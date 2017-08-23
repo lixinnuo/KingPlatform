@@ -25,6 +25,7 @@
 </div>
 
 <script type="text/javascript">
+    var lastsel;
     function getStockList(filename) {
         var $gridList = $("#gridList");
         $gridList.jqGrid('clearGridData');
@@ -76,7 +77,9 @@
                 var ids = $("#gridList").jqGrid("getGridParam", "selarrrow");
                 if ($.inArray(rowid, ids) >= 0) {
                     //$("#choseNum").html(ids.length - 1);
-                    //$("#gridList").jqGrid('saveRow', rowid, saveParameters);
+                    //$("#gridList").jqGrid('saveRow', rowid);
+                    $("#gridList").saveRow("rowid",false);
+                    //$("#gridList").resetSelection();
                     //$gridList.jqGrid('setCell', rowid, 'promiseDate', '', 'not-editable-cell');
                 }
                 else {

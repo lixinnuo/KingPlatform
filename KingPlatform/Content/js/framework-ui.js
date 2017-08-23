@@ -415,16 +415,18 @@ $.fn.dataGrid = function (options) {
     var options = $.extend(defaults, options);
     var $element = $(this);
     options["onSelectRow"] = function (rowid) {
-        var length = $(this).jqGrid("getGridParam", "selrow").length;
-        var $operate = $(".operate");
-        if (length > 0) {
-            $operate.animate({ "left": 0 }, 200);
-        } else {
-            $operate.animate({ "left": '-100.1%' }, 200);
+        if ($(this).jqGrid("getGridParam", "selrow") != undefined) {
+            var length = $(this).jqGrid("getGridParam", "selrow").length;
+            var $operate = $(".operate");
+            if (length > 0) {
+                $operate.animate({ "left": 0 }, 200);
+            } else {
+                $operate.animate({ "left": '-100.1%' }, 200);
+            }
+            $operate.find('.close').click(function () {
+                $operate.animate({ "left": '-100.1%' }, 200);
+            })
         }
-        $operate.find('.close').click(function () {
-            $operate.animate({ "left": '-100.1%' }, 200);
-        })
     };
     $element.jqGrid(options);
 };
