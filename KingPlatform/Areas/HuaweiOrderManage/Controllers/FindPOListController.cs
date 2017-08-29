@@ -359,17 +359,17 @@ namespace KingPlatform.Areas.HuaweiOrderManage.Controllers
 
             string result = HttpMethods.HttpPost(onwayPOListUrl, json, true, accessToken);
             result = result.Replace(":null", ":''");
-            List<POBackData> poBackData = js.Deserialize<List<POBackData>>(result);
+            List<SupplierChangePOOut> supplierChangePOOut = js.Deserialize<List<SupplierChangePOOut>>(result);
             string returnStr = "", passPOStr = "", nopassPOStr = "";
-            for (int i = 0; i < poNumberSplit.Length; i++)
+            for (int i = 0; i < supplierChangePOOut.Count; i++)
             {
-                if (poBackData[i].code == "00000")
+                if (supplierChangePOOut[i].code == "00000")
                 {
-                    passPOStr += poBackData[i].poNum + "/";
+                    passPOStr += supplierChangePOOut[i].poNum + "/";
                 }
                 else
                 {
-                    nopassPOStr += poBackData[i].poNum + "/";
+                    nopassPOStr += supplierChangePOOut[i].poNum + "/";
                 }
             }
             if (passPOStr != "")

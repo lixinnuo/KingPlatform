@@ -251,6 +251,25 @@ namespace KingPlatform.Areas.HuaweiOrderManage.Models
     }
     #endregion
 
+    #region SupplierChangePOOut 供应商变更PO出参
+    public class SupplierChangePOOut
+    {
+        public string msg { get; set; }
+        public string code { get; set; }
+        public bool success { get; set; }
+        public string poNum { get; set; }
+        public Data data { get; set; }
+    }
+
+    public class Data
+    {
+        public long lineLocationId { get; set; }
+        public int instanceId { get; set; }
+        public string taskId { get; set; }
+        public int? rowId { get; set; }
+    }
+    #endregion
+
     #region GetPODetails 查询PO行变更明细入参
     /// <summary>
     /// 查询PO行变更明细参数
