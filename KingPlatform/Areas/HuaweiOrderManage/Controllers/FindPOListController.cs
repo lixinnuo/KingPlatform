@@ -271,13 +271,33 @@ namespace KingPlatform.Areas.HuaweiOrderManage.Controllers
                 colTaskQueries.poLineNum = getPOListParamBack.result[num].poLineNum;
                 colTaskQueries.agentName = getPOListParamBack.result[num].agentName;
                 //colTaskQueries.businessType = "all";
-                if (poTypes == "huaweiPublishOrder")
+                if (poTypes == "huaweiPublishOrder")                //新PO 
                 {
-                    colTaskQueries.businessType = "new_po";                         //新PO  签返
+                    colTaskQueries.businessType = "new_po";
+                }
+                else if (poTypes == "huaweiApplyRequredDateChange")  //待供应商确认交期修改 
+                {
+                    colTaskQueries.businessType = "po_promise_date_change";
+                }
+                else if (poTypes == "huaweiApplyCancelOrder")       //PO取消待供应商确认 
+                {
+                    colTaskQueries.businessType = "po_cancel_confirm";
+                }
+                else if (poTypes == "huaweiNotifyCancelOrder")       //PO取消通知 
+                {
+                    colTaskQueries.businessType = "po_cancel_notice";
+                }
+                else if (poTypes == "huaweiNotifyOrderChange")       //PO内容变更通知 
+                {
+                    colTaskQueries.businessType = "po_content_change_notice";
+                }
+                else if (poTypes == "huaweiNotifyRMAChange")       //RMA换货通知 
+                {
+                    colTaskQueries.businessType = "po_RMA_replacement_notice";
                 }
                 else
                 {
-                    colTaskQueries.businessType = "po_cancel_notice";               //取消PO  签返
+                    colTaskQueries.businessType = "";
                 }
                 colTaskQueries.instanceId = getPOListParamBack.result[num].instanceId;
                 colTaskQueries.poHeaderId = getPOListParamBack.result[num].poHeaderId;

@@ -201,7 +201,7 @@ namespace KingPlatform.Areas.HuaweiOrderManage.Models
         public string poNum { get; set; }                       //PO号
         public string poLineNum { get; set; }                   //PO行号
         public string agentName { get; set; }                   //采购员名称
-        public string businessType { get; set; }                //PO待办类型 固定值：all
+        public string businessType { get; set; }                //PO待办类型 固定值：all 8.31修改为对应类型
         public int instanceId { get; set; }                  //系统帐套标识
         public long poHeaderId { get; set; }                  //PO头ID
         public long poReleaseId { get; set; }                 //PO释放ID
