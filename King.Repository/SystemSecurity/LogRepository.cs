@@ -1,4 +1,4 @@
-﻿using Basic.Data;
+﻿using King.Domain.Context;
 using King.Domain.Entity.SystemSecurity;
 using King.Domain.IRepository.SystemSecurity;
 

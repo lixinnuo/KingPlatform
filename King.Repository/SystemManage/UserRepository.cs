@@ -1,5 +1,5 @@
 ﻿using Basic.Code;
-using Basic.Data;
+using King.Domain.Context;
 using King.Domain.Entity.SystemManage;
 using King.Domain.IRepository.SystemManage;
 

@@ -394,10 +394,6 @@
       <Project>{c1d9edb6-2936-4731-9fd8-018afd0ce089}</Project>
       <Name>King.Domain</Name>
     </ProjectReference>
-    <ProjectReference Include="..\King.Mapping\King.Mapping.csproj">
-      <Project>{222e20a1-11da-424a-b701-b4a1ea9a6a96}</Project>
-      <Name>King.Mapping</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\HuaweiOrderManage\Views\FindPOList\Index.cshtml" />

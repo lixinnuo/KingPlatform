@@ -1,6 +1,6 @@
 ﻿using Basic.Code;
-using Basic.Data;
-using Basic.Data.Extensions;
+using King.Domain.Context;
+using King.Domain.Context.Extensions;
 using King.Domain.Entity.SystemSecurity;
 using King.Domain.IRepository.SystemSecurity;
 

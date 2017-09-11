@@ -61,7 +61,9 @@
     <Compile Include="SystemSecurity\FilterIPApp.cs" />
     <Compile Include="SystemSecurity\LogApp.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="app.config" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\King.Domain\King.Domain.csproj">
       <Project>{c1d9edb6-2936-4731-9fd8-018afd0ce089}</Project>
@@ -71,14 +73,13 @@
       <Project>{b7b9290f-0741-4fae-b2c9-afe902a5b86a}</Project>
       <Name>Basic.Code</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Basic.Data\Basic.Data.csproj">
-      <Project>{c3d7bf70-9509-4d26-99c4-ed4a4d7c2c52}</Project>
-      <Name>Basic.Data</Name>
-    </ProjectReference>
     <ProjectReference Include="..\King.Repository\King.Repository.csproj">
       <Project>{6822c95f-5edd-4d5a-bd1e-101b99020544}</Project>
       <Name>King.Repository</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="HuaweiOrderManage\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
