@@ -124,7 +124,6 @@
     <Compile Include="Areas\HuaweiOrderManage\Controllers\StockManageController.cs" />
     <Compile Include="Areas\HuaweiOrderManage\HuaweiOrderManageAreaRegistration.cs" />
     <Compile Include="Areas\HuaweiOrderManage\Models\FindPOListModel.cs" />
-    <Compile Include="Areas\HuaweiOrderManage\Models\StockManageModel.cs" />
     <Compile Include="Areas\SystemManage\Controllers\AreaController.cs" />
     <Compile Include="Areas\SystemManage\Controllers\DutyController.cs" />
     <Compile Include="Areas\SystemManage\Controllers\ItemsDataController.cs" />

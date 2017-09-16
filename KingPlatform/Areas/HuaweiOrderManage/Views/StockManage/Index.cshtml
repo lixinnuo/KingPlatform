@@ -8,16 +8,19 @@
     <div class="toolbar">
         <div class="operate" style="left:0;">
             <ul class="nav nav-pills">
-                <li><a id="NF-downloadTemplates" authorize="yes" onclick="btn_signBackPOList(true)"><i class="fa fa-check"></i>下载模板</a></li>
-                <li><a id="picker" style="padding:0; border:0;"><i class="fa fa-pencil-square-o"></i>选择文件</a></li>
+                <li><a id="NF-downloadTemplates" authorize="yes" onclick="btn_download()"><i class="fa fa-file-excel-o"></i>下载模板</a></li>
+                <li><a id="picker" style="padding:0; border:0;"><i class="fa fa-file"></i>选择文件</a></li>
                 <li id="thelist" class="uploader-list"></li>
-                <li><a id="ctlBtn"><i class="fa fa-pencil-square-o"></i>开始上传</a></li>
-                <li><a id="btnSubmit" onclick="btn_submit()"><i class="fa fa-pencil-square-o"></i>提交数据</a></li>
+                <li><a id="ctlBtn"><i class="fa fa-arrow-up"></i>开始上传</a></li>
+                <li><a id="btnSubmit" onclick="getStockList(true)"><i class="fa fa-circle-o-notch"></i>查询历史数据</a></li>
             </ul>
             
             <a class="btn btn-primary refresh" title="重新加载" onclick="$.reload()"><span class="glyphicon glyphicon-refresh"></span></a>
         </div>
     </div>
+</div>
+<div id="po-ajax-loader" style="top:85px;">
+    <img src="~/Content/img/ajax-loader.gif" />
 </div>
 <div class="gridPanel">
     <table id="gridList"></table>
@@ -26,67 +29,43 @@
 
 <script type="text/javascript">
     var lastsel;
-    function getStockList(filename) {
+
+    function btn_download() {
+        $.download("/HuaweiOrderManage/StockManage/DownloadTemplate", 'post');
+    }
+
+    function getStockList(history) {
         var $gridList = $("#gridList");
         $gridList.jqGrid('clearGridData');
         $('#po-ajax-loader').fadeIn();
-        $gridList.jqGrid('setGridParam', { postData: { filename: filename, rnd: Math.random() } }).trigger('reloadGrid');
+        $gridList.jqGrid('setGridParam', { postData: { history: history } }).trigger('reloadGrid');
         $gridList.dataGrid({
-            url: "/HuaweiOrderManage/StockManage/StockList",
-            postData: { filename: filename, rnd: Math.random() },
+            url: "/HuaweiOrderManage/StockManage/GetStockJson",
+            postData: { history: history },
             height: $(window).height() - 128,
             colModel: [
-                { label: '供应商工厂代码', name: 'vendorFactoryCode', align: 'left', frozen: true },
-                { label: '供应商物料编码', name: 'vendorItemCode', align: 'left', editable: true },
-                { label: '客户代码', name: 'customerCode', align: 'left', editable: true },
-                { label: '供应商子库', name: 'vendorStock', align: 'left', editable: true },
-                { label: '供应商货位', name: 'vendorLocation', align: 'left', editable: true },
-                {
-                    label: '入库时间', name: 'stockTime', align: 'left', editable: true,
-                    editoptions: {
-                        dataInit: function (element) {
-                            $(element).datepicker({
-                                language: "zh-CN",//语言
-                                autoclose: true,//自动关闭
-                                todayBtn: "linked",//
-                                format: "yyyy-mm-dd"//时间显示格式
-                            });
-                            $(this).click(function (e) {//选中时间后隐藏
-                                $(e).parent().datepicker('hide');
-                            });
-                        }
-                    }
-                },
-                { label: '供应商物料编码版本', name: 'vendorItemRevision', align: 'left', editable: true },
-                { label: '库存', name: 'goodQuantity', align: 'left', editable: true },
-                { label: '待检库存', name: 'inspectQty', align: 'left', editable: true },
-                { label: '隔离品数量', name: 'faultQty', align: 'left', editable: true }
+                { label: '供应商工厂代码', name: 'vendorFactoryCode', width: 100, align: 'left', frozen: true },
+                { label: '供应商物料编码', name: 'vendorItemCode', width: 100, align: 'left' },
+                { label: '客户代码', name: 'customerCode', width: 80, align: 'left' },
+                { label: '供应商子库', name: 'vendorStock', width: 80, align: 'left' },
+                { label: '供应商货位', name: 'vendorLocation', width: 80, align: 'left' },
+                { label: '入库时间', name: 'stockTime', width: 80, align: 'left' },
+                { label: '供应商物料编码版本', name: 'vendorItemRevision', width: 120, align: 'left' },
+                { label: '库存', name: 'goodQuantity', width: 60, align: 'left' },
+                { label: '待检库存', name: 'inspectQty', width: 60, align: 'left' },
+                { label: '隔离品数量', name: 'faultQty', width: 60, align: 'left' },
+                { label: '是否成功', name: 'success', width: 60, align: 'left' },
+                { label: '失败原因', name: 'errorMessage', width: 350, align: 'left' },
+                { label: '上传时间', name: 'F_CreateTime', width: 120, align: 'left' },
             ],
             pager: "#gridPager",
-            multiselect: true,
             rowNum: 20,
-            rowList: [15, 20, 50],
+            rowList: [10, 20, 50],
             autoScroll: true,
-            shrinkToFit: true,
             viewrecords: true,
             gridComplete: function () {
                 $('#po-ajax-loader').fadeOut();
                 $("input[type='checkbox']").removeClass('checkbox');
-            },
-            onCellSelect: function (rowid, iCol, cellcontent, e) {
-                var ids = $("#gridList").jqGrid("getGridParam", "selarrrow");
-                if ($.inArray(rowid, ids) >= 0) {
-                    //$("#choseNum").html(ids.length - 1);
-                    //$("#gridList").jqGrid('saveRow', rowid);
-                    $("#gridList").saveRow("rowid",false);
-                    //$("#gridList").resetSelection();
-                    //$gridList.jqGrid('setCell', rowid, 'promiseDate', '', 'not-editable-cell');
-                }
-                else {
-                    $("#gridList").editRow(rowid, true);
-                    $("input[role=textbox]").removeClass("form-control").addClass("changebox");
-                    //$("#" + rowid + "_vendorItemCode").removeClass("form-control").addClass("changebox");
-                }
             },
             onPaging: function (pgButton) {
                 $('#po-ajax-loader').fadeIn();
@@ -268,10 +247,10 @@
         // 文件上传成功，给item添加成功class, 用样式标记上传成功。
         uploader.on('uploadSuccess', function (file, response) {
             $('#' + file.id).find('p.state').text('已上传');
+            $('#po-ajax-loader').fadeIn();
             $.post('/HuaweiOrderManage/StockManage/Merge', { guid: GUID, fileName: file.name }, function (data) {
-                //console.log(data.finalName);
-                getStockList(data.finalName);
                 $("#thelist .state").html("上传成功...");
+                getStockList(false);
             });
             uploader.reset();
         });
@@ -294,7 +273,8 @@
         $("#ctlBtn").click(function () {
             uploader.upload();
         });
-        getStockList(filename);
+        $('#po-ajax-loader').fadeOut();
+        //getStockList(filename, false);
     });
 </script>
 
