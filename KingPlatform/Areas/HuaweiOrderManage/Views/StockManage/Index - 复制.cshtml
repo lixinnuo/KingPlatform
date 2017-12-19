@@ -11,9 +11,8 @@
                 <li><a id="NF-downloadTemplates" authorize="yes" onclick="btn_download()"><i class="fa fa-file-excel-o"></i>下载模板</a></li>
                 <li><a id="picker" style="padding:0; border:0;"><i class="fa fa-file"></i>选择文件</a></li>
                 <li id="thelist" class="uploader-list"></li>
-                <li><a id="btnUpdata"><i class="fa fa-arrow-up"></i>文件上传</a></li>
-                <li><a id="btnUploading"><i class="fa fa-arrow-up"></i>提交华为</a></li>
-                @*<li><a id="btnSubmit" onclick="getStockList(true)"><i class="fa fa-circle-o-notch"></i>查询历史数据</a></li>*@
+                <li><a id="ctlBtn"><i class="fa fa-arrow-up"></i>开始上传</a></li>
+                <li><a id="btnSubmit" onclick="getStockList(true)"><i class="fa fa-circle-o-notch"></i>查询历史数据</a></li>
             </ul>
             
             <a class="btn btn-primary refresh" title="重新加载" onclick="$.reload()"><span class="glyphicon glyphicon-refresh"></span></a>
@@ -30,7 +29,6 @@
 
 <script type="text/javascript">
     var lastsel;
-    var HWPONUM_iRow = null, HWPONUM_iCol = null;
 
     function btn_download() {
         $.download("/HuaweiOrderManage/StockManage/DownloadTemplate", 'post');
@@ -46,16 +44,14 @@
             postData: { history: history },
             height: $(window).height() - 128,
             colModel: [
-                { label: '我司工厂代码', name: 'vendorFactoryCode', width: 100, align: 'left', frozen: true },
-                { label: '我司物料编码', name: 'vendorItemCode', width: 100, align: 'left', editable: true },
-                { label: '我司物料编码版本', name: 'vendorItemRevision', width: 120, align: 'left', editable: true },
-                { label: '华为代码', name: 'customerCode', width: 80, align: 'left', editable: true },
-                { label: '是否协议备货', name: 'agreementStocking', width: 60, align: 'left', editable: true },
-                { label: '我司物料子库', name: 'vendorStock', width: 80, align: 'left', editable: true },
-                { label: '我司物料货位', name: 'vendorLocation', width: 80, align: 'left', editable: true },
+                { label: '供应商工厂代码', name: 'vendorFactoryCode', width: 100, align: 'left', frozen: true, editable: true },
+                { label: '供应商物料编码', name: 'vendorItemCode', width: 100, align: 'left', editable: true },
+                { label: '客户代码', name: 'customerCode', width: 80, align: 'left', editable: true },
+                { label: '供应商子库', name: 'vendorStock', width: 80, align: 'left', editable: true },
+                { label: '供应商货位', name: 'vendorLocation', width: 80, align: 'left', editable: true },
                 {
                     label: '入库时间', name: 'stockTime', width: 80, align: 'left', editable: true,
-                    formatter: "date", formatoptions: { srcformat: 'Y-m-d', newformat: 'Y-m-d' },
+                    formatter: "date", formatoptions: { srcformat: 'Y-m-d H:i:s', newformat: 'Y-m-d H:i:s' },
                     editoptions: {
                         dataInit: function (element) {
                             $(element).datepicker({
@@ -66,11 +62,12 @@
                             });
                             $(this).click(function (e) {//选中时间后隐藏
                                 $(e).parent().datepicker('hide');
-                                //$gridList.jqGrid("saveCell", HWPONUM_iRow, HWPONUM_iCol);
+                                $gridList.jqGrid("saveCell", HWPONUM_iRow, HWPONUM_iCol);
                             });
                         }
                     }
                 },
+                { label: '供应商物料编码版本', name: 'vendorItemRevision', width: 120, align: 'left', editable: true },
                 { label: '库存', name: 'goodQuantity', width: 60, align: 'left', editable: true },
                 { label: '待检库存', name: 'inspectQty', width: 60, align: 'left', editable: true },
                 { label: '隔离品数量', name: 'faultQty', width: 60, align: 'left', editable: true },
@@ -89,13 +86,6 @@
                 $('#po-ajax-loader').fadeOut();
                 $("input[type='checkbox']").removeClass('checkbox');
             },
-            beforeEditCell: function (rowid, cellname, value, iRow, iCol) {
-                HWPONUM_iRow = iRow;
-                HWPONUM_iCol = iCol;
-            },
-            afterEditCell: function (rowid, cellname, value, iRow, iCol) {
-                $("input[role=textbox]").removeClass("form-control").addClass("changebox");
-            },
             onPaging: function (pgButton) {
                 $('#po-ajax-loader').fadeIn();
             }
@@ -103,28 +93,56 @@
         jQuery("#gridList").jqGrid('setFrozenColumns');
     }
 
-    function btn_uploading() {
-        var $gridList = $("#gridList");
-        $gridList.jqGrid("saveCell", HWPONUM_iRow, HWPONUM_iCol);
+    function btn_submit() {
+        var ids = $("#gridList").jqGrid('getGridParam', 'records');
 
-        var rowDate = $gridList.jqGrid('getRowData');
-        var allCountID = $gridList.jqGrid('getDataIDs'); //这里获取所有行 主键id 是全的
-        rowDate.push($gridList.jqGrid('getRowData', allCountID[allCountID.length - 1]));  //单独用最后一个 ID 获取行数据 并 追加到 集合里
-        var list = JSON.stringify(rowDate);
-        //console.log(JSON.stringify(rowDate));
-        if (list == '[[]]') {
-            $.modalAlert('当前无数据，请上传附件后提交', 'warning');
-        } else {
-            $('#po-ajax-loader').fadeIn();
-            $.submitForm({
-                url: "/HuaweiOrderManage/StockManage/HuaweiBack",
-                param: { list: list },
-                success: function (data) {
-                    $('#po-ajax-loader').fadeOut();
-                    getStockList(false);
-                }
-            });
+        var vendorFactoryCode = new Array();
+        var vendorItemCode = new Array();
+        var customerCode = new Array();
+        var vendorStock = new Array();
+        var vendorLocation = new Array();
+        var stockTime = new Array();
+        var vendorItemRevision = new Array();
+        var goodQuantity = new Array();
+        var inspectQty = new Array();
+        var faultQty = new Array();
+
+        for (var i = 0; i < ids; i++) {
+            var rowData = $("#gridList").jqGrid("getRowData", i + 1);
+            vendorFactoryCode[i] = rowData.vendorFactoryCode;
+            vendorItemCode[i] = rowData.vendorItemCode;
+            customerCode[i] = rowData.customerCode;
+            vendorStock[i] = rowData.vendorStock;
+            vendorLocation[i] = rowData.vendorLocation;
+            stockTime[i] = rowData.stockTime;
+            vendorItemRevision[i] = rowData.vendorItemRevision;
+            goodQuantity[i] = rowData.goodQuantity;
+            inspectQty[i] = rowData.inspectQty;
+            faultQty[i] = rowData.faultQty;
         }
+        vendorFactoryCode = vendorFactoryCode.join("*");
+        vendorItemCode = vendorItemCode.join("*");
+        customerCode = customerCode.join("*");
+        vendorStock = vendorStock.join("*");
+        vendorLocation = vendorLocation.join("*");
+        stockTime = stockTime.join("*");
+        vendorItemRevision = vendorItemRevision.join("*");
+        goodQuantity = goodQuantity.join("*");
+        inspectQty = inspectQty.join("*");
+        faultQty = faultQty.join("*");
+        $.modalConfirm("您确定要提交这些备货信息么？", function (r) {
+            if (r) {
+                $.submitForm({
+                    url: "/HuaweiOrderManage/StockManage/ImportInventory",
+                    param: { vendorFactoryCode: vendorFactoryCode, vendorItemCode: vendorItemCode, customerCode: customerCode, vendorStock: vendorStock, vendorLocation: vendorLocation, stockTime: stockTime, vendorItemRevision: vendorItemRevision, goodQuantity: goodQuantity, inspectQty: inspectQty, faultQty: faultQty },
+                    success: function (data) {
+                        console.log(data);
+                        $('#ajax-loader').fadeIn();
+                        window.location.reload();
+                    }
+                })
+            }
+        });
     }
 
     /*function gridOperat(rowid, iRow, iCol, e) {
@@ -250,15 +268,8 @@
             $('#' + file.id).find('p.state').text('已上传');
             $('#po-ajax-loader').fadeIn();
             $.post('/HuaweiOrderManage/StockManage/Merge', { guid: GUID, fileName: file.name }, function (data) {
-                if (data == "1") {
-                    $("#thelist .state").html("上传成功...");
-                    getStockList(false);
-                } else {
-                    $("#thelist .state").html("上传失败...");
-                    $.modalMsg("上传文件错误，请重新上传" + data, "error");
-                    console.log(data);
-                    $('#po-ajax-loader').fadeOut();
-                }
+                $("#thelist .state").html("上传成功...");
+                getStockList(false);
             });
             uploader.reset();
         });
@@ -278,14 +289,10 @@
             //提交表单
         });
         //开始上传
-        $("#btnUpdata").click(function () {
+        $("#ctlBtn").click(function () {
             uploader.upload();
         });
         $('#po-ajax-loader').fadeOut();
-
-        $("#btnUploading").click(function () {
-            btn_uploading();
-        });
     });
 </script>
 

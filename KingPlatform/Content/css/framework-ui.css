@@ -128,7 +128,7 @@
 .red {color:red;}
 .remark ul {list-style: none;padding:0;}
 .remark ul li i {color:#00a5ff;}
-.changebox {height:26px;margin:0;padding:0 0 0 5px; width:80%; border:1px solid #ddd; border-radius:5px;}
+.changebox {height:26px;margin:0; width:80%; border:1px solid #ddd; border-radius:5px;}
 .po-select {width:250px;height:auto;float:left;margin-right:5px;}
 
 /*右侧搜索*/

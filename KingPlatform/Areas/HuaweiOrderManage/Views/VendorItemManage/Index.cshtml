@@ -1,5 +1,5 @@
 ﻿@{
-    ViewBag.Title = "StockManage";
+    ViewBag.Title = "VendorItemManage";
     Layout = "~/Views/Shared/_Index.cshtml";
 }
 <link rel="stylesheet" type="text/css" href="~/Content/js/webUpLoader/webuploader.css" />
@@ -12,7 +12,8 @@
                 <li><a id="picker" style="padding:0; border:0;"><i class="fa fa-file"></i>选择文件</a></li>
                 <li id="thelist" class="uploader-list"></li>
                 <li><a id="btnUpdata"><i class="fa fa-arrow-up"></i>文件上传</a></li>
-                <li><a id="btnUploading"><i class="fa fa-arrow-up"></i>提交华为</a></li>
+                <li><a id="btnUploading" onclick="btn_uploading('add')"><i class="fa fa-arrow-up"></i>提交华为（追加）</a></li>
+                <li><a id="btnUploadingAll" onclick="btn_uploading('refresh')"><i class="fa fa-arrow-up"></i>提交华为（刷新）</a></li>
                 @*<li><a id="btnSubmit" onclick="getStockList(true)"><i class="fa fa-circle-o-notch"></i>查询历史数据</a></li>*@
             </ul>
             
@@ -28,12 +29,13 @@
     <div id="gridPager"></div>
 </div>
 
+
 <script type="text/javascript">
     var lastsel;
     var HWPONUM_iRow = null, HWPONUM_iCol = null;
 
     function btn_download() {
-        $.download("/HuaweiOrderManage/StockManage/DownloadTemplate", 'post');
+        $.download("/HuaweiOrderManage/VendorItemManage/DownloadTemplate", 'post');
     }
 
     function getStockList(history) {
@@ -42,38 +44,22 @@
         $('#po-ajax-loader').fadeIn();
         $gridList.jqGrid('setGridParam', { postData: { history: history } }).trigger('reloadGrid');
         $gridList.dataGrid({
-            url: "/HuaweiOrderManage/StockManage/GetStockJson",
+            url: "/HuaweiOrderManage/VendorItemManage/GetStockJson",
             postData: { history: history },
             height: $(window).height() - 128,
             colModel: [
-                { label: '我司工厂代码', name: 'vendorFactoryCode', width: 100, align: 'left', frozen: true },
-                { label: '我司物料编码', name: 'vendorItemCode', width: 100, align: 'left', editable: true },
-                { label: '我司物料编码版本', name: 'vendorItemRevision', width: 120, align: 'left', editable: true },
-                { label: '华为代码', name: 'customerCode', width: 80, align: 'left', editable: true },
-                { label: '是否协议备货', name: 'agreementStocking', width: 60, align: 'left', editable: true },
-                { label: '我司物料子库', name: 'vendorStock', width: 80, align: 'left', editable: true },
-                { label: '我司物料货位', name: 'vendorLocation', width: 80, align: 'left', editable: true },
-                {
-                    label: '入库时间', name: 'stockTime', width: 80, align: 'left', editable: true,
-                    formatter: "date", formatoptions: { srcformat: 'Y-m-d', newformat: 'Y-m-d' },
-                    editoptions: {
-                        dataInit: function (element) {
-                            $(element).datepicker({
-                                language: "zh-CN",//语言
-                                autoclose: true,//自动关闭
-                                todayBtn: "linked",//
-                                format: "yyyy-mm-dd"//时间显示格式
-                            });
-                            $(this).click(function (e) {//选中时间后隐藏
-                                $(e).parent().datepicker('hide');
-                                //$gridList.jqGrid("saveCell", HWPONUM_iRow, HWPONUM_iCol);
-                            });
-                        }
-                    }
-                },
-                { label: '库存', name: 'goodQuantity', width: 60, align: 'left', editable: true },
-                { label: '待检库存', name: 'inspectQty', width: 60, align: 'left', editable: true },
-                { label: '隔离品数量', name: 'faultQty', width: 60, align: 'left', editable: true },
+                { label: '我司物料编码', name: 'vendorItemCode', width: 80, align: 'left', frozen: true, editable: true },
+                { label: '我司产品型号', name: 'vendorProductModel', width: 80, align: 'left', editable: true },
+                { label: '我司物料描述', name: 'vendorItemDesc', width: 140, align: 'left', editable: true },
+                { label: '物料小类', name: 'itemCategory', width: 60, align: 'left', editable: true },
+                { label: '华为代码', name: 'customerVendorCode', width: 60, align: 'left', editable: true },
+                { label: '华为物料编码', name: 'customerItemCode', width: 80, align: 'left', editable: true },
+                { label: '华为产品型号', name: 'customerProductModel', width: 80, align: 'left', editable: true },
+                { label: '单位', name: 'unitOfMeasure', width: 40, align: 'left', editable: true },
+                { label: 'ITEM类别', name: 'inventoryType', width: 60, align: 'left', editable: true },
+                { label: '良率%', name: 'goodPercent', width: 40, align: 'left', editable: true },
+                { label: '货期（天）', name: 'leadTime', width: 60, align: 'left', editable: true },
+                { label: '生命周期状态', name: 'lifeCycleStatus', width: 60, align: 'left', editable: true },
                 { label: '是否成功', name: 'success', width: 60, align: 'left' },
                 { label: '失败原因', name: 'errorMessage', width: 350, align: 'left' },
                 { label: '上传时间', name: 'F_CreateTime', width: 120, align: 'left' }
@@ -103,7 +89,7 @@
         jQuery("#gridList").jqGrid('setFrozenColumns');
     }
 
-    function btn_uploading() {
+    function btn_uploading(param) {
         var $gridList = $("#gridList");
         $gridList.jqGrid("saveCell", HWPONUM_iRow, HWPONUM_iCol);
 
@@ -111,20 +97,24 @@
         var allCountID = $gridList.jqGrid('getDataIDs'); //这里获取所有行 主键id 是全的
         rowDate.push($gridList.jqGrid('getRowData', allCountID[allCountID.length - 1]));  //单独用最后一个 ID 获取行数据 并 追加到 集合里
         var list = JSON.stringify(rowDate);
-        //console.log(JSON.stringify(rowDate));
+
         if (list == '[[]]') {
             $.modalAlert('当前无数据，请上传附件后提交', 'warning');
         } else {
             $('#po-ajax-loader').fadeIn();
             $.submitForm({
-                url: "/HuaweiOrderManage/StockManage/HuaweiBack",
-                param: { list: list },
-                success: function (data) {
+                url: "/HuaweiOrderManage/VendorItemManage/HuaweiBack",
+                param: { list: list, param: param },
+                success: function () {
+                    $('#po-ajax-loader').fadeOut();
+                    getStockList(false);
+                },
+                error: function () {
                     $('#po-ajax-loader').fadeOut();
                     getStockList(false);
                 }
             });
-        }
+        }  
     }
 
     /*function gridOperat(rowid, iRow, iCol, e) {
@@ -204,7 +194,7 @@
             swf: '~/Content/js/webUpLoader/Uploader.swf',
 
             // 文件接收服务端。
-            server: '/HuaweiOrderManage/StockManage/FileUpload',
+            server: '/HuaweiOrderManage/VendorItemManage/FileUpload',
 
             // 选择文件的按钮。可选。
             // 内部根据当前运行是创建，可能是input元素，也可能是flash.
@@ -249,14 +239,13 @@
         uploader.on('uploadSuccess', function (file, response) {
             $('#' + file.id).find('p.state').text('已上传');
             $('#po-ajax-loader').fadeIn();
-            $.post('/HuaweiOrderManage/StockManage/Merge', { guid: GUID, fileName: file.name }, function (data) {
+            $.post('/HuaweiOrderManage/VendorItemManage/Merge', { guid: GUID, fileName: file.name }, function (data) {
                 if (data == "1") {
                     $("#thelist .state").html("上传成功...");
                     getStockList(false);
                 } else {
                     $("#thelist .state").html("上传失败...");
                     $.modalMsg("上传文件错误，请重新上传" + data, "error");
-                    console.log(data);
                     $('#po-ajax-loader').fadeOut();
                 }
             });
@@ -282,10 +271,6 @@
             uploader.upload();
         });
         $('#po-ajax-loader').fadeOut();
-
-        $("#btnUploading").click(function () {
-            btn_uploading();
-        });
     });
 </script>
 
