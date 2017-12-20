@@ -72,7 +72,7 @@ namespace King.Application.SystemSecurity
             logEntity.F_Account = OperatorProvider.Provider.GetCurrent().UserCode;
             logEntity.F_NickName = OperatorProvider.Provider.GetCurrent().UserName;
             logEntity.F_IPAddress = Net.Ip;
-            logEntity.F_IPAddressName = Net.GetLocation(logEntity.F_IPAddress);
+            //logEntity.F_IPAddressName = Net.GetLocation(logEntity.F_IPAddress);
             logEntity.F_Result = result;
             logEntity.F_Description = resultLog;
             logEntity.Create();
@@ -83,7 +83,7 @@ namespace King.Application.SystemSecurity
             logEntity.F_Id = Common.GuId();
             logEntity.F_Date = DateTime.Now;
             logEntity.F_IPAddress = Net.Ip;
-            logEntity.F_IPAddressName = Net.GetLocation(logEntity.F_IPAddress);
+            //logEntity.F_IPAddressName = Net.GetLocation(logEntity.F_IPAddress);
             logEntity.Create();
             service.Insert(logEntity);
         }

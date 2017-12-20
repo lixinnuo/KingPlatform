@@ -129,19 +129,26 @@ namespace Basic.Code
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
-        public static string GetAccessToken(string data)
+        public static string GetAccessToken(string url_token, string key, string secury)
         {
+            string data = HttpMethods.HttpPost(url_token, key, secury);
+            int count = 0;
             JavaScriptSerializer jss = new JavaScriptSerializer();
             AccessToken result = jss.Deserialize<AccessToken>(data);
             if (result != null)
             {
+                while (result.access_token == "" && count < 5)
+                {
+                    data = HttpMethods.HttpPost(url_token, key, secury);
+                    result = jss.Deserialize<AccessToken>(data);
+                    count++;
+                }
                 return result.access_token;
             }
             else
             {
                 return "0";
             }
-            
         }
 
         public class AccessToken

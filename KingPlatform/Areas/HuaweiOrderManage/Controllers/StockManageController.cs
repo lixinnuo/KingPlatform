@@ -156,13 +156,7 @@ namespace KingPlatform.Areas.HuaweiOrderManage.Controllers
                 }
             }
 
-            string accessToken = HttpMethods.GetAccessToken(HttpMethods.HttpPost(url_token, key, secury));      //获取华为access_token
-            int n=0;
-            while (accessToken == "" && n < 5)
-            {
-                accessToken = HttpMethods.GetAccessToken(HttpMethods.HttpPost(url_token, key, secury));      //获取华为access_token
-                n++;
-            }
+            string accessToken = HttpMethods.GetAccessToken(url_token, key, secury);      //获取华为access_token
            
             var json = JsonConvert.SerializeObject(stockManageModel, Formatting.Indented, jSetting);
             string result = HttpMethods.HttpPost(importInventoryurl, json, true, accessToken);

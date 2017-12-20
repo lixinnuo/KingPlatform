@@ -41,7 +41,7 @@ namespace KingPlatform.Areas.HuaweiOrderManage.Controllers
         [HandlerAjaxOnly]
         public ActionResult FindPOBoard(string searchParam = "")
         {
-            string accessToken = HttpMethods.GetAccessToken(HttpMethods.HttpPost(url_token, key, secury));      //获取华为access_token
+            string accessToken = HttpMethods.GetAccessToken(url_token, key, secury);      //获取华为access_token
             JavaScriptSerializer js = new JavaScriptSerializer();
             GetPOBoardParam param = new GetPOBoardParam();
             if (searchParam.IndexOf("*") >= 0)
@@ -78,7 +78,7 @@ namespace KingPlatform.Areas.HuaweiOrderManage.Controllers
 
             if (getpage == 1)
             {
-                string accessToken = HttpMethods.GetAccessToken(HttpMethods.HttpPost(url_token, key, secury));      //获取华为access_token
+                string accessToken = HttpMethods.GetAccessToken(url_token, key, secury);      //获取华为access_token
                 JavaScriptSerializer js = new JavaScriptSerializer();
                 
                 //定义接口json数据 获取新POList传入参数
@@ -230,7 +230,7 @@ namespace KingPlatform.Areas.HuaweiOrderManage.Controllers
             else
             {
                 //获取华为access_token
-                string accessToken = HttpMethods.GetAccessToken(HttpMethods.HttpPost(url_token, key, secury));
+                string accessToken = HttpMethods.GetAccessToken(url_token, key, secury);
                 JavaScriptSerializer js = new JavaScriptSerializer();
                 getPOListParamBack = this.TempData[poTypes] as GetPOListParamBack;                        //获取储存的华为PO列表(对应types)
                 this.TempData[poTypes] = getPOListParamBack;                                              //保存华为PO列表(对应types)
@@ -315,7 +315,7 @@ namespace KingPlatform.Areas.HuaweiOrderManage.Controllers
                 confirmPO.colTaskQueries.Add(colTaskQueries);
             }
             //获取华为access_token
-            string accessToken = HttpMethods.GetAccessToken(HttpMethods.HttpPost(url_token, key, secury));
+            string accessToken = HttpMethods.GetAccessToken(url_token, key, secury);
             JavaScriptSerializer js = new JavaScriptSerializer();
             //定义接口json数据
             string json = js.Serialize(confirmPO);
@@ -381,7 +381,7 @@ namespace KingPlatform.Areas.HuaweiOrderManage.Controllers
                 postOnwayPO.Add(poLinesAllVO);
             }
             //获取华为access_token
-            string accessToken = HttpMethods.GetAccessToken(HttpMethods.HttpPost(url_token, key, secury));
+            string accessToken = HttpMethods.GetAccessToken(url_token, key, secury);
             JavaScriptSerializer js = new JavaScriptSerializer();
             //定义接口json数据
             string json = js.Serialize(postOnwayPO);
@@ -421,7 +421,7 @@ namespace KingPlatform.Areas.HuaweiOrderManage.Controllers
         public ActionResult HWCorList()
         {
             //获取华为access_token
-            string accessToken = HttpMethods.GetAccessToken(HttpMethods.HttpPost(url_token, key, secury));
+            string accessToken = HttpMethods.GetAccessToken(url_token, key, secury);
             JavaScriptSerializer js = new JavaScriptSerializer();
             //定义接口json数据 查询华为子公司列表入参
             GetHWCor getHWCor = new GetHWCor("zh_CN");
@@ -461,7 +461,7 @@ namespace KingPlatform.Areas.HuaweiOrderManage.Controllers
             }
 
             JavaScriptSerializer js = new JavaScriptSerializer();
-            string accessToken = HttpMethods.GetAccessToken(HttpMethods.HttpPost(url_token, key, secury));      //获取华为access_token
+            string accessToken = HttpMethods.GetAccessToken(url_token, key, secury);      //获取华为access_token
             string findPOListurlTrue = findPOListurl + 1.ToString(); //添加页码
             var jSetting = new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore };
             var json = JsonConvert.SerializeObject(getKeyPOListParam, Formatting.Indented, jSetting);
@@ -500,7 +500,7 @@ namespace KingPlatform.Areas.HuaweiOrderManage.Controllers
             }
 
             JavaScriptSerializer js = new JavaScriptSerializer();
-            string accessToken = HttpMethods.GetAccessToken(HttpMethods.HttpPost(url_token, key, secury));      //获取华为access_token
+            string accessToken = HttpMethods.GetAccessToken(url_token, key, secury);      //获取华为access_token
             string findPOListurlTrue = findPOListurl + 1.ToString(); //添加页码
             var jSetting = new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore };
             var json = JsonConvert.SerializeObject(getKeyPOListParam, Formatting.Indented, jSetting);
