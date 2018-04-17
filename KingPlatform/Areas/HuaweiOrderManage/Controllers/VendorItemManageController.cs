@@ -17,18 +17,19 @@ namespace KingPlatform.Areas.HuaweiOrderManage.Controllers
     public class VendorItemManageController : ControllerBase
     {
         private HWVendorItemApp hwVendorItemApp = new HWVendorItemApp();
-        string url_token = "https://api-beta.huawei.com:443/oauth2/token";                                              //查询华为access_token
+        /*string url_token = "https://api-beta.huawei.com:443/oauth2/token";                                              //查询华为access_token
         string importVendorItemsurl = "https://api-beta.huawei.com:443/service/esupplier/importVendorItems/1.0.0";             //上传物料基础信息 追加
         string refreshVendorItemsurl = "https://api-beta.huawei.com:443/service/esupplier/refreshVendorItems/1.0.0";     //上传物料基础信息  刷新所有
         string key = "CkAb2QO3G50NQZcrm2VYPycgEMga";                                                                    //系统键 测试平台
-        string secury = "UEvjRaxRoggXXM2G1Y5izAk1b_ga";                                                                 //系统值
+        string secury = "UEvjRaxRoggXXM2G1Y5izAk1b_ga";*/                                                                 //系统值
 
-        /*string url_token = "https://openapi.huawei.com:443/oauth2/token";                                              //查询华为access_token
-        string importInventoryurl = "https://api.huawei.com:443/service/esupplier/importInventory/1.0.0/1";                 //库存明细接口
+        string url_token = "https://openapi.huawei.com:443/oauth2/token";                                              //查询华为access_token
+        string importVendorItemsurl = "https://openapi.huawei.com:443/service/esupplier/importVendorItems/1.0.0";             //上传物料基础信息 追加
+        string refreshVendorItemsurl = "https://openapi.huawei.com:443/service/esupplier/refreshVendorItems/1.0.0";     //上传物料基础信息  刷新所有
         string key = "CoQUc1M90PLv3PpMldpvwOX1HKIa";                                                                   //系统键 正式平台
-        string secury = "JqkgDMDzbDlaTA9EFpkRB9veArsa"; */                                                                //系统值
+        string secury = "JqkgDMDzbDlaTA9EFpkRB9veArsa";                                                                 //系统值
 
-        
+
 
         /// <summary>
         /// 前台显示列表
@@ -52,16 +53,24 @@ namespace KingPlatform.Areas.HuaweiOrderManage.Controllers
                 
             }
 
-            if (list.Length > rows * page)
+            if (rows == -1)
             {
-                newList = new HWVendorItemEntity[rows];
-                Array.Copy(list, rows * (page - 1), newList, 0, rows);
+                newList = list;
             }
             else
             {
-                newList = new HWVendorItemEntity[list.Length - rows * (page - 1)];
-                Array.Copy(list, rows * (page - 1), newList, 0, list.Length - rows * (page - 1));
+                if (list.Length > rows * page)
+                {
+                    newList = new HWVendorItemEntity[rows];
+                    Array.Copy(list, rows * (page - 1), newList, 0, rows);
+                }
+                else
+                {
+                    newList = new HWVendorItemEntity[list.Length - rows * (page - 1)];
+                    Array.Copy(list, rows * (page - 1), newList, 0, list.Length - rows * (page - 1));
+                }
             }
+            
 
             var data = new
             {
@@ -281,3 +290,4 @@ namespace KingPlatform.Areas.HuaweiOrderManage.Controllers
         }
     }
 }
+ 

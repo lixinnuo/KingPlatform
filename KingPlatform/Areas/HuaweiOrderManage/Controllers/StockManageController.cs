@@ -20,12 +20,12 @@ namespace KingPlatform.Areas.HuaweiOrderManage.Controllers
         string url_token = "https://api-beta.huawei.com:443/oauth2/token";                                              //查询华为access_token
         string importInventoryurl = "https://api-beta.huawei.com:443/service/esupplier/importInventory/1.0.0/1";             //库存明细接口
         string key = "CkAb2QO3G50NQZcrm2VYPycgEMga";                                                                    //系统键 测试平台
-        string secury = "UEvjRaxRoggXXM2G1Y5izAk1b_ga";                                                                 //系统值
+        string secury = "UEvjRaxRoggXXM2G1Y5izAk1b_ga";                                                                //系统值
 
         /*string url_token = "https://openapi.huawei.com:443/oauth2/token";                                              //查询华为access_token
-        string importInventoryurl = "https://api.huawei.com:443/service/esupplier/importInventory/1.0.0/1";                 //库存明细接口
+        string importInventoryurl = "https://openapi.huawei.com:443/service/esupplier/importInventory/1.0.0/1";                 //库存明细接口
         string key = "CoQUc1M90PLv3PpMldpvwOX1HKIa";                                                                   //系统键 正式平台
-        string secury = "JqkgDMDzbDlaTA9EFpkRB9veArsa"; */                                                                //系统值
+        string secury = "JqkgDMDzbDlaTA9EFpkRB9veArsa";*/                                                                  //系统值
 
         /// <summary>
         /// 前台显示列表
@@ -49,15 +49,22 @@ namespace KingPlatform.Areas.HuaweiOrderManage.Controllers
                 
             }
 
-            if (list.Length > rows * page)
+            if (rows == -1)
             {
-                newList = new HWStockEntity[rows];
-                Array.Copy(list, rows * (page - 1), newList, 0, rows);
+                newList = list;
             }
             else
             {
-                newList = new HWStockEntity[list.Length - rows * (page - 1)];
-                Array.Copy(list, rows * (page - 1), newList, 0, list.Length - rows * (page - 1));
+                if (list.Length > rows * page)
+                {
+                    newList = new HWStockEntity[rows];
+                    Array.Copy(list, rows * (page - 1), newList, 0, rows);
+                }
+                else
+                {
+                    newList = new HWStockEntity[list.Length - rows * (page - 1)];
+                    Array.Copy(list, rows * (page - 1), newList, 0, list.Length - rows * (page - 1));
+                }
             }
 
             var data = new
@@ -137,19 +144,21 @@ namespace KingPlatform.Areas.HuaweiOrderManage.Controllers
 
             for (int i = 0; i < stockManageModel.factoryInventoryList.Count; i++)
             {
-                //处理时间信息
+                //处理入库时间字段
                 if (stockManageModel.factoryInventoryList[i].stockTime.Length > 10)
                 {
                     stockManageModel.factoryInventoryList[i].stockTime = stockManageModel.factoryInventoryList[i].stockTime.Substring(0, 10);
                 }
+                //处理是否协议备货字段
                 stockManageModel.factoryInventoryList[i].agreementStocking = stockManageModel.factoryInventoryList[i].agreementStocking.ToUpper();
-
+                //处理库存字段
                 stockManageModel.factoryInventoryList[i].goodQuantity = Math.Floor(stockManageModel.factoryInventoryList[i].goodQuantity);
-
+                //处理待检库存字段
                 if (stockManageModel.factoryInventoryList[i].inspectQty != null)
                 {
                     stockManageModel.factoryInventoryList[i].inspectQty = (long)stockManageModel.factoryInventoryList[i].inspectQty;
                 }
+                //处理隔离品字段
                 if (stockManageModel.factoryInventoryList[i].faultQty != null)
                 {
                     stockManageModel.factoryInventoryList[i].faultQty = (long)stockManageModel.factoryInventoryList[i].faultQty;
@@ -281,7 +290,7 @@ namespace KingPlatform.Areas.HuaweiOrderManage.Controllers
         public void DownloadTemplate()
         {
             string filename = Server.UrlDecode("InventoryTemplate.xls");
-            string filepath = Server.MapPath("~/Resource/Huawei/HWStock/xlsx/InventoryTemplate.xls");
+            string filepath = Server.MapPath("~/Resource/Huawei/HWStock/xlsx/InventoryTemplate.xlsx");
             if (FileDownHelper.FileExists(filepath))
             {
                 FileDownHelper.DownLoadold(filepath, filename);
@@ -289,3 +298,4 @@ namespace KingPlatform.Areas.HuaweiOrderManage.Controllers
         }
     }
 }
+ 

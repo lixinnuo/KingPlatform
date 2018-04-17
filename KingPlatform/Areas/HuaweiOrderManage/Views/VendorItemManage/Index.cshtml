@@ -56,16 +56,24 @@
                 { label: '华为物料编码', name: 'customerItemCode', width: 80, align: 'left', editable: true },
                 { label: '华为产品型号', name: 'customerProductModel', width: 80, align: 'left', editable: true },
                 { label: '单位', name: 'unitOfMeasure', width: 40, align: 'left', editable: true },
-                { label: 'ITEM类别', name: 'inventoryType', width: 60, align: 'left', editable: true },
+                {
+                    label: 'ITEM类别', name: 'inventoryType', width: 60, align: 'left', editable: true, edittype: 'select', editoptions: {
+                        value: "FG:FG;SEMI-FG:SEMI-FG;RM:RM"
+                    }
+                },
                 { label: '良率%', name: 'goodPercent', width: 40, align: 'left', editable: true },
                 { label: '货期（天）', name: 'leadTime', width: 60, align: 'left', editable: true },
-                { label: '生命周期状态', name: 'lifeCycleStatus', width: 60, align: 'left', editable: true },
+                {
+                    label: '生命周期状态', name: 'lifeCycleStatus', width: 60, align: 'left', editable: true, edittype: 'select', editoptions: {
+                        value: "NPI:NPI;MP:MP;EOL:EOL"
+                    }
+                },
                 { label: '是否成功', name: 'success', width: 60, align: 'left' },
                 { label: '失败原因', name: 'errorMessage', width: 350, align: 'left' },
                 { label: '上传时间', name: 'F_CreateTime', width: 120, align: 'left' }
             ],
             pager: "#gridPager",
-            rowNum: 20,
+            rowNum: -1,
             rowList: [10, 20, 50],
             autoScroll: true,
             viewrecords: true,
@@ -80,7 +88,8 @@
                 HWPONUM_iCol = iCol;
             },
             afterEditCell: function (rowid, cellname, value, iRow, iCol) {
-                $("input[role=textbox]").removeClass("form-control").addClass("changebox");
+                $("input[role=textbox]").css({ "padding": "2px 0", "height": "26px" });
+                $("select").css({ "padding": "2px 0", "height": "26px" });
             },
             onPaging: function (pgButton) {
                 $('#po-ajax-loader').fadeIn();

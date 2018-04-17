@@ -50,7 +50,11 @@
                 { label: '我司物料编码', name: 'vendorItemCode', width: 100, align: 'left', editable: true },
                 { label: '我司物料编码版本', name: 'vendorItemRevision', width: 120, align: 'left', editable: true },
                 { label: '华为代码', name: 'customerCode', width: 80, align: 'left', editable: true },
-                { label: '是否协议备货', name: 'agreementStocking', width: 60, align: 'left', editable: true },
+                {
+                    label: '是否协议备货', name: 'agreementStocking', width: 60, align: 'left', editable: true, edittype: 'select', editoptions: {
+                        value: "Y:Y; N:N"
+                    }
+                },
                 { label: '我司物料子库', name: 'vendorStock', width: 80, align: 'left', editable: true },
                 { label: '我司物料货位', name: 'vendorLocation', width: 80, align: 'left', editable: true },
                 {
@@ -79,7 +83,7 @@
                 { label: '上传时间', name: 'F_CreateTime', width: 120, align: 'left' }
             ],
             pager: "#gridPager",
-            rowNum: 20,
+            rowNum: -1,
             rowList: [10, 20, 50],
             autoScroll: true,
             viewrecords: true,
@@ -94,7 +98,8 @@
                 HWPONUM_iCol = iCol;
             },
             afterEditCell: function (rowid, cellname, value, iRow, iCol) {
-                $("input[role=textbox]").removeClass("form-control").addClass("changebox");
+                $("input[role=textbox]").css({ "padding": "2px 0", "height": "26px" });
+                $("select").css({ "padding": "2px 0", "height": "26px" });
             },
             onPaging: function (pgButton) {
                 $('#po-ajax-loader').fadeIn();

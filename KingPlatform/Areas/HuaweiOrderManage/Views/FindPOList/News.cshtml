@@ -218,6 +218,7 @@
             autoScroll: true,
             viewrecords: true,
             sortname: 'publishDate',
+            sortorder: 'desc',
             gridComplete: function () {
                 $('#po-ajax-loader').fadeOut();
                 $("input[type='checkbox']").removeClass('checkbox');
@@ -233,7 +234,7 @@
                 else {
                     $("#gridList").editRow(rowid, true);
                     $("#choseNum").html(ids.length + 1);
-                    $("input[role=textbox]").removeClass("form-control").addClass("changebox");
+                    $("input[role=textbox]").css({ "padding": "2px 0", "height": "26px" });
                     //$("#" + rowid + "_promiseDate").removeClass("form-control").addClass("changebox");
                     //$("#" + rowid + "_promiseDateChangeReason").removeClass("form-control").addClass("changebox");
                 }

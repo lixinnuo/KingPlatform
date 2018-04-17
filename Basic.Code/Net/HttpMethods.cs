@@ -31,6 +31,8 @@ namespace Basic.Code
             if (url.StartsWith("https", StringComparison.OrdinalIgnoreCase))
             {
                 ServicePointManager.ServerCertificateValidationCallback = new RemoteCertificateValidationCallback(CheckValidationResult);
+                //ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3 | SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
+                //ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls;
                 request = WebRequest.Create(url) as HttpWebRequest;
             }
             else
@@ -40,6 +42,7 @@ namespace Basic.Code
 
             request.Method = "POST";
             request.ContentType = "application/json";
+            request.KeepAlive = false;
             if (isAuthorization)
             {
                 request.Headers.Add("Authorization", "Bearer " + accessToken.Trim());
@@ -69,6 +72,8 @@ namespace Basic.Code
                 StreamReader reader = new StreamReader(response.GetResponseStream(), Encoding.UTF8);
                 result = reader.ReadToEnd();
                 reader.Close();
+                response.Close();
+                response = null;
             }
             return result;    //返回json数据
         }

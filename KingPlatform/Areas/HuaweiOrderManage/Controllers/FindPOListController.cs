@@ -535,5 +535,5 @@ namespace KingPlatform.Areas.HuaweiOrderManage.Controllers
             return View();
         }      
     }
-}
+} 
  
