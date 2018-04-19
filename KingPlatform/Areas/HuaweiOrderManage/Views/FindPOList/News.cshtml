@@ -23,13 +23,14 @@
 
         $("#icon-toggle").on("click", function () {
             if ($("#nav-right").width() == 0) {
-                $("#right-search, #nav-right").css("width", "240px");
-                $(this).css({ "background-position-y": "-133px" });
-                $("#refresh").css("right", "280px");
+                $("#right-search, #nav-right").animate({ width: "240px" });
+                $(this).animate({ "background-position-y": "-133px" });
+                $("#refresh").animate({ right: "280px" });
+                $('.btn-group').css({ "width": "160px" });
             } else {
-                $("#right-search, #nav-right").css("width", "0px");
-                $(this).css({ "background-position-y": "-45px" });
-                $("#refresh").css("right", "40px");
+                $("#right-search, #nav-right").animate({ width: "0px" });
+                $(this).animate({ "background-position-y": "-45px" });
+                $("#refresh").animate({ right: "40px" });
             }
         });
         $(".time").datepicker({
@@ -37,7 +38,6 @@
             autoclose: true,//自动关闭
             todayBtn: "linked",//
             format: "yyyy-mm-dd",//时间显示格式
-
         });
 
         $("#po-reset").on("click", function () {

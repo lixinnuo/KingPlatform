@@ -11,7 +11,7 @@ namespace KingPlatform.Areas.HuaweiOrderManage.Controllers
 {
     public class FindPOListController : ControllerBase
     {
-        string findPOListurl = "https://api-beta.huawei.com:443/service/esupplier/findPoLineList/1.0.0/";               //查询PO列表
+        /*string findPOListurl = "https://api-beta.huawei.com:443/service/esupplier/findPoLineList/1.0.0/";               //查询PO列表
         string findPOBoardUrl = "https://api-beta.huawei.com:443/service/esupplier/findProductionPOBoardData/1.0.0";    //查询PO看板
         string url_token = "https://api-beta.huawei.com:443/oauth2/token";                                              //查询华为access_token
         string getPODetailsurl = "https://api-beta.huawei.com:443/service/esupplier/findColTaskList/1.0.0/1";           //查询PO行变更明细
@@ -19,9 +19,9 @@ namespace KingPlatform.Areas.HuaweiOrderManage.Controllers
         string onwayPOListUrl = "https://api-beta.huawei.com:443/service/esupplier/applyPromiseDateChange/1.0.0";       //供应商PO变更
         string getHWCorurl = "https://api-beta.huawei.com:443/service/esupplier/findOrganList/1.0.0";                   //华为子公司列表
         string key = "GHprAo4oNpiqPrre993DpW2KGy8a";                                                                    //系统键 测试平台
-        string secury = "O4gunWWZ6pIfwAO94qcF0tcPFBwa";                                                                //系统值
+        string secury = "O4gunWWZ6pIfwAO94qcF0tcPFBwa";*/                                                                //系统值
 
-        /*string findPOListurl = "https://openapi.huawei.com:443/service/esupplier/findPoLineList/1.0.0/";               //查询PO列表
+        string findPOListurl = "https://openapi.huawei.com:443/service/esupplier/findPoLineList/1.0.0/";               //查询PO列表
         string findPOBoardUrl = "https://openapi.huawei.com:443/service/esupplier/findProductionPOBoardData/1.0.0";    //查询PO看板
         string url_token = "https://openapi.huawei.com:443/oauth2/token";                                              //查询华为access_token
         string getPODetailsurl = "https://openapi.huawei.com:443/service/esupplier/findColTaskList/1.0.0/1";           //查询PO行变更明细
@@ -29,7 +29,7 @@ namespace KingPlatform.Areas.HuaweiOrderManage.Controllers
         string onwayPOListUrl = "https://openapi.huawei.com:443/service/esupplier/applyPromiseDateChange/1.0.0";       //供应商PO变更
         string getHWCorurl = "https://openapi.huawei.com:443/service/esupplier/findOrganList/1.0.0";                   //华为子公司列表
         string key = "1W6F7vxypwbPu8ElV6csX6JeBm0a";                                                                    //系统键 正式平台
-        string secury = "CbGf_TyvV_iCUUwntP0hQw1n_9sa"; */                                                                 //系统值
+        string secury = "CbGf_TyvV_iCUUwntP0hQw1n_9sa";                                                                  //系统值
 
         GetPOListParamBack getPOListParamBack = new GetPOListParamBack();
         

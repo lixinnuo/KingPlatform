@@ -58,6 +58,7 @@
     <Compile Include="Context\Repository\IRepositoryBase.T.cs" />
     <Compile Include="Context\Repository\RepositoryBase.cs" />
     <Compile Include="Context\Repository\RepositoryBase.T.cs" />
+    <Compile Include="Entity\HuaweiOrderManage\HWForecastEntity.cs" />
     <Compile Include="Entity\HuaweiOrderManage\HWVendorItemEntity.cs" />
     <Compile Include="Entity\HuaweiOrderManage\HWStockEntity.cs" />
     <Compile Include="Entity\SystemManage\AreaEntity.cs" />

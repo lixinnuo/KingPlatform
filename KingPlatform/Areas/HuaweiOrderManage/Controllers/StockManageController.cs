@@ -17,15 +17,15 @@ namespace KingPlatform.Areas.HuaweiOrderManage.Controllers
     public class StockManageController : ControllerBase
     {
         private HWStockApp hwStockApp = new HWStockApp();
-        string url_token = "https://api-beta.huawei.com:443/oauth2/token";                                              //查询华为access_token
+        /*string url_token = "https://api-beta.huawei.com:443/oauth2/token";                                              //查询华为access_token
         string importInventoryurl = "https://api-beta.huawei.com:443/service/esupplier/importInventory/1.0.0/1";             //库存明细接口
         string key = "CkAb2QO3G50NQZcrm2VYPycgEMga";                                                                    //系统键 测试平台
-        string secury = "UEvjRaxRoggXXM2G1Y5izAk1b_ga";                                                                //系统值
+        string secury = "UEvjRaxRoggXXM2G1Y5izAk1b_ga";*/                                                                //系统值
 
-        /*string url_token = "https://openapi.huawei.com:443/oauth2/token";                                              //查询华为access_token
+        string url_token = "https://openapi.huawei.com:443/oauth2/token";                                              //查询华为access_token
         string importInventoryurl = "https://openapi.huawei.com:443/service/esupplier/importInventory/1.0.0/1";                 //库存明细接口
         string key = "CoQUc1M90PLv3PpMldpvwOX1HKIa";                                                                   //系统键 正式平台
-        string secury = "JqkgDMDzbDlaTA9EFpkRB9veArsa";*/                                                                  //系统值
+        string secury = "JqkgDMDzbDlaTA9EFpkRB9veArsa";                                                                  //系统值
 
         /// <summary>
         /// 前台显示列表
@@ -289,7 +289,7 @@ namespace KingPlatform.Areas.HuaweiOrderManage.Controllers
         [HttpPost]
         public void DownloadTemplate()
         {
-            string filename = Server.UrlDecode("InventoryTemplate.xls");
+            string filename = Server.UrlDecode("InventoryTemplate.xlsx");
             string filepath = Server.MapPath("~/Resource/Huawei/HWStock/xlsx/InventoryTemplate.xlsx");
             if (FileDownHelper.FileExists(filepath))
             {

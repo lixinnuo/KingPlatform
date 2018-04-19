@@ -1,0 +1,188 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Index.cshtml";
+}
+<script src="~/Content/js/bootStrap/bootstrap-select.min.js"></script>
+<link rel="stylesheet" href="~/Content/js/bootStrap/bootstrap-select.min.css" />
+
+<div class="topPanel">
+    <div class="toolbar">
+        <div class="operate" style="left:0;">
+            <ul class="nav nav-pills">
+                <li class="first">预测列表</li>
+                <li><a id="NF-signBackPOList" authorize="yes" onclick="btn_signBackPOList(true)"><i class="fa fa-check"></i>回复</a></li>
+                @*<li><a id="NF-btn_update" authorize="yes" onclick="btn_update()"><i class="fa fa-pencil-square-o"></i>导出</a></li>*@
+            </ul>
+            <a class="btn btn-primary refresh" id="refresh" title="重新加载" onclick="$.reload()"><span class="glyphicon glyphicon-refresh"></span></a>
+        </div>
+    </div>
+</div>
+<div id="po-ajax-loader" style="top:50px;">
+    <img src="~/Content/img/ajax-loader.gif" />
+</div>
+<div class="gridPanel">
+    <table id="gridList"></table>
+    <div id="gridPager"></div>
+</div>
+<div class="row-nav-right" id="nav-right">
+    <div class="row-right-search" id="right-search">
+        <div class="row-right-list center" style="height:30px;">
+            <div class="row-right-title">查询</div>
+        </div>
+        <div style="height:100%; width:220px; z-index:500;">
+            <div class="row-right-list">
+                <label>我司物料编码</label>
+                <div class="row-right-input">
+                    <input type="text" placeholder="多个请以','隔开" class="form-control" id="suppItemCode" style="width:174px; height:20px;" />
+                </div>
+            </div>
+            <div class="row-right-list">
+                <label class="row-right-list-title">华为物料编码</label>
+                <div class="row-right-input">
+                    <input type="text" placeholder="多个请以','隔开" class="form-control" id="itemCode" style="width:174px; height:20px;" />
+                </div>
+            </div>
+            <div class="row-right-list">
+                <label class="row-right-list-title">华为子公司</label>
+                <div class="row-right-input">
+                    <select class="selectpicker" id="orgId" style="width:174px; height:20px;">
+                        <option value="218">华为技术有限公司</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row-right-list">
+                <label class="row-right-list-title">起止日期</label>
+                <div class="row-right-input">
+                    <input type="text" class="form-control time" style="display:inline-block; width:70px;height:20px;" id="startTime" />-
+                    <input type="text" class="form-control time" style="display:inline-block; width:70px;height:20px;" id="endTime" />
+                </div>
+            </div>
+            <div class="row-right-list">
+                <label class="row-right-list-title">采购模式</label>
+                <div class="row-right-input">
+                    <select class="selectpicker" multiple id="purchaseMode" style="width:174px; height:20px;">
+                        <option value="JIT">JIT</option>
+                        <option value="DUN">DUN</option>
+                        <option value="VMI-Consignment">VMI-Consignment</option>
+                        <option value="Normal">Normal</option>
+                        <option value="PO-Consignment">PO-Consignment</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row-right-list">
+                <label class="row-right-list-title">采购员</label>
+                <div class="row-right-input">
+                    <input type="text" placeholder="采购员名称，如张三" class="form-control" id="buyerName" style="width:174px; height:20px;" />
+                </div>
+            </div>
+            <div class="row-right-list">
+                <div class="row-right-input">
+                    <button class="form-control btn-primary" style="display:inline-block; width:70px; height:20px; margin-right:5px;" id="po-search">查询</button>
+                    <button class="form-control" style="display:inline-block;width:70px; height:20px;" id="po-reset">重置</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="right-icon" id="icon-toggle"></div>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        $('#po-ajax-loader').fadeOut();
+        setTimeout(function () {
+            $("#icon-toggle").trigger("click");     //模拟点击事件
+        },1000);
+        
+        //搜索框隐藏显示
+        $("#icon-toggle").on("click", function () {
+            if ($("#nav-right").width() == 0) {
+                $("#right-search, #nav-right").animate({ width: "240px" });
+                $(this).animate({ "background-position-y": "-133px" });
+                $("#refresh").animate({ right: "280px" });
+                $('.btn-group').css({ "width": "160px" });
+            } else {
+                $("#right-search, #nav-right").animate({ width: "0px" });
+                $(this).animate({ "background-position-y": "-45px" });
+                $("#refresh").animate({ right: "40px" });
+            }
+        });
+
+        //点击日期框
+        $(".time").datepicker({
+            language: "zh-CN",//语言
+            autoclose: true,//自动关闭
+            todayBtn: "linked",//
+            format: "yyyy-mm-dd",//时间显示格式
+        });
+
+        //点击查询按钮，查询预测列表
+        $("#po-search").on("click", function () {
+            var suppItemCode = $("#suppItemCode").val();
+            var itemCode = $("#itemCode").val();
+            var orgId = $("#orgId").val();
+            var startTime = $("#startTime").val();
+            var endTime = $("#endTime").val();
+            var purchaseMode = $("#purchaseMode").val();
+            var buyerName = $("#buyerName").val();
+            ForecastList(suppItemCode, itemCode, orgId, startTime, endTime, purchaseMode, buyerName);
+        })
+
+
+
+    })
+
+    function ForecastList(suppItemCode, itemCode, orgId, startTime, endTime, purchaseMode, buyerName)
+    {
+        var $gridList = $("#gridList");
+        $("#po-ajax-loader").fadeIn();
+        $gridList.dataGrid({
+            url: "/HuaweiOrderManage/Forecast/ForecastList",
+            postData: { suppItemCode: suppItemCode, itemCode: itemCode, orgId: orgId, startTime: startTime, endTime: endTime, purchaseMode: purchaseMode, buyerName: buyerName },
+            height: $(window).height() - 178,
+            colModel: [
+                { label: '行号', name: 'lineNo', width: 100, align: 'left', frozen: true },
+                { label: '供方物料编码', name: 'suppItemCode', width: 60, align: 'left', frozen: true },
+                { label: '华为物料编码', name: 'itemCode', width: 100, align: 'left', frozen: true },
+                { label: '版本号', name: 'version', width: 30, align: 'left', frozen: true },
+                { label: '采购模式', name: 'purchaseMode', width: 60, align: 'left', frozen: true },
+                { label: '器件分类', name: 'partSort', width: 80, align: 'left' },
+                { label: '采购员', name: 'buyerName', width: 80, align: 'left' },
+                {
+                    label: '发布日期', name: 'publishDate', width: 80, align: 'left',
+                    formatter: "date", formatoptions: { srcformat: 'Y-m-d', newformat: 'Y-m-d' }
+                },
+                { label: '在途订单数量', name: 'openPOQty', width: 80, align: 'left' },
+                { label: 'VMI库存', name: 'vmiQty', width: 80, align: 'left' },
+                { label: '供应商库存', name: 'currentInventory', width: 80, align: 'left' },
+                { label: '数据类型', name: 'dataMeasure', width: 80, align: 'left' },
+                
+
+            ],
+            pager: "#gridPager",
+            multiselect: true,
+            rowNum: 20,
+            rowList: [15, 20, 50],
+            autoScroll: true,
+            viewrecords: true,
+            sortname: 'publishDate',
+            sortorder: 'desc',
+            gridComplete: function () {
+                $('#po-ajax-loader').fadeOut();
+                $("input[type='checkbox']").removeClass('checkbox');
+            }
+        });
+        jQuery("#gridList").jqGrid('setFrozenColumns');
+
+
+    }
+
+
+</script>
+
+
+
+
+
+
+
+

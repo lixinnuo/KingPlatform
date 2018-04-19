@@ -121,6 +121,7 @@
     <Compile Include="App_Start\Handler\HandlerLoginAttribute.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Areas\HuaweiOrderManage\Controllers\FindPOListController.cs" />
+    <Compile Include="Areas\HuaweiOrderManage\Controllers\ForecastController.cs" />
     <Compile Include="Areas\HuaweiOrderManage\Controllers\VendorItemManageController.cs" />
     <Compile Include="Areas\HuaweiOrderManage\Controllers\StockManageController.cs" />
     <Compile Include="Areas\HuaweiOrderManage\HuaweiOrderManageAreaRegistration.cs" />
@@ -402,8 +403,8 @@
     <Content Include="Areas\HuaweiOrderManage\Views\FindPOList\News.cshtml" />
     <Content Include="Areas\HuaweiOrderManage\Views\FindPOList\PODetails.cshtml" />
     <Content Include="Areas\HuaweiOrderManage\Views\StockManage\Index.cshtml" />
-    <Content Include="Areas\HuaweiOrderManage\Views\StockManage\Index - 复制.cshtml" />
     <Content Include="Areas\HuaweiOrderManage\Views\VendorItemManage\Index.cshtml" />
+    <Content Include="Areas\HuaweiOrderManage\Views\Forecast\Index.cshtml" />
     <None Include="Properties\PublishProfiles\KingPlatformConfig.pubxml" />
     <None Include="Properties\PublishProfiles\kingPlatformConfig1.pubxml" />
   </ItemGroup>
